@@ -1,7 +1,7 @@
 import streamlit as st
-from google.cloud import firestore
-import firebase_admin
-from firebase_admin import credentials, firestore
+# from google.cloud import firestore
+# import firebase_admin
+# from firebase_admin import credentials, firestore
 # from models import Schema
 import json
 from datetime import datetime
@@ -32,7 +32,7 @@ def update_user_profile(user_id, input_name, input_age, input_amt):
     }, merge=True)  # merge=True allows for partial updates
 
 
-def main():
+def main_profile():
      if 'user_info' not in st.session_state:
         st.warning('You need to be signed in to submit your profile!')
         return
@@ -62,7 +62,7 @@ def main():
 
 
 
-main()
+# main()
 
 
 

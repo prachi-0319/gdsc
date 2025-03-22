@@ -1,6 +1,6 @@
 # pages/forgot_password.py
 import streamlit as st
-import gdsc.auth_functions as auth_functions
+import auth_functions as auth_functions
 
 st.title("Password Recovery")
 with st.form(key="forgot_password_form"):

@@ -128,7 +128,7 @@ def generate_summary(article_text):
 
 
 # Streamlit App Layout
-st.set_page_config(page_title="Finance & Economic News", layout="wide")
+# st.set_page_config(page_title="Finance & Economic News", layout="wide")
 
 st.title("📊 Finance & Economic News Stand")
 st.markdown("**Stay updated with the latest in Business, Finance, Economy, and Investments.**")
