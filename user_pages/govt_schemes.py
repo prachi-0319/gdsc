@@ -11,7 +11,7 @@ if api_key:
 else:
     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
 
-st.set_page_config(page_title="Govt. Schemes Finder", layout="centered")
+# st.set_page_config(page_title="Govt. Schemes Finder", layout="centered")
 st.title("📢 Find Government Schemes")
 st.write("Answer a few simple questions to find government schemes you may be eligible for.")
 
