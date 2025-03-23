@@ -41,9 +41,8 @@ if st.button("Find Schemes"):
         for scheme in scheme_list:
             if scheme.strip():  # Avoid empty responses
                 with st.container():
-                    st.markdown("📌 **" + scheme.split(":")[0] + "**")  # Highlight scheme title
+                    # st.markdown("📌 **" + scheme.split(":")[0] + "**")  # Highlight scheme title
                     st.write(scheme)  # Preserve formatting inside cards
                     st.divider()  # Adds a visual separator for clarity
 
         st.info("ℹ️ Always verify details on official government websites.")
-
