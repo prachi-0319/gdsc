@@ -7,8 +7,6 @@ from auth_functions import sign_out
 from user_options.profile_entry import main_profile
 
 
-
-
 def rate_us_button():
     @st.dialog("How do you rate our app?")
     def rate():
@@ -60,6 +58,7 @@ if 'user_info' in st.session_state:
                 # st.Page(sign_out, title="Sign Out"),  # Magic works
                 # st.Page("user_options/profile_entry.py", title="Set Profile"),
                 st.Page("user_pages/money_tracker.py", title="Finanace Tracker"),
+                st.Page("user_pages/lessons.py", title=" Finance Lessons"),
                 st.Page("user_pages/advisor.py", title="Finanace Advisor"),
                 st.Page("user_pages/fraud_detector.py", title="Fraud Alert"),
                 st.Page("user_pages/quiz.py", title="Quiz"),
@@ -113,3 +112,6 @@ else:
         ]
     )
     nav.run()
+
+
+

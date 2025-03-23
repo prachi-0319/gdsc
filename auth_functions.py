@@ -346,3 +346,5 @@ def delete_account(password:str) -> None:
 
     except Exception as error:
         print(error)
+
+
