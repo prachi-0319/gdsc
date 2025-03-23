@@ -157,7 +157,7 @@ features = [
     ("🛡️", "Fraud Detector", "Check if an investment is fraudulent.", "fraud_detector"),
     ("🏛️", "Govt. Schemes Finder", "Find government schemes for you.", "govt_schemes"),
     ("📝", "Finance Quiz", "Test your financial knowledge.", "quiz"),
-    ("📚", "Lessons", "Enhance your financial knowledge.", "quiz"),
+    ("📚", "Lessons", "Enhance your financial knowledge.", "lessons"),
 ]
 
 
