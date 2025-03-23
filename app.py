@@ -7,6 +7,21 @@ from auth_functions import sign_out
 from user_options.profile_entry import main_profile
 
 
+
+
+def rate_us_button():
+    @st.dialog("How do you rate our app?")
+    def rate():
+        sentiment_mapping = ["one", "two", "three", "four", "five"]
+        selected = st.feedback("stars")
+        if selected is not None:
+            st.session_state.rate = {"item": sentiment_mapping[selected]}
+            # st.markdown(f"You selected {sentiment_mapping[selected]} star(s).")
+            st.rerun()
+    rate()
+    return
+
+
 # Set up the page config
 st.set_page_config(page_title="Financial Agent", page_icon="💰", layout="wide")
 
@@ -60,13 +75,21 @@ if 'user_info' in st.session_state:
         #     st.write("")
 
         # Add buttons at the bottom
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns([1, 1, 1])
         with col1:
             if st.button("Profile", key="profile_button"):
                 main_profile()  # Trigger the profile function when the button is pressed
-        with col3:
+        with col2:
             if st.button("Sign Out", key="sign_out_button"):
                 sign_out()  # Trigger the sign_out function when the button is pressed
+        with col3:
+            if st.button("Rate Us", key="rate_us_button"):
+                # rate_us_button()
+                if "rate" not in st.session_state:
+                    rate_us_button()  # Trigger the sign_out function when the button is pressed
+                else:
+                    f"You gave us {st.session_state.rate['item']} stars!"
+
 
         
         # if st.button("Sign Out", key="sign_out_button"):
