@@ -52,7 +52,7 @@ def calculate_risk_profile(income, investing_experience, savings, investment_pre
 
 st.title("User Profile & Risk Analysis")
 
-if "user_i" in st.session_state:
+if "user_info" in st.session_state:
     user_id = st.session_state.user_id
     user_profile = get_user_profile(user_id)
 

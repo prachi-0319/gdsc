@@ -272,7 +272,7 @@ def sign_in(email:str, password:str) -> None:
         # Save user info to session state and rerun
         else:
             st.session_state.user_info = user_info
-            st.experimental_rerun()
+            # st.experimental_rerun()
 
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
