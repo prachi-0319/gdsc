@@ -122,7 +122,6 @@ import streamlit as st
 # from user_options.login_pg import show_login_page
 from auth_functions import *
 from user_options.profile_entry import main_profile
-from account_settings.user_controls import main_profile_user
 
 
 initialize_firebase_once()
@@ -204,7 +203,7 @@ if 'user_info' in st.session_state:
         col1, col2, col3 = st.columns([1, 1, 1])
         with col1:
             if st.button("Profile", key="profile_button"):
-                main_profile_user()  # Trigger the profile function when the button is pressed
+                main_profile()  # Trigger the profile function when the button is pressed
         with col2:
             if st.button("Sign Out", key="sign_out_button"):
                 sign_out()  # Trigger the sign_out function when the button is pressed
