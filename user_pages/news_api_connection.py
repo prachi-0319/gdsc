@@ -107,6 +107,7 @@ class NewsAPIConnection(BaseConnection[requests.session]):
             response = self.cursor().get(url=url, params=params)
             response.raise_for_status()
             data = response.json()
+
             if data.get('results') == 0 or data.get('status') != 'ok':
                 return None
             return data
