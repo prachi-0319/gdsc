@@ -1,0 +1,14 @@
+// LangGraph Workflow
+digraph {
+	rankdir=TB
+	node [fillcolor=lightblue shape=box style=filled]
+	Start [label=Start]
+	parse_query [label="Parse Query"]
+	generate_plot [label="Generate Plot"]
+	format_response [label="Format Response"]
+	End [label=End fillcolor=lightgreen shape=oval]
+	Start -> parse_query [label="User Query"]
+	parse_query -> generate_plot [label="Plot Type & Ticker"]
+	generate_plot -> format_response [label="Plot JSON or Error"]
+	format_response -> End [label="Final Response"]
+}

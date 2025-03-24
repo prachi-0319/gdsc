@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plotly Chart</title>
+</head>
+<body>
+    <div id="plotly-chart" data-plotly='{"data":[{"close":{"dtype":"f8","bdata":"..."},"high":{"dtype":"f8","bdata":"..."},"low":{"dtype":"f8","bdata":"..."},"open":{"dtype":"f8","bdata":"..."},"x":["2025-01-01", "2025-01-02", ...],"type":"candlestick"}],"layout":{"title":{"text":"AAPL Candlestick Chart"},"xaxis":{"title":{"text":"Date"}},"yaxis":{"title":{"text":"Price"}}}}'></div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        var plotlyData = document.getElementById('plotly-chart').getAttribute('data-plotly');
+        var chartData = JSON.parse(plotlyData);
+        Plotly.newPlot('plotly-chart', chartData.data, chartData.layout);
+    </script>
+</body>
+</html>
