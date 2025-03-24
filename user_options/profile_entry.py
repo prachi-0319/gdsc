@@ -87,8 +87,9 @@ import streamlit as st
 from datetime import datetime
 
 # Mock session state
-if 'user_info' not in st.session_state:
-    st.session_state.user_info = {"localId": "mock_user_id"}
+# if 'user_info' not in st.session_state:
+#     st.session_state.user_info = {"localId": "mock_user_id"}
+
 
 # Main Profile Page
 def main_profile():

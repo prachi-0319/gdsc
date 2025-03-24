@@ -196,6 +196,7 @@ from firebase_admin import credentials, firestore
 import json
 import requests
 import streamlit as st
+# import streamlit_cookie_manager as cookie_manager
 
 
 ## -------------------------------------------------------------------------------------------------
@@ -285,22 +286,26 @@ def raise_detailed_error(request_object):
 
 def sign_in(email:str, password:str) -> None:
     try:
-        # Attempt to sign in with email and password
-        id_token = sign_in_with_email_and_password(email,password)['idToken']
+        id_token = sign_in_with_email_and_password(email,password)['idToken']  # Attempt to sign in with email and password
+        user_info = get_account_info(id_token)["users"][0] # Get account information
+        user_id = user_info["localId"] #  Get user_id from user info
 
-        # Get account information
-        user_info = get_account_info(id_token)["users"][0]
+        # cookie_manager.set("user_id", user_id)
+
+        # Set user_id in session state to check login status on app load
+        st.session_state.user_id = user_id
+        st.session_state.user_info = user_info # Store user_id and user_info in session_state after login
+
         if not user_info["emailVerified"]:  # If email is not verified, send verification email and do not sign in
             send_email_verification(id_token)
             # st.session_state.auth_warning = 'Check your email to verify your account'
             st.error('Check your email to verify your account') # Save user info to session state and rerun
         else:
             st.session_state.user_info = user_info #  Store user info in session state
-            update_user_login_status(user_info["localId"], True) # Update current_login to True in Firestore
-            st.session_state.current_page = 'dashboard' # Navigate to the dashboard after successful login
+            update_user_login_status(user_info["localId"]) # Update current_login to True in Firestore
             st.success('Logged in successfully!') # Success message
-            st.experimental_rerun()  # Rerun to load the next page (dashboard)
-
+            # st.experimental_rerun()  # Rerun to load the next page (dashboard)
+            st.rerun()
             # st.session_state.user_info = user_info
             # st.experimental_rerun()
 
@@ -315,7 +320,7 @@ def sign_in(email:str, password:str) -> None:
         print(error)
         st.session_state.auth_warning = 'Error: Please try again later'
 
-def update_user_login_status(user_id: str, is_logged_in: bool) -> None:
+def update_user_login_status(user_id: str) -> None:
     # Get the Firestore reference for the user
     user_ref = firestore.client().collection('UserProfiles').document(user_id)
 
@@ -324,6 +329,26 @@ def update_user_login_status(user_id: str, is_logged_in: bool) -> None:
         'current_login': True,  # Set True if logged in, False if logged out
         # 'last_login': firestore.SERVER_TIMESTAMP  # Optionally track the login time
     })
+
+# This function will check Firestore directly to verify the login state
+def check_login_status():
+    # Check if there is a logged-in user by querying Firestore
+    # Assuming you have a way to get the user_id (either stored or from cookies/sessions)
+    user_id = st.session_state.get('user_id', None)
+    if user_id:
+        user_ref = firestore.client().collection('UserProfiles').document(user_id)
+        user_doc = user_ref.get()
+
+        if user_doc.exists:
+            user_data = user_doc.to_dict()
+            # Check the 'current_login' field to see if the user is logged in
+            if user_data.get('current_login', True):
+                return True  # User is logged in
+            else:
+                return False  # User is not logged in
+        else:
+            return False  # User doesn't exist in the database
+    return False  # No user id in session state, treat as logged out
 
 def create_account(email: str, password: str) -> bool:
     try:
@@ -375,9 +400,35 @@ def reset_password(email:str) -> None:
     except Exception:
         st.session_state.auth_warning = 'Error: Please try again later'
 
+# def sign_out() -> None:
+#     st.session_state.clear()
+#     st.session_state.auth_success = 'You have successfully signed out'
+
+# Changing the sign out so that we change it in the db
+
+
 def sign_out() -> None:
-    st.session_state.clear()
-    st.session_state.auth_success = 'You have successfully signed out'
+    # Get user_id from session state (assuming user_id is stored there after login)
+    user_id = st.session_state.get('user_id', None)
+    
+    if user_id:
+        # Update Firestore to set 'current_login' to False for the logged-out user
+        user_ref = firestore.client().collection('UserProfiles').document(user_id)
+        user_ref.update({
+            'current_login': False  # Set current_login to False when the user logs out
+        })
+        # Clear the session state (you can comment this out if you don't want to clear the session)
+        st.session_state.clear()
+
+        # Provide feedback to the user
+        st.session_state.auth_success = 'You have successfully signed out'
+        st.success('You have successfully signed out')
+
+        # Optionally, redirect to a login page or home page after sign-out
+        st.experimental_rerun()  # Refresh the app to load the login page again
+
+    else:
+        st.error("No user is currently logged in.")
 
 def delete_account(password:str) -> None:
     try:

@@ -21,7 +21,8 @@ def rate_us_button():
 # Set up the page config
 st.set_page_config(page_title="Financial Agent", page_icon="💰", layout="wide")
 
-if 'user_info' in st.session_state:
+if check_login_status():
+    # if 'user_info' in st.session_state:
     # Define the pages for logged-in users
 
     st.title("Welcome to Financial Agent")

@@ -68,7 +68,7 @@
 
 
 import streamlit as st
-import auth_functions 
+from auth_functions import *
 
 # Log In form
 st.title("Log In")
@@ -80,8 +80,10 @@ with st.form(key="login_form"):
     if submit_button:
         if email and password:
             with st.spinner('Logging in...'):
-                auth_functions.sign_in(email, password)
-                if 'user_info' in st.session_state:
+                sign_in(email, password)
+                # CHANGE BELOW LINE
+                if check_login_status():
+                # if 'user_info' in st.session_state: 
                     st.session_state.current_page = 'dashboard'
                     st.success('Logged in successfully!')
                     st.rerun()  # Refresh to load the next page after sign-in
