@@ -128,6 +128,8 @@ def generate_related_terms(term):
 # </div>
 # """, unsafe_allow_html=True)
 
+
+
 st.title("📚 Finance Dictionary")
 st.markdown("""
 <div>
