@@ -665,8 +665,11 @@ def get_quiz_questions(history_json, mode="general", difficulty="easy"):
 
 # Main Page Layout
 st.title("📊 Finance Quiz App")
-st.markdown("**Improve your financial literacy through fun and engaging quizzes!**")
+st.markdown("Test and expand your money knowledge with interactive quizzes! Choose between general financial concepts or personalized quizzes based on your profile. Adjust the difficulty to match your expertise level - perfect for beginners and experts alike.")
+st.markdown("Each quiz helps you spot knowledge gaps while making finance fun!")
 
+st.markdown("")
+st.markdown("")
 # Initialize session state
 if "quiz_mode" not in st.session_state:
     st.session_state.quiz_mode = "general"
