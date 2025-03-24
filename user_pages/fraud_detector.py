@@ -11,7 +11,7 @@ if api_key:
 else:
     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
 
-st.set_page_config(page_title="Fraud & Scam Detector", layout="centered")
+# st.set_page_config(page_title="Fraud & Scam Detector", layout="centered")
 st.title("🚨 Fraud & Scam Detection Alerts")
 
 st.write("Enter details of an investment scheme to check if it's legitimate.")
