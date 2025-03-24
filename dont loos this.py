@@ -1,5 +1,5 @@
 import streamlit as st
-import gdsc.auth_functions as auth_functions
+import auth_functions as auth_functions
 
 # Set page config
 st.set_page_config(

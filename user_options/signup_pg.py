@@ -68,8 +68,31 @@
 #     #         st.error("Please provide both email and password.")
 
 
+# import streamlit as st
+# import auth_functions
+
+# # Create Account form
+# st.title("Create Account")
+# with st.form(key="create_account_form"):
+#     email = st.text_input("Email")
+#     password = st.text_input("Password", type="password")
+#     submit_button = st.form_submit_button("Sign Up")
+
+# if submit_button:
+#     if email and password:
+#         with st.spinner('Creating account...'):
+#             auth_functions.create_account(email, password)
+#             if 'user_info' in st.session_state:
+#                 st.session_state.current_page = 'login'
+#                 st.success('Account created successfully!')
+#                 st.rerun()  # Refresh to load the next page after account creation
+#             else:
+#                 st.error("Failed to create account.")
+#     else:
+#         st.error("Please provide both email and password.")
+
 import streamlit as st
-import auth_functions
+from auth_functions import *
 
 # Create Account form
 st.title("Create Account")
@@ -81,12 +104,13 @@ with st.form(key="create_account_form"):
 if submit_button:
     if email and password:
         with st.spinner('Creating account...'):
-            auth_functions.create_account(email, password)
-            if 'user_info' in st.session_state:
-                st.session_state.current_page = 'login'
-                st.success('Account created successfully!')
-                st.rerun()  # Refresh to load the next page after account creation
+            if create_account(email, password):                
+                # Display the success message
+                st.success('Account Created Successfully!')
+                st.success('Check your inbox to verify your email')
+                st.page_link('user_options/login_pg.py', label='Go to Login')
             else:
                 st.error("Failed to create account.")
+                st.rerun()
     else:
         st.error("Please provide both email and password.")

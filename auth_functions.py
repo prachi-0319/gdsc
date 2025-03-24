@@ -190,12 +190,39 @@
 #     return 'user_info' in st.session_state and st.session_state.user_info
 
 
+from google.cloud import firestore
+import firebase_admin
+from firebase_admin import credentials, firestore
 import json
 import requests
 import streamlit as st
 
+
 ## -------------------------------------------------------------------------------------------------
-## Firebase Auth API -------------------------------------------------------------------------------
+## Firebase and authentication -------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------------------
+
+# Global variable for Firestore client
+db = None
+
+def initialize_firebase():
+    """Initialize Firebase only once if not already done"""
+    global db
+    if not firebase_admin._apps:
+        cred = credentials.Certificate('firebase-key.json')
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+    elif db is None:
+        db = firestore.client()
+
+def initialize_firebase_once():
+    """Initialize Firebase once per session"""
+    if 'firebase_initialized' not in st.session_state or not st.session_state.firebase_initialized:
+        initialize_firebase()
+        st.session_state.firebase_initialized = True
+
+## -------------------------------------------------------------------------------------------------
+## Firebase Auth API DO NOT CHANGE-------------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------
 
 def sign_in_with_email_and_password(email, password):
@@ -253,7 +280,7 @@ def raise_detailed_error(request_object):
         raise requests.exceptions.HTTPError(error, request_object.text)
 
 ## -------------------------------------------------------------------------------------------------
-## Authentication functions ------------------------------------------------------------------------
+## Authentication functions DO NOT CHANGE------------------------------------------------------------------------
 ## -------------------------------------------------------------------------------------------------
 
 def sign_in(email:str, password:str) -> None:
@@ -263,16 +290,19 @@ def sign_in(email:str, password:str) -> None:
 
         # Get account information
         user_info = get_account_info(id_token)["users"][0]
-
-        # If email is not verified, send verification email and do not sign in
-        if not user_info["emailVerified"]:
+        if not user_info["emailVerified"]:  # If email is not verified, send verification email and do not sign in
             send_email_verification(id_token)
-            st.session_state.auth_warning = 'Check your email to verify your account'
-
-        # Save user info to session state and rerun
+            # st.session_state.auth_warning = 'Check your email to verify your account'
+            st.error('Check your email to verify your account') # Save user info to session state and rerun
         else:
-            st.session_state.user_info = user_info
-            st.experimental_rerun()
+            st.session_state.user_info = user_info #  Store user info in session state
+            update_user_login_status(user_info["localId"], True) # Update current_login to True in Firestore
+            st.session_state.current_page = 'dashboard' # Navigate to the dashboard after successful login
+            st.success('Logged in successfully!') # Success message
+            st.experimental_rerun()  # Rerun to load the next page (dashboard)
+
+            # st.session_state.user_info = user_info
+            # st.experimental_rerun()
 
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
@@ -285,15 +315,25 @@ def sign_in(email:str, password:str) -> None:
         print(error)
         st.session_state.auth_warning = 'Error: Please try again later'
 
+def update_user_login_status(user_id: str, is_logged_in: bool) -> None:
+    # Get the Firestore reference for the user
+    user_ref = firestore.client().collection('UserProfiles').document(user_id)
 
-def create_account(email:str, password:str) -> None:
+    # Update the 'current_login' status
+    user_ref.update({
+        'current_login': True,  # Set True if logged in, False if logged out
+        # 'last_login': firestore.SERVER_TIMESTAMP  # Optionally track the login time
+    })
+
+def create_account(email: str, password: str) -> bool:
     try:
         # Create account (and save id_token)
-        id_token = create_user_with_email_and_password(email,password)['idToken']
-
-        # Create account and send email verification
+        response = create_user_with_email_and_password(email, password)
+        id_token = response['idToken']
+        user_id = response['localId']  # Get the user ID (uid)
+        create_user_profile_in_firestore(user_id, email) #send verification
         send_email_verification(id_token)
-        st.session_state.auth_success = 'Check your inbox to verify your email'
+        return True
     
     except requests.exceptions.HTTPError as error:
         error_message = json.loads(error.args[1])['error']['message']
@@ -308,6 +348,17 @@ def create_account(email:str, password:str) -> None:
         print(error)
         st.session_state.auth_warning = 'Error: Please try again later'
 
+def create_user_profile_in_firestore(user_id, email):
+    # Create a new document for the user in Firestore
+    user_ref = db.collection('UserProfiles').document(user_id)
+
+    # Initialize user profile with basic info
+    user_ref.set({
+        'email': email,
+        'first_login': True,  # New user, needs to set up their profile
+        'current_login': False,
+        'createdAt': firestore.SERVER_TIMESTAMP
+    })
 
 def reset_password(email:str) -> None:
     try:
@@ -324,11 +375,9 @@ def reset_password(email:str) -> None:
     except Exception:
         st.session_state.auth_warning = 'Error: Please try again later'
 
-
 def sign_out() -> None:
     st.session_state.clear()
     st.session_state.auth_success = 'You have successfully signed out'
-
 
 def delete_account(password:str) -> None:
     try:
