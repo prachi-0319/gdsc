@@ -213,8 +213,9 @@ st.markdown("""
         font-size: 2rem;
     }
     .card {
-        background-color: #f8f9fa;
-        border-radius: 10px;
+        background-color: rgba(21, 76, 121, 0.15);
+        border-radius: 15px;
+        border: 0.7px solid #76b5c5;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -223,13 +224,13 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
     .highlight {
-        background-color: #FFF3CD;
+        background-color: #2980B9;
         padding: 0.2rem 0.4rem;
         border-radius: 4px;
         font-weight: 500;
     }
     .allocation-card {
-        background-color: white;
+        background-color: blue;
         border-radius: 10px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
@@ -326,7 +327,7 @@ def create_allocation_chart(allocation):
         tooltip=['Asset Class', alt.Tooltip('Percentage', format='.1f')]
     ).properties(
         height=300,
-        title='Recommended Portfolio Allocation'
+        # title='Recommended Portfolio Allocation'
     ).configure_axis(
         labelFontSize=12,
         titleFontSize=14
@@ -356,7 +357,7 @@ def create_allocation_pie(allocation):
         tooltip=['Asset Class', alt.Tooltip('Percentage', format='.1f')]
     ).properties(
         height=300,
-        title='Portfolio Distribution'
+        # title='Portfolio Distribution'
     ).configure_title(
         fontSize=16,
         anchor='middle'
@@ -368,25 +369,36 @@ def create_allocation_pie(allocation):
 # Streamlit UI
 # -----------------------------------------------------------
 
-st.markdown("""
-<div class="header">
-    <h2>Investment Portfolio Recommender</h2>
-    <p style="color: #6c757d;">Get personalized investment recommendations based on your risk profile and financial goals</p>
-</div>
-""", unsafe_allow_html=True)
+st.title("💰 Investment Portfolio Recommender")
+
+# st.markdown("""
+# <div class="header">
+#     <h2>Investment Portfolio Recommender</h2>
+#     <p style="color: #6c757d;">Get personalized investment recommendations based on your risk profile and financial goals</p>
+# </div>
+# """, unsafe_allow_html=True)
 
 st.markdown("""
-<div class="card">
+<div>
     <p>Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
     to create a balanced portfolio allocation tailored to your specific needs.</p>
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("")
+st.markdown("")
+st.markdown("")
+
 col1, col2 = st.columns([1, 1], gap="large")
+
 
 with col1:
     st.markdown("### Your Investment Profile")
-    
+
+    st.markdown("Tell us about your financial preferences to get personalized recommendations! Adjust these sliders to reflect your risk appetite, time horizon, cash needs, and tax preferences. Your selections will shape a portfolio tailored to your goals—from conservative to growth-focused. The more accurate your inputs, the better your results.")
+    st.markdown("(All recommendations update instantly as you adjust the settings.)")
+    st.markdown("")
+
     st.markdown('<div class="slider-container">', unsafe_allow_html=True)
     risk_tolerance = st.slider(
         "**Risk Tolerance** (1 = Conservative, 10 = Aggressive)",
@@ -395,6 +407,7 @@ with col1:
     )
     st.markdown('</div>', unsafe_allow_html=True)
     
+    st.markdown("")
     st.markdown('<div class="slider-container">', unsafe_allow_html=True)
     investment_horizon = st.slider(
         "**Investment Horizon** (years)",
@@ -403,6 +416,7 @@ with col1:
     )
     st.markdown('</div>', unsafe_allow_html=True)
     
+    st.markdown("")
     st.markdown('<div class="slider-container">', unsafe_allow_html=True)
     liquidity = st.slider(
         "**Liquidity Need** (0 = No immediate need, 1 = High need)",
@@ -411,6 +425,7 @@ with col1:
     )
     st.markdown('</div>', unsafe_allow_html=True)
     
+    st.markdown("")
     st.markdown('<div class="slider-container">', unsafe_allow_html=True)
     tax_factor = st.slider(
         "**Tax Sensitivity** (0 = Not sensitive, 1 = Highly sensitive)",
@@ -418,6 +433,31 @@ with col1:
         key="tax_slider"
     )
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # rec = hybrid_recommendation(risk_tolerance, investment_horizon, liquidity, tax_factor)
+    
+    # st.markdown("### Recommended Allocation")
+    
+    # # Metrics row
+    # cols = st.columns(3)
+    # with cols[0]:
+    #     # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+    #     st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['equity']), unsafe_allow_html=True)
+    #     st.markdown('<div class="metric-label">Equity</div>', unsafe_allow_html=True)
+    #     st.markdown('</div>', unsafe_allow_html=True)
+    
+    # with cols[1]:
+    #     # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+    #     st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['bonds']), unsafe_allow_html=True)
+    #     st.markdown('<div class="metric-label">Bonds</div>', unsafe_allow_html=True)
+    #     st.markdown('</div>', unsafe_allow_html=True)
+    
+    # with cols[2]:
+    #     # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+    #     st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['cash']), unsafe_allow_html=True)
+    #     st.markdown('<div class="metric-label">Cash</div>', unsafe_allow_html=True)
+    #     st.markdown('</div>', unsafe_allow_html=True)
+
 
 with col2:
     # Calculate recommendations
@@ -428,19 +468,19 @@ with col2:
     # Metrics row
     cols = st.columns(3)
     with cols[0]:
-        st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+        # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
         st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['equity']), unsafe_allow_html=True)
         st.markdown('<div class="metric-label">Equity</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     
     with cols[1]:
-        st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+        # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
         st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['bonds']), unsafe_allow_html=True)
         st.markdown('<div class="metric-label">Bonds</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     
     with cols[2]:
-        st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+        # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
         st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['cash']), unsafe_allow_html=True)
         st.markdown('<div class="metric-label">Cash</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
@@ -456,6 +496,9 @@ with col2:
     st.altair_chart(pie_chart, use_container_width=True)
 
 # Explanation section
+st.markdown("")
+st.markdown("")
+st.markdown("")
 st.markdown("""
 <div class="card">
     <h4>How This Works</h4>

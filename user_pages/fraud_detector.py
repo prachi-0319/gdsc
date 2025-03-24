@@ -11,10 +11,37 @@ if api_key:
 else:
     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
 
+
+st.markdown("""
+<style>
+    .main {
+        max-width: 900px;
+        padding: 2rem;
+    }
+    .highlight {
+        background-color: #2980B9;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 # st.set_page_config(page_title="Fraud & Scam Detector", layout="centered")
 st.title("🚨 Fraud & Scam Detection Alerts")
 
-st.write("Enter details of an investment scheme to check if it's legitimate.")
+st.markdown("""
+<div>
+    <Enter>Verify before you invest—protect your hard-earned money! Enter details of any investment offer to check for red flags. Our system cross-references known scam patterns, unrealistic returns, and regulatory warnings to assess legitimacy.</p>
+    <p>Note: <span class="highlight">Always consult a certified financial advisor</span> for high-risk investments.</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("")
+st.markdown("")
+
+# st.write("Enter details of an investment scheme to check if it's legitimate.")
 
 # User input fields
 scheme_name = st.text_input("Scheme Name", placeholder="e.g., Golden Future Investment Plan")
