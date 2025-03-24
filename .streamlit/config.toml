@@ -1,4 +1,11 @@
-
+[client]
+showErrorDetails = "none"
 
 [theme]
-base = "light"
+primaryColor = "#54AFBF"
+backgroundColor = "#09031d"
+base = "dark"
+textColor = "#E2E4E4"
+
+[server]
+runOnSave = true
