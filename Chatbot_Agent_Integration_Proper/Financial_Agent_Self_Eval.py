@@ -336,10 +336,10 @@ def plot_assets(df, ticker="", currency=""):
 # %%
 def parse_query(state: State) -> State:
     """Parse the user query to determine plot type and ticker"""
-    query = (state["original_messages"][-1].content).lower()
-    print(query)
+    query = state["research_topic"].lower()
+    #print(query)
     ticker = query.split()[-1].upper()
-    print(ticker)
+    #print(ticker)
     if "candlestick chart" in query:
         return {"plot_type": "candlestick", "ticker": ticker}
     elif "balance sheet" in query:
@@ -363,10 +363,10 @@ def generate_plot(state: State) -> State:
             fig = plot_candles_stick(df, title=f"{ticker} Candlestick Chart")
         elif plot_type == "balance":
             df = fetch_balance(ticker)
-            fig = plot_balance(df, ticker=ticker, currency="USD")
+            fig = plot_balance(df, ticker=ticker, currency="INR")
         elif plot_type == "assets":
             df = fetch_balance(ticker)
-            fig = plot_assets(df, ticker=ticker, currency="USD")
+            fig = plot_assets(df, ticker=ticker, currency="INR")
         
         plot_json = fig.to_json()
         return {"plot_json": plot_json}
@@ -1002,8 +1002,8 @@ def process_with_context(state: State):
     current_query = messages[-1].content
     
     # Add the current query to original_messages if it's not already there
-    #if not original_messages or original_messages[-1].content != current_query:
-    #    messages.append(HumanMessage(content=current_query))
+    if not original_messages or original_messages[-1].content != current_query:
+        original_messages.append(HumanMessage(content=current_query))
     
     context_messages = messages[:-1]
     
@@ -1012,13 +1012,20 @@ def process_with_context(state: State):
                              for i, msg in enumerate(context_messages[-6:])])
     
     prompt = f"""
-    Based on the previous conversation context and the user's current query, 
-    generate an enhanced version of the query that incorporates relevant context.
+    Based on the previous conversation context and the user's current query, generate an enhanced version of the query that incorporates relevant context. However, if the query is about plotting a graph, preserve its intent and format it into one of these exact structures with the company ticker as the last word:
+    - "Show me a candlestick chart for TICKER"
+    - "Show me the balance sheet for TICKER"
+    - "Show me the assets for TICKER"
     
     Previous conversation:
     {context_str}
     
     Current query: {current_query}
+    
+    Instructions:
+    1. If the query mentions 'candlestick', 'balance sheet', or 'assets' (or similar terms like 'chart', 'visualize'), identify the ticker (e.g., AAPL, MSFT) and rephrase it into one of the above formats.
+    2. For non-plot queries, enhance the query with context as needed.
+    3. Ensure the ticker, if present, is always the last word in plot-related queries.
     
     Enhanced query:
     """
@@ -1029,7 +1036,7 @@ def process_with_context(state: State):
         updated_messages = messages[:-1] + [HumanMessage(content=enhanced_query)]
         return {
             "messages": updated_messages,
-            "original_messages": original_messages,  # Preserve original messages
+            "original_messages": original_messages,
             "research_topic": enhanced_query
         }
     except Exception as e:
