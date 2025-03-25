@@ -12,10 +12,18 @@ else:
     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
 
 # st.set_page_config(page_title="Govt. Schemes Finder", layout="centered")
-st.title("📢 Find Government Schemes")
-st.write("Never miss out on benefits - find schemes made for your situation! Answer these quick questions to uncover government schemes matching your profile. We’ll help you identify benefits, subsidies, and assistance programs you may qualify for based on your age, income, and background.")
-st.write("Note: Recommendations are based on current schemes - always verify details with official sources.")
+# st.title("📢 Find Government Schemes")
+# st.write("Never miss out on benefits - find schemes made for your situation! Answer these quick questions to uncover government schemes matching your profile. We’ll help you identify benefits, subsidies, and assistance programs you may qualify for based on your age, income, and background.")
+# st.write("Note: Recommendations are based on current schemes - always verify details with official sources.")
 
+
+st.markdown("""
+<div>
+    <h1 style="font-size:60px; color:white; text-align:center;">📢 Find Government Schemes</h1>
+    <p style="text-align:center;">Never miss out on benefits - find schemes made for your situation! Answer these quick questions to uncover government schemes matching your profile. We’ll help you identify benefits, subsidies, and assistance programs you may qualify for based on your age, income, and background.</p>
+    <p>Note: Recommendations are based on current schemes - always verify details with official sources.</p>
+</div>
+""", unsafe_allow_html=True)
 st.markdown("")
 st.markdown("")
 # User Inputs

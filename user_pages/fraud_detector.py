@@ -28,15 +28,23 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# st.set_page_config(page_title="Fraud & Scam Detector", layout="centered")
-st.title("🚨 Fraud & Scam Detection Alerts")
-
 st.markdown("""
 <div>
-    <Enter>Verify before you invest—protect your hard-earned money! Enter details of any investment offer to check for red flags. Our system cross-references known scam patterns, unrealistic returns, and regulatory warnings to assess legitimacy.</p>
-    <p>Note: <span class="highlight">Always consult a certified financial advisor</span> for high-risk investments.</p>
+    <h1 style="font-size:60px; color:white; text-align:center;">🚨 Fraud & Scam Detection Alerts</h1>
+    <p style="text-align:center;">Verify before you invest—protect your hard-earned money! Enter details of any investment offer to check for red flags. Our system cross-references known scam patterns, unrealistic returns, and regulatory warnings to assess legitimacy.</p>
+    <p style="text-align:center;">Note: <span class="highlight">Always consult a certified financial advisor</span> for high-risk investments.</p>
 </div>
 """, unsafe_allow_html=True)
+
+# st.set_page_config(page_title="Fraud & Scam Detector", layout="centered")
+# st.title("🚨 Fraud & Scam Detection Alerts")
+
+# st.markdown("""
+# <div>
+#     <Enter>Verify before you invest—protect your hard-earned money! Enter details of any investment offer to check for red flags. Our system cross-references known scam patterns, unrealistic returns, and regulatory warnings to assess legitimacy.</p>
+#     <p>Note: <span class="highlight">Always consult a certified financial advisor</span> for high-risk investments.</p>
+# </div>
+# """, unsafe_allow_html=True)
 
 st.markdown("")
 st.markdown("")

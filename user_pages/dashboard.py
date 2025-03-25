@@ -222,15 +222,42 @@ for i, (icon, title, description, page) in enumerate(features):
 st.markdown("") # empty line
 st.markdown("") # empty line
 st.markdown("") # empty line
+# st.markdown("""
+# <div class="floating-box">
+#     <div style="display: flex; align-items: center;">
+#         <div style="flex: 1;">
+#             <img src="assets/dashboard_dialog.png" alt="Placeholder Image" style="border-radius: 10px; size:80px align:center;">
+#         </div>
+#         <div style="flex: 1; padding-left: 20px;">
+#             <h3>Financial Freedom Starts Here!</h3>
+#             <p>Did you know 76% of Indians struggle with basic financial concepts? That's where we come in! 🚀 Our app makes money mastery easy and fun with:</p>
+#             <ul>
+#             <item>Bite-sized lessons that stick</item>
+#             <item>AI-powered tools tailored just for you</item>
+#             <item>Real-world skills to grow your wealth</item>
+#             </ul>
+#             <p>We're closing the financial literacy gap—one user at a time. Your journey to smart money habits starts now! 💡</p>
+#             <p>Join <span>50,000+<span> Indians already taking control of their finances!<p>
+#         </div>
+#     </div>
+# </div>
+# """, unsafe_allow_html=True)
 st.markdown("""
 <div class="floating-box">
     <div style="display: flex; align-items: center;">
-        <div style="flex: 1;">
-            <img src="assets/dashboard_dialog.png" alt="Placeholder Image" style="border-radius: 10px; size:80px align:center;">
+        <div style="flex: 1; text-align: center;">
+            <img src="assets/dashboard_dialog.png" alt="Financial Education" style="border-radius: 10px; max-width: 80%; height: auto;">
         </div>
         <div style="flex: 1; padding-left: 20px;">
-            <h3>Boost Your Financial Knowledge</h3>
-            <p>Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today! Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!</p>
+            <h3 style="margin-top: 0;">Financial Freedom Starts Here!</h3>
+            <p style="font-size: 15px;">Did you know 76% of Indians struggle with basic financial concepts? That's where we come in! Our app makes money mastery easy and fun with:</p>
+            <ul style="padding-left: 20px; font-size: 15px;">
+                <li style="margin-bottom: 8px;">Bite-sized lessons that stick</li>
+                <li style="margin-bottom: 8px;">AI-powered tools tailored just for you</li>
+                <li style="margin-bottom: 8px;">Real-world skills to grow your wealth</li>
+            </ul>
+            <p style="font-size: 15px;">We're closing the financial literacy gap—one user at a time. Your journey to smart money habits starts now! 💡</p>
+            <p style="font-weight: bold; font-size: 15px;">Join <span style="color: #27AE60;">50,000+</span> Indians already taking control of their finances!</p>
         </div>
     </div>
 </div>
@@ -290,7 +317,7 @@ with faq_col2:
 
 with faq_col1:
     st.markdown("<h2>Frequently asked questions</h2>", unsafe_allow_html=True)
-    st.markdown("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.")
+    st.markdown("Can't find what you're looking for? We are always happy to help you navigate your financial journey!")
 
 # ---- Footer Section ----
 st.markdown("<hr>", unsafe_allow_html=True)

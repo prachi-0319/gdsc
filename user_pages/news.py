@@ -255,8 +255,21 @@ def generate_summary(article_text: str) -> str:
 #     initial_sidebar_state="expanded",
 # )
 
-st.title("📊 Finance & Economic News Stand")
-st.markdown("**Stay updated with the latest in Business, Finance, Economy, and Investments.**")
+# st.title("📊 Finance & Economic News Stand")
+# st.markdown("**Stay updated with the latest in Business, Finance, Economy, and Investments.**")
+
+
+
+st.markdown("""
+<div>
+    <h1 style="font-size:60px; color:white; text-align:center;">📊 Finance & Economic News Stand</h1>
+    <p style="text-align:center;">Stay updated with the latest in Business, Finance, Economy, and Investments.</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("")
+st.markdown("")
+st.markdown("")
 
 # Main Page Options
 col1, col2, col3 = st.columns(3)
@@ -274,6 +287,9 @@ with col2:
 
 with col3:
     country = st.selectbox("Country", ["United States", "United Kingdom", "India", "Canada", "Australia"], index=0)
+
+st.markdown("")
+st.markdown("")
 
 feed = st.slider("Number of Articles to Display", min_value=1, max_value=50, value=10)
 

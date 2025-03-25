@@ -12,6 +12,14 @@ from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 import altair as alt
 
+# Load API key for Gemini from the .env file
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
+else:
+    st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
+    
 def scrape_finance_terms():
     with st.spinner('Scraping financial terms from Investopedia...'):
         url = "https://www.investopedia.com/financial-term-dictionary-4769738"
@@ -129,11 +137,10 @@ def generate_related_terms(term):
 # """, unsafe_allow_html=True)
 
 
-
-st.title("📚 Finance Dictionary")
 st.markdown("""
 <div>
-    <Enter>Your personal guide to financial terminology - understand complex concepts in simple terms!</p>
+    <h1 style="font-size:60px; color:white; text-align:center;">📚 Finance Dictionary</h1>
+    <p style="text-align:center;">Your personal guide to financial terminology - understand complex concepts in simple terms!</p>
     <p>Search any financial term to get:</p>
     <ul>
         <li><span class="highlight">Simple explanations</span> anyone can understand</li>
@@ -143,6 +150,20 @@ st.markdown("""
     <p>Perfect for students, beginners, and professionals looking for quick refreshers.</p>
 </div>
 """, unsafe_allow_html=True)
+
+# st.title("📚 Finance Dictionary")
+# st.markdown("""
+# <div>
+#     <Enter>Your personal guide to financial terminology - understand complex concepts in simple terms!</p>
+#     <p>Search any financial term to get:</p>
+#     <ul>
+#         <li><span class="highlight">Simple explanations</span> anyone can understand</li>
+#         <li><span class="highlight">Formal definitions</span> for precise understanding</li>
+#         <li><span class="highlight">Related terms</span> to expand your knowledge</li>
+#     </ul>
+#     <p>Perfect for students, beginners, and professionals looking for quick refreshers.</p>
+# </div>
+# """, unsafe_allow_html=True)
 
 st.markdown("")
 st.markdown("")
