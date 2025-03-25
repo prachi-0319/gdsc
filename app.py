@@ -138,6 +138,22 @@ def rate_us_button():
     rate()
     return
 
+# st.markdown("""
+#     <style>
+#         /* Smaller Button */
+#         .stButton>button {
+#             background: var(--primary);
+#             color: white;
+#             border-radius: 8px;
+#             padding: 10px 20px; /* Reduced from 12px 24px */
+#             font-weight: 500;
+#             transition: opacity 0.2s ease;
+#         }
+
+#         .stButton>button:hover {
+#             opacity: 0.9;
+#         }
+#     </style>""", unsafe_allow_html=True)
 
 # Set up the page config
 st.set_page_config(page_title="Financial Agent", page_icon="💰", layout="wide")
@@ -227,13 +243,22 @@ if 'user_info' in st.session_state:
     nav_login.run()
 
 else:
-    st.title("Welcome to Financial Agent")
+    st.markdown("<h1 style='text-align: center; font-size: 60px; font-weight: bold;'>Welcome to FinFriend</h1>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="text-align: center; margin-top: 20px;">
+        <p>Discover tools, resources, and advice to make informed financial decisions.</p>
+        <p>Explore personalized financial advice, track savings, detect fraud schemes, and much more.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("")
+    st.markdown("")
+    st.markdown("")
     initialize_firebase()
     # Sidebar with buttons for account selection
 
     nav = st.navigation(
         [
-            st.Page(entry_point, title="Introduction", default=True),  # Magic works
+            st.Page("user_pages/dashboard.py",title="Introduction", default=True),  # Magic works
             st.Page("user_options/login_pg.py", title="Log In"),  # Magic does not work
             st.Page("user_options/signup_pg.py", title="Sign Up"),  # Magic works
             # st.Page("user_options/forgot_password_pg.py", title="Reset Password"),  # Magic works

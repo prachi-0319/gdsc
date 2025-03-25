@@ -204,6 +204,10 @@ st.markdown("""
         max-width: 900px;
         padding: 2rem;
     }
+    .profile-header h1 {
+        color: #2E86C1;
+        font-size: 2.5rem;
+    }
     .header {
         text-align: center;
         margin-bottom: 2rem;
@@ -369,7 +373,7 @@ def create_allocation_pie(allocation):
 # Streamlit UI
 # -----------------------------------------------------------
 
-st.title("💰 Investment Portfolio Recommender")
+# st.title("💰 Investment Portfolio Recommender")
 
 # st.markdown("""
 # <div class="header">
@@ -378,9 +382,17 @@ st.title("💰 Investment Portfolio Recommender")
 # </div>
 # """, unsafe_allow_html=True)
 
+# st.markdown("""
+# <div>
+#     <p>Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
+#     to create a balanced portfolio allocation tailored to your specific needs.</p>
+# </div>
+# """, unsafe_allow_html=True)
+
 st.markdown("""
-<div>
-    <p>Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
+<div class="profile-header">
+    <h1 style="font-size:55px; color:white; text-align:center;">💰 Investment Portfolio Recommender</h1>
+    <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
     to create a balanced portfolio allocation tailored to your specific needs.</p>
 </div>
 """, unsafe_allow_html=True)
