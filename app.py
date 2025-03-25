@@ -121,7 +121,7 @@ import streamlit as st
 # from user_options.signup_pg import show_create_account_page
 # from user_options.login_pg import show_login_page
 from auth_functions import *
-from user_options.profile_entry import main_profile
+# from account_settings.user_controls import main_profile
 
 
 initialize_firebase_once()
@@ -191,7 +191,8 @@ if 'user_info' in st.session_state:
                 st.Page("user_pages/govt_schemes.py", title="Govt Schemes"),
                 st.Page("user_pages/dictionary.py", title="Dictionary"),
                 st.Page("user_pages/chatbot.py", title="Chatbot"),
-                st.Page("account_settings/user_controls.py", title="Profile"),
+                # st.Page("account_settings/user_controls.py", title="Profile"),
+                st.Page("user_options/profile_entry.py", title="Profile"),
             ]
         )
 
@@ -200,14 +201,14 @@ if 'user_info' in st.session_state:
         #     st.write("")
 
         # Add buttons at the bottom
-        col1, col2, col3 = st.columns([1, 1, 1])
+        col1, col2 = st.columns([1, 1])
+        # with col1:
+        #     if st.button("Profile", key="profile_button"):
+        #         main_profile()  # Trigger the profile function when the button is pressed
         with col1:
-            if st.button("Profile", key="profile_button"):
-                main_profile()  # Trigger the profile function when the button is pressed
-        with col2:
             if st.button("Sign Out", key="sign_out_button"):
                 sign_out()  # Trigger the sign_out function when the button is pressed
-        with col3:
+        with col2:
             if st.button("Rate Us", key="rate_us_button"):
                 # rate_us_button()
                 if "rate" not in st.session_state:
