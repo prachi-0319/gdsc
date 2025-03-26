@@ -205,3 +205,29 @@ https://www.iotforall.com/how-to-build-an-ai-financial-assistant-app
 https://www.indiainfoline.com/business-partners/moneyversity-financial-education-platform
 
 https://investyadnya.in/?srsltid=AfmBOooXarjI5_FkKQpZqKLofcYMJNd0ftaGQxg7T4KrREoFS0wdnBzv
+
+
+
+## VIDEO CLIPS LINKS
+
+Bustling indian roads:
+https://pixabay.com/videos/india-people-asia-street-asian-1643/
+
+Low financial literacy:
+https://www.youtube.com/watch?v=7oj6gpAbYgw&t=186s&pp=ygUeaW5kaWFucyBsb3cgZmluYW5jaWFsIGxpdGVyYWN5
+
+https://www.youtube.com/watch?v=1s3l2uQKIzw&pp=ygUjaW5kaWFucyBsb3cgZmluYW5jaWFsIGxpdGVyYWN5IG5ld3M%3D
+
+Financial Literacy for all ted talk
+https://www.youtube.com/watch?v=pWU3DYvnP0s&pp=ygUbZmluYW5jZSBsaXRlcmFjeSBpbmRpYSBuZXdz
+
+Other:
+https://www.youtube.com/watch?v=pX48h5aasCc&pp=ygUmZG9jdW1lbnRhcnkgb24gaW5kaWFuIGZpbmFuY2UgbGl0ZXJhY3k%3D
+
+https://www.youtube.com/watch?v=z14sYye8Sng&pp=ygUmZG9jdW1lbnRhcnkgb24gaW5kaWFuIGZpbmFuY2UgbGl0ZXJhY3k%3D
+
+https://www.youtube.com/watch?v=PlYsJsYOjr4&pp=ygUmZG9jdW1lbnRhcnkgb24gaW5kaWFuIGZpbmFuY2UgbGl0ZXJhY3k%3D
+
+
+
+
