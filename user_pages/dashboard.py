@@ -92,6 +92,7 @@
 import streamlit as st
 import plotly.express as px
 from auth_functions import *
+from ChatBot.chatbot import *
 
 
 # ---- User Authentication ----
@@ -164,15 +165,41 @@ st.markdown(f"<h4 style='text-align: center;'>Welcome, {user_name}! 🎉</h4>", 
 # ---- Search Bar for AI Chatbot ----
 st.markdown("") # empty line
 st.markdown("") # empty line
-search_query = st.text_input("🔍 Ask us anything:", placeholder="What is the best long term investment...")
+
+user_input = st.text_input("🔍 Ask us anything:", placeholder="What is the best long term investment...")
+
+# if st.button("Search"):
+#     st.switch_page(f"user_pages/chatbot.py")
+
+# Store user input in session state
 if st.button("Search"):
-    st.switch_page(f"user_pages/chatbot.py")
+    if user_input:  # Ensure input is not empty
+        st.session_state.chatbot = FinancialChatBot()
+        st.session_state.history = []
+
+        bot_response = st.session_state.chatbot.chat(user_input, None)
+
+        st.session_state.history.append({
+            "role": "user",
+            "content": user_input,
+            "image_path": None
+        })
+        st.session_state.history.append({
+            "role": "assistant",
+            "text": bot_response["text"],
+            "plot": bot_response["plot"]
+        })
+
+        # st.session_state["user_query"] = user_input  # Store in session state
+        st.switch_page("user_pages/chatbot.py")  # Navigate to chatbot page
+
 
 # ---- Features Grid ----
 st.markdown("<h2 style='text-align: center;'>Explore Our Features</h2>", unsafe_allow_html=True)
 st.markdown("") # empty line
 st.markdown("") # empty line
 # st.markdown("## Explore Our Features")
+
 features = [
     ("📊", "Financial Advisor", "Get personalized financial advice.", "advisor"),
     ("📖", "Finance Dictionary", "Easily look up financial terms.", "dictionary"),
