@@ -211,16 +211,30 @@ if GEMINI_API_KEY:
 else:
     st.error("Gemini API key not found. Please set GEMINI_API_KEY in your .env file.")
 
+
 # Initialize NewsAPI Connection
 conn_newsapi = st.connection("NewsAPI", type=NewsAPIConnection)
 
 # Helper Functions
-def get_country_code(name: str) -> str:
-    """Return the 2-letter country code for a given country name."""
-    try:
-        return countries.get(name=name).alpha_2
-    except AttributeError:
-        raise ValueError(f'No country code found for "{name}"')
+# def get_country_code(name: str) -> str:
+#     """Return the 2-letter country code for a given country name."""
+#     try:
+#         return countries.get(name=name).alpha_2
+#     except AttributeError:
+#         raise ValueError(f'No country code found for "{name}"')
+
+# def get_country_code(name: str) -> str:
+#     """Return the 2-letter country code for a given country name."""
+#     try:
+#         # Try direct name match first
+#         country = countries.get(name=name)
+#         if not country:
+#             # Try fuzzy match if exact name doesn't work
+#             country = countries.search_fuzzy(name)[0]
+#         return country.alpha_2.lower()
+#     except (AttributeError, LookupError):
+#         st.error(f'No country code found for "{name}"')
+#         return 'us'  # Default to US if conversion fails
 
 def format_date(date_string: str) -> Optional[str]:
     try:
@@ -247,18 +261,6 @@ def generate_summary(article_text: str) -> str:
     except Exception as e:
         return f"Summary generation failed: {e}"
 
-# # Streamlit App Layout
-# st.set_page_config(
-#     page_title="Finance & Economic News Stand",
-#     page_icon="📰",
-#     layout="wide",
-#     initial_sidebar_state="expanded",
-# )
-
-# st.title("📊 Finance & Economic News Stand")
-# st.markdown("**Stay updated with the latest in Business, Finance, Economy, and Investments.**")
-
-
 
 st.markdown("""
 <div>
@@ -272,7 +274,7 @@ st.markdown("")
 st.markdown("")
 
 # Main Page Options
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
     topic = st.text_input("Keywords or phrases to search in the News", "Finance, Economy")
@@ -285,18 +287,21 @@ with col2:
         index=0,
     )
 
-with col3:
-    country = st.selectbox("Country", ["United States", "United Kingdom", "India", "Canada", "Australia"], index=0)
+# with col3:
+#     country = st.selectbox("Country", ["United States", "United Kingdom", "India", "Canada", "Australia"], index=0)
 
 st.markdown("")
 st.markdown("")
 
 feed = st.slider("Number of Articles to Display", min_value=1, max_value=50, value=10)
 
+st.markdown("")
+st.markdown("")
+
 # Fetch and Display News
 if st.button("Fetch News"):
     st.header("📰 Your Briefing Articles")
-    tab_topic, tab_headlines = st.tabs([topic, f'Top Stories in {category} ({country})'])
+    tab_topic, tab_headlines = st.tabs([topic, f'Top Stories in {category}'])
 
     # Your Topic
     with tab_topic:
@@ -322,9 +327,10 @@ if st.button("Fetch News"):
                             st.text(publishedAt)
                             st.markdown(f"**Summary:** {summary}")
 
+
     # Top Stories
     with tab_headlines:
-        data = conn_newsapi.top_headlines(country=get_country_code(country), category=category.lower())
+        data = conn_newsapi.top_headlines(category=category.lower())
         df = to_dataframe(data)
         if df is not None:
             for i in range(min(feed, len(df))):
@@ -344,3 +350,39 @@ if st.button("Fetch News"):
                         st.markdown(f'[{title}]({url})')
                         st.text(publishedAt)
                         st.markdown(f"**Summary:** {summary}")
+
+    # with tab_headlines:
+    #     country_code = get_country_code(country)
+    #     st.write(f"Fetching headlines for country code: {country_code}")  # Debug
+        
+    #     data = conn_newsapi.top_headlines(
+    #         country=country_code,
+    #         category=category.lower(),
+    #         pageSize=feed  # Explicitly request the number of articles
+    #     )
+        
+    #     if data is None:
+    #         st.error("Failed to fetch headlines or no articles found.")
+    #     else:
+    #         st.write(f"API returned {data.get('totalResults', 0)} articles")  
+    #         df = to_dataframe(data)
+    #         if df is not None and not df.empty:
+    #             for i in range(min(feed, len(df))):
+    #                 story = df.iloc[i]
+    #                 title = story["title"]
+    #                 url = story["url"]
+    #                 urlToImage = story["urlToImage"]
+    #                 publishedAt = format_date(story["publishedAt"])
+    #                 summary = generate_summary(story["description"])
+
+    #                 if title:
+    #                     col1, col2 = st.columns([1, 3])
+    #                     with col1:
+    #                         if urlToImage:
+    #                             st.image(urlToImage, width=150)
+    #                     with col2:
+    #                         st.markdown(f'[{title}]({url})')
+    #                         st.text(publishedAt)
+    #                         st.markdown(f"**Summary:** {summary}")
+    #         else:
+    #             st.warning("No articles found for the selected criteria.")

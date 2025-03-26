@@ -261,19 +261,6 @@ st.markdown("""
         padding: 10px; /* Slightly reduced from 12px */
     }
 
-    /* Smaller Button */
-    .stButton>button {
-        background: var(--primary);
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px; /* Reduced from 12px 24px */
-        font-weight: 500;
-        transition: opacity 0.2s ease;
-    }
-
-    .stButton>button:hover {
-        opacity: 0.9;
-    }
 
     /* Minimal Plot Container */
     .plot-container {
