@@ -145,7 +145,10 @@ def get_user_profile(user_id):
             "Income": 0,
             "Investing Experience": 0,
             "Savings": 0,
-            "Investment Preferences": "Conservative"
+            "Investment Preferences": "Conservative",
+            "Financial Goal": "",
+            "Risk Tolerance": "Medium",
+            "Investment Types": [],
         }
         doc_ref.set(default_profile)
         return default_profile
@@ -289,6 +292,10 @@ if "user_info" in st.session_state:
                                              ["Conservative", "Moderate", "Aggressive"], 
                                              index=["Conservative", "Moderate", "Aggressive"].index(
                                                  user_profile.get("Investment Preferences", "Conservative")))
+                financial_goal = st.text_input("Your Financial Goal (e.g., Save $10,000)")
+                risk_tolerance = st.selectbox("Your Risk Tolerance", ["Low", "Medium", "High"])
+                investment_types = st.multiselect("Your Investment Preferences", 
+                                                     ["Stocks", "Bonds", "Real Estate", "Cryptocurrency"])
 
                 col1, col2 = st.columns(2)
                 with col1:
@@ -304,24 +311,13 @@ if "user_info" in st.session_state:
                         "Income": income,
                         "Investing Experience": investing_experience,
                         "Savings": savings,
-                        "Investment Preferences": investment_pref
-                    }
+                        "Investment Preferences": investment_pref,
+                        "Financial Goal": financial_goal,
+                        "Risk Tolerance": risk_tolerance,
+                        "Investment Types": investment_types
+                        }
                     update_user_profile(user_id, updated_profile)
                     st.rerun()
-        
-        st.markdown("")
-        st.markdown("")
-        # Build Finance Profile Section
-        st.markdown("### 💰 Build Finance Profile")
-        with st.expander("Set Financial Goals", expanded=False):
-            with st.form("finance_profile_form"):
-                financial_goal = st.text_input("Your Financial Goal (e.g., Save $10,000)")
-                risk_tolerance = st.selectbox("Your Risk Tolerance", ["Low", "Medium", "High"])
-                investment_preference = st.multiselect("Your Investment Preferences", 
-                                                     ["Stocks", "Bonds", "Real Estate", "Cryptocurrency"])
-
-                if st.form_submit_button("Save Finance Profile", type="primary"):
-                    st.success("Your finance profile has been saved!")
         
         st.markdown("")
         st.markdown("")
@@ -329,10 +325,11 @@ if "user_info" in st.session_state:
         st.markdown("### ❌ Account Actions")
         with st.expander("Delete Account", expanded=False):
             st.warning("This action cannot be undone. All your data will be permanently deleted.")
-            if st.button("Delete My Account", type="primary"):
-                if st.checkbox("I understand this will permanently delete all my data"):
+            # if st.button("Delete My Account", type="primary"):
+            #     if st.checkbox("I understand this will permanently delete all my data"):
                     # Add your account deletion logic here
-                    st.error("Account deletion functionality would go here")
+            password = st.text_input(label='Confirm your password',type='password')
+            st.button(label='Delete Account',on_click=auth_functions.delete_account,args=[password],type='primary')
     else:
         st.error("User profile not found. Please sign in.")
 else:

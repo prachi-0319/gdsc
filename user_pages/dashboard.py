@@ -89,12 +89,10 @@
 #         st.switch_page(f"user_pages/govt_schemes.py")
 
 
-
-
-
 import streamlit as st
 import plotly.express as px
-import auth_functions
+from auth_functions import *
+
 
 # ---- User Authentication ----
 if 'user_info' not in st.session_state:
@@ -115,8 +113,35 @@ st.markdown("""
     <p>Explore personalized financial advice, track savings, detect fraud schemes, and much more.</p>
 </div>
 """, unsafe_allow_html=True)
-# st.markdown("<p style='text-align: center;'>Empowering Financial Awareness in India</p>", unsafe_allow_html=True)
-st.markdown(f"<h4 style='text-align: center;'>Welcome, {st.session_state.user_info.get('email', 'User')}! 🎉</h4>", unsafe_allow_html=True)
+
+
+def get_user_profile(user_id):
+    """Fetches the user's profile from Firestore using their user ID."""
+    if db is None:
+        st.error("Database not initialized.")
+        return None
+
+    doc_ref = db.collection("UserData").document(user_id)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        user_data = doc.to_dict()
+        return user_data  # Return the full profile dictionary
+    return None  # Return None if the user profile is not found
+
+if "user_info" in st.session_state and "user_id" in st.session_state:
+    user_id = st.session_state.user_id  # Get the user ID
+    user_profile = get_user_profile(user_id)  # Fetch profile data
+
+    if user_profile:
+        user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
+    else:
+        user_name = "User"
+else:
+    user_name = "User"
+
+# Display the name
+st.markdown(f"<h4 style='text-align: center;'>Welcome, {user_name}! 🎉</h4>", unsafe_allow_html=True)
 
 # st.markdown("""
 # <div style="text-align: center; padding: 20px; background-color: #2E86C1; color: white; border-radius: 10px;">
@@ -198,6 +223,7 @@ st.markdown("""
 cols = st.columns(4)
 for i, (icon, title, description, page) in enumerate(features):
     with cols[i % 4]:
+
         st.markdown(f"""
         <div style="text-align: center;">
             <div class="circle-icon">{icon}</div>
@@ -279,7 +305,6 @@ st.markdown("""
 #         <p>Learn the secrets to smart investing and savings. Unlock financial freedom today!</p>
 #     </div>
 #     """, unsafe_allow_html=True)
-
 
 # # ---- Interactive Tools Section ----
 # st.markdown("## 📈 Interactive Tools")
