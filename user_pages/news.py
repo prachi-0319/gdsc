@@ -1,390 +1,147 @@
-# import streamlit as st
-# import google.generativeai as genai
-# import os
-# from dotenv import load_dotenv
-# from GoogleNews import GoogleNews
-
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Load API Key for Gemini AI
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# load_dotenv()
-# api_key = os.getenv("GEMINI_API_KEY")
-
-# if api_key:
-#     genai.configure(api_key=api_key)
-# else:
-#     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
-
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Streamlit UI Setup
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # st.set_page_config(page_title="Finance Newsstand", layout="wide")
-# st.title("📰 Finance & Business Newsstand")
-
-# # Sidebar for Category Selection
-# categories = {
-#     "Finance": "finance",
-#     "Business": "business",
-#     "Economy": "economy"
-# }
-# selected_category = st.sidebar.selectbox("Choose a category:", list(categories.keys()))
-
-# # Fetch Google News Articles
-# googlenews = GoogleNews(lang='en', region='US')
-# googlenews.search(categories[selected_category])
-# results = googlenews.results()
-
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Function to Summarize News with Gemini AI
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# def summarize_article(title, link):
-#     """Generate a 200-word summary using Google Gemini AI"""
-#     prompt = f"Summarize this news article in 200 words:\n\nTitle: {title}\nLink: {link}\n\nKeep it informative and concise."
-
-#     try:
-#         model = genai.GenerativeModel("gemini-2.0-flash")
-#         response = model.generate_content(prompt)
-#         # response = genai.generate_content(prompt)
-#         return response.text if response else "Summary not available."
-#     except Exception as e:
-#         return f"Error: {e}"
-
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Display Articles in Streamlit with Styled Cards
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# if results:
-#     cols = st.columns(2)  # Two-column layout for better readability
-    
-#     for idx, news in enumerate(results[:6]):  # Show top 6 articles
-#         with cols[idx % 2]:  # Alternate articles between columns
-#             with st.container():
-#                 st.markdown(
-#                     f"""
-#                     <div style="
-#                         background-color: #f8f9fa;
-#                         padding: 15px;
-#                         border-radius: 10px;
-#                         box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-#                         margin-bottom: 10px;">
-#                         <h3 style="color: #333;">{news['title']}</h3>
-#                         <p><b>Published:</b> {news.get('date', 'Unknown Date')}</p>
-#                         <p style="color: #555;">{summarize_article(news['title'], news['link'])}</p>
-#                         <a href="{news['link']}" target="_blank" style="color: #007bff; text-decoration: none;">🔗 Read More</a>
-#                     </div>
-#                     """,
-#                     unsafe_allow_html=True
-#                 )
-# else:
-#     st.warning("No news articles found. Try again later!")
-
-
-
-
-# import streamlit as st
-# from newsapi import NewsApiClient
-# import os
-# from dotenv import load_dotenv
-# import google.generativeai as genai
-
-# # Load API Keys
-# load_dotenv()
-# NEWS_API_KEY = os.getenv("NEWS_API_KEY")
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-# # Configure Gemini AI
-# if GEMINI_API_KEY:
-#     genai.configure(api_key=GEMINI_API_KEY)
-# else:
-#     st.error("Gemini API key not found. Please set GEMINI_API_KEY in your .env file.")
-
-# # Initialize News API Client
-# newsapi = NewsApiClient(api_key=NEWS_API_KEY)
-
-# # Fetch Financial & Business News
-# def fetch_news():
-#     try:
-#         categories = ['business', 'general']  # Covers business, economy, and finance
-#         articles = []
-#         for category in categories:
-#             headlines = newsapi.get_top_headlines(category=category, language='en', country='us', page_size=50)
-#             articles.extend(headlines['articles'])
-#         return articles[:100]  # Limit to top 100 articles
-#     except Exception as e:
-#         st.error(f"Error fetching news: {e}")
-#         return []
-
-# # Generate AI Summary
-# def generate_summary(article_text):
-#     prompt = f"Summarize this news article in 200 words:\n\nArticle text: {article_text}\n\nKeep it informative and concise."
-#     if not article_text:
-#         return "Summary not available."
-    
-#     try:
-#         model = genai.GenerativeModel("gemini-2.0-flash")
-#         response = model.generate_content(prompt)
-#         return response.text if response else "Summary not available."
-#     except Exception as e:
-#         return "Summary generation failed."
-
-
-# # Streamlit App Layout
-# # st.set_page_config(page_title="Finance & Economic News", layout="wide")
-
-# st.title("📊 Finance & Economic News Stand")
-# st.markdown("**Stay updated with the latest in Business, Finance, Economy, and Investments.**")
-
-# # Fetch Articles
-# articles = fetch_news()
-
-# # Pagination Settings
-# articles_per_page = 10
-# total_pages = (len(articles) + articles_per_page - 1) // articles_per_page  # Total number of pages
-
-# # Initialize Page Number in Session State
-# if 'page' not in st.session_state:
-#     st.session_state.page = 0
-
-# # Get Articles for Current Page
-# start_idx = st.session_state.page * articles_per_page
-# end_idx = min(start_idx + articles_per_page, len(articles))
-# articles_to_display = articles[start_idx:end_idx]
-
-# if articles_to_display:
-#     for article in articles_to_display:
-#         with st.container():
-#             summary = generate_summary(article['description'])
-
-#             st.markdown(
-#                 f"""
-#                 <div style="border: 2px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 15px; background-color: #f9f9f9;">
-#                     <h3 style="color: #333;">{article['title']}</h3>
-#                     <p style="font-size: 14px; color: #666;">{summary}</p>
-#                     <p style="font-size: 12px;"><strong>Source:</strong> {article['source']['name']} | <strong>Published:</strong> {article['publishedAt'][:10]}</p>
-#                     <a href="{article['url']}" target="_blank" style="color: #007bff; text-decoration: none;">🔗 Read Full Article</a>
-#                 </div>
-#                 """,
-#                 unsafe_allow_html=True
-#             )
-# else:
-#     st.warning("No articles found. Try again later.")
-
-# # Pagination Controls
-# col1, col2, col3 = st.columns([1, 2, 1])
-
-# with col1:
-#     if st.session_state.page > 0:
-#         if st.button("⬅️ Previous Page"):
-#             st.session_state.page -= 1
-#             st.rerun()
-
-# with col2:
-#     st.markdown(f"### Page {st.session_state.page + 1} of {total_pages}")
-
-# with col3:
-#     if st.session_state.page < total_pages - 1:
-#         if st.button("Next Page ➡️"):
-#             st.session_state.page += 1
-#             st.rerun()
-
-
-
-
-
-# Refer - https://github.com/dcarpintero/st-newsapi-connector
 import streamlit as st
-import pandas as pd
-from datetime import datetime
-from pycountry import countries
-from typing import Any, Dict, List, Optional
-import google.generativeai as genai
-import os
-from dotenv import load_dotenv
-from user_pages.news_api_connection import NewsAPIConnection
+import requests
+from bs4 import BeautifulSoup
 
-# Load API Keys
-# load_dotenv()
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# Custom CSS styling
+def inject_custom_css():
+    st.markdown("""
+    <style>
+        .main {
+            max-width: 1000px;
+            padding: 2rem;
+        }
+        .article-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            border-bottom: 2px solid #f0f2f6;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+        }
+        .stExpander {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .stExpander > div {
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+        .article-content {
+            color: #34495e;
+            line-height: 1.8;
+            font-size: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+        .source-link {
+            font-size: 0.9em;
+            color: #7f8c8d !important;
+            margin-top: 1rem;
+            display: block;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-GEMINI_API_KEY = st.secrets['GOOGLE']['GEMINI_API_KEY']
-
-# Configure Gemini AI
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-else:
-    st.error("Gemini API key not found. Please set GEMINI_API_KEY in your .env file.")
-
-
-# Initialize NewsAPI Connection
-conn_newsapi = st.connection("NewsAPI", type=NewsAPIConnection)
-
-# Helper Functions
-# def get_country_code(name: str) -> str:
-#     """Return the 2-letter country code for a given country name."""
-#     try:
-#         return countries.get(name=name).alpha_2
-#     except AttributeError:
-#         raise ValueError(f'No country code found for "{name}"')
-
-# def get_country_code(name: str) -> str:
-#     """Return the 2-letter country code for a given country name."""
-#     try:
-#         # Try direct name match first
-#         country = countries.get(name=name)
-#         if not country:
-#             # Try fuzzy match if exact name doesn't work
-#             country = countries.search_fuzzy(name)[0]
-#         return country.alpha_2.lower()
-#     except (AttributeError, LookupError):
-#         st.error(f'No country code found for "{name}"')
-#         return 'us'  # Default to US if conversion fails
-
-def format_date(date_string: str) -> Optional[str]:
+@st.cache_data(ttl=3600)
+def get_article_content(url):
     try:
-        date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-    except (ValueError, TypeError):
-        return None
-    return date.strftime('%d %B %Y')
+        resp = requests.get(url)
+        resp.raise_for_status()  # Raise an exception for bad status codes
+        soup = BeautifulSoup(resp.content, 'html.parser')
+        article_div = soup.find('div', class_='artText')  # Locate article content
+        if article_div:
+            content = article_div.get_text().strip()
+            # Remove the specific subscription text if present
+            subscription_text = "(You can now subscribe to our ETMarkets WhatsApp channel)"
+            if subscription_text in content:
+                content = content.replace(subscription_text, "").strip()
+            return content
+        else:
+            return "Article content not found."
+    except requests.RequestException as e:
+        return f"Error fetching article: {e}"
 
-def to_dataframe(data: Optional[Dict[str, Any]]) -> Optional[pd.DataFrame]:
-    if data is None:
-        return None
-    articles = data.get('articles', None)
-    return pd.DataFrame(articles)
-
-def generate_summary(article_text: str) -> str:
-    """Generate a 200-word summary using Google Gemini AI."""
-    prompt = f"Summarize this news article in 200 words:\n\nArticle text: {article_text}\n\nKeep it informative and concise."
-    if not article_text:
-        return "Summary not available."
+def stock_news():
+    inject_custom_css()
+    
+    st.markdown('<div class="header"><h1>📈 Market Pulse: Real-Time Financial Updates</h1></div>', unsafe_allow_html=True)
+    
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        response = model.generate_content(prompt)
-        return response.text if response else "Summary not available."
+        with st.spinner('Fetching latest market updates...'):
+            resp = requests.get(
+                "https://economictimes.indiatimes.com/markets/stocks/rssfeeds/2146842.cms",
+                headers={'User-Agent': 'Mozilla/5.0'}
+            )
+            resp.raise_for_status()
+
+            soup = BeautifulSoup(resp.content, features='xml')
+            items = soup.findAll('item')
+
+            if 'all_articles' not in st.session_state:
+                st.session_state.all_articles = [
+                    (item.find('title').get_text().strip(), 
+                     item.find('link').get_text().strip()) 
+                    for item in items
+                ]
+
+            if 'displayed_articles' not in st.session_state:
+                st.session_state.displayed_articles = []
+                st.session_state.last_index = 0
+
+            def load_articles(batch_size=5):
+                available = []
+                index = st.session_state.last_index
+                while len(available) < batch_size and index < len(st.session_state.all_articles):
+                    headline, link = st.session_state.all_articles[index]
+                    content = get_article_content(link)
+                    # Remove the specific subscription text if present
+                    content = content.replace("(You can now subscribe to our ETMarkets WhatsApp channel)", "").strip()
+                    if "Error" not in content and "not available" not in content:
+                        available.append((headline, link, content))
+                    index += 1
+                return available, index
+
+            if st.button('Load More Articles', key='load_more'):
+                new_articles, new_index = load_articles()
+                st.session_state.displayed_articles.extend(new_articles)
+                st.session_state.last_index = new_index
+
+            if not st.session_state.displayed_articles:
+                initial_articles, initial_index = load_articles(10)
+                st.session_state.displayed_articles = initial_articles
+                st.session_state.last_index = initial_index
+
+            if st.session_state.displayed_articles:
+                st.subheader('Latest Financial Headlines')
+                for idx, (headline, link, content) in enumerate(st.session_state.displayed_articles):
+                    with st.container():
+                        st.markdown(f"""
+                        <div class="article-card">
+                            <h3>{headline}</h3>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        with st.expander("Read Full Analysis", expanded=False):
+                            st.markdown(f'<div class="article-content">{content}</div>', unsafe_allow_html=True)
+                            st.markdown(f'<a href="{link}" class="source-link" target="_blank">Read full article on Economic Times →</a>', unsafe_allow_html=True)
+                
+                st.markdown(f'<div style="text-align: center; color: #7f8c8d; margin-top: 2rem;">Displaying {len(st.session_state.displayed_articles)} of {len(st.session_state.all_articles)} articles</div>', unsafe_allow_html=True)
+            else:
+                st.warning("No articles available at the moment. Please try again later.")
+
     except Exception as e:
-        return f"Summary generation failed: {e}"
-
-
-st.markdown("""
-<div>
-    <h1 style="font-size:60px; color:white; text-align:center;">📊 Finance & Economic News Stand</h1>
-    <p style="text-align:center;">Stay updated with the latest in Business, Finance, Economy, and Investments.</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("")
-st.markdown("")
-st.markdown("")
-
-# Main Page Options
-col1, col2 = st.columns(2)
-
-with col1:
-    topic = st.text_input("Keywords or phrases to search in the News", "Finance, Economy")
-    topic = topic.strip()
-
-with col2:
-    category = st.selectbox(
-        "Category",
-        ("Business", "Entertainment", "General", "Health", "Science", "Sports", "Technology"),
-        index=0,
-    )
-
-# with col3:
-#     country = st.selectbox("Country", ["United States", "United Kingdom", "India", "Canada", "Australia"], index=0)
-
-st.markdown("")
-st.markdown("")
-
-feed = st.slider("Number of Articles to Display", min_value=1, max_value=50, value=10)
-
-st.markdown("")
-st.markdown("")
-
-# Fetch and Display News
-if st.button("Fetch News"):
-    st.header("📰 Your Briefing Articles")
-    tab_topic, tab_headlines = st.tabs([topic, f'Top Stories in {category}'])
-
-    # Your Topic
-    with tab_topic:
-        if topic:
-            data = conn_newsapi.everything(q=topic)
-            df = to_dataframe(data)
-            if df is not None:
-                for i in range(min(feed, len(df))):
-                    story = df.iloc[i]
-                    title = story["title"]
-                    url = story["url"]
-                    urlToImage = story["urlToImage"]
-                    publishedAt = format_date(story["publishedAt"])
-                    summary = generate_summary(story["description"])
-
-                    if title:
-                        col1, col2 = st.columns([1, 3])
-                        with col1:
-                            if urlToImage:
-                                st.image(urlToImage, width=150)
-                        with col2:
-                            st.markdown(f'[{title}]({url})')
-                            st.text(publishedAt)
-                            st.markdown(f"**Summary:** {summary}")
-
-
-    # Top Stories
-    with tab_headlines:
-        data = conn_newsapi.top_headlines(category=category.lower())
-        df = to_dataframe(data)
-        if df is not None:
-            for i in range(min(feed, len(df))):
-                story = df.iloc[i]
-                title = story["title"]
-                url = story["url"]
-                urlToImage = story["urlToImage"]
-                publishedAt = format_date(story["publishedAt"])
-                summary = generate_summary(story["description"])
-
-                if title:
-                    col1, col2 = st.columns([1, 3])
-                    with col1:
-                        if urlToImage:
-                            st.image(urlToImage, width=150)
-                    with col2:
-                        st.markdown(f'[{title}]({url})')
-                        st.text(publishedAt)
-                        st.markdown(f"**Summary:** {summary}")
-
-    # with tab_headlines:
-    #     country_code = get_country_code(country)
-    #     st.write(f"Fetching headlines for country code: {country_code}")  # Debug
+        st.error(f"Error fetching news updates: {str(e)}")
         
-    #     data = conn_newsapi.top_headlines(
-    #         country=country_code,
-    #         category=category.lower(),
-    #         pageSize=feed  # Explicitly request the number of articles
-    #     )
-        
-    #     if data is None:
-    #         st.error("Failed to fetch headlines or no articles found.")
-    #     else:
-    #         st.write(f"API returned {data.get('totalResults', 0)} articles")  
-    #         df = to_dataframe(data)
-    #         if df is not None and not df.empty:
-    #             for i in range(min(feed, len(df))):
-    #                 story = df.iloc[i]
-    #                 title = story["title"]
-    #                 url = story["url"]
-    #                 urlToImage = story["urlToImage"]
-    #                 publishedAt = format_date(story["publishedAt"])
-    #                 summary = generate_summary(story["description"])
-
-    #                 if title:
-    #                     col1, col2 = st.columns([1, 3])
-    #                     with col1:
-    #                         if urlToImage:
-    #                             st.image(urlToImage, width=150)
-    #                     with col2:
-    #                         st.markdown(f'[{title}]({url})')
-    #                         st.text(publishedAt)
-    #                         st.markdown(f"**Summary:** {summary}")
-    #         else:
-    #             st.warning("No articles found for the selected criteria.")
+stock_news()

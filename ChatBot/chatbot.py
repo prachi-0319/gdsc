@@ -57,6 +57,7 @@ import plotly.io as pio
 from typing import TypedDict, Annotated, Optional
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage
+import streamlit as st
 
 # %%
 # load_dotenv()
@@ -65,7 +66,7 @@ from langchain_core.messages import HumanMessage
 language = 'english'
 
 # %%
-llm = ChatGroq(model_name='Gemma2-9b-it', _key=st.secrets['REST']['GROQ__KEY'])
+llm = ChatGroq(model_name='Gemma2-9b-it', api_key=st.secrets['REST']['GROQ_API_KEY'])
 
 # %%
 query_writer_instruction_web = """Your goal is to generate a targeted web search query related to financial investments or any finance-related topic specified by the user.
@@ -482,18 +483,18 @@ class SearchAPI(Enum):
 @dataclass(kw_only=True)
 class Configuration:
     # max_web_research_loops: int = int(os.environ.get("MAX_WEB_RESEARCH_LOOPS", "3"))
-    max_web_research_loops: int = int(st.secrets['REST']['MAX_WEB_RESEARCH_LOOPS'])if 'REST' in st.secrets else 3
+    max_web_research_loops: int = 3
     # search_api: SearchAPI = SearchAPI(os.environ.get("SEARCH_API", "tavily"))
-    search_api: SearchAPI = SearchAPI(st.secrets['REST']['SEARCH_API']) if 'REST' in st.secrets else SearchAPI.TAVILY
+    search_api: SearchAPI = SearchAPI.TAVILY
     # fetch_full_page: bool = os.environ.get("FETCH_FULL_PAGE", "False").lower() in ("true", "1", "t")
-    fetch_full_page: bool = st.secrets['REST']['FETCH_FULL_PAGE'].lower() in ("true", "1", "t") if 'REST' in st.secrets else False
+    fetch_full_page: bool = False
     # ollama_base_url: str = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434/")
-    ollama_base_url: str =st.secrets['REST']['OLLAMA_BASE_URL'] if 'REST' in st.secrets else "http://localhost:11434/"
-    st.write("DEBUG: Configuration values loaded:")
-    st.write(f"MAX_WEB_RESEARCH_LOOPS: {max_web_research_loops}")
-    st.write(f"SEARCH_API: {search_api}")
-    st.write(f"FETCH_FULL_PAGE: {fetch_full_page}")
-    st.write(f"OLLAMA_BASE_URL: {ollama_base_url}")
+    ollama_base_url: str = "http://localhost:11434/"
+    #st.write("DEBUG: Configuration values loaded:")
+    #st.write(f"MAX_WEB_RESEARCH_LOOPS: {max_web_research_loops}")
+    #st.write(f"SEARCH_API: {search_api}")
+    #st.write(f"FETCH_FULL_PAGE: {fetch_full_page}")
+    #st.write(f"OLLAMA_BASE_URL: {ollama_base_url}")
 
 
     @classmethod
