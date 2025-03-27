@@ -8,18 +8,25 @@ from urllib.request import urlopen
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 import google.generativeai as genai
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 import altair as alt
 
 # Load API key for Gemini from the .env file
-load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+# load_dotenv()
+# api_key = os.getenv("GEMINI_API_KEY")
+# if api_key:
+#     genai.configure(api_key=api_key)
+# else:
+#     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
+
+
+api_key = st.secrets['GOOGLE']['GEMINI_API_KEY']
 if api_key:
     genai.configure(api_key=api_key)
 else:
     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
-    
+
 def scrape_finance_terms():
     with st.spinner('Scraping financial terms from Investopedia...'):
         url = "https://www.investopedia.com/financial-term-dictionary-4769738"
