@@ -4,12 +4,19 @@ from dotenv import load_dotenv
 import os 
 
 # Load API key for Gemini from the .env file
-load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+# load_dotenv()
+# api_key = os.getenv("GEMINI_API_KEY")
+# if api_key:
+#     genai.configure(api_key=api_key)
+# else:
+#     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
+
+api_key = st.secrets['GOOGLE']['GEMINI_API_KEY']
 if api_key:
     genai.configure(api_key=api_key)
 else:
     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
+
 
 # st.set_page_config(page_title="Govt. Schemes Finder", layout="centered")
 # st.title("📢 Find Government Schemes")
