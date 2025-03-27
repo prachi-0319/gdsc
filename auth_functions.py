@@ -199,7 +199,7 @@ import streamlit as st
 ## -------------------------------------------------------------------------------------------------
 
 def sign_in_with_email_and_password(email, password):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY')
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY'])
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -207,7 +207,7 @@ def sign_in_with_email_and_password(email, password):
     return request_object.json()
 
 def get_account_info(id_token):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY')
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY'])
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -215,7 +215,7 @@ def get_account_info(id_token):
     return request_object.json()
 
 def send_email_verification(id_token):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY')
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY'])
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "VERIFY_EMAIL", "idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -223,7 +223,7 @@ def send_email_verification(id_token):
     return request_object.json()
 
 def send_password_reset_email(email):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY')
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY'])
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"requestType": "PASSWORD_RESET", "email": email})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -231,7 +231,7 @@ def send_password_reset_email(email):
     return request_object.json()
 
 def create_user_with_email_and_password(email, password):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY')
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY'])
     headers = {"content-type": "application/json; charset=UTF-8" }
     data = json.dumps({"email": email, "password": password, "returnSecureToken": True})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -239,7 +239,7 @@ def create_user_with_email_and_password(email, password):
     return request_object.json()
 
 def delete_user_account(id_token):
-    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY')
+    request_ref = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key={0}".format(st.secrets["FIREBASE"]['FIREBASE_WEB_API_KEY'])
     headers = {"content-type": "application/json; charset=UTF-8"}
     data = json.dumps({"idToken": id_token})
     request_object = requests.post(request_ref, headers=headers, data=data)
@@ -386,14 +386,30 @@ import streamlit as st
 
 # Global variable for Firestore client
 db = None
+import toml
 
 def initialize_firebase():
     """Initialize Firebase only once if not already done"""
     global db
     if not firebase_admin._apps:
-        cred = credentials.Certificate('firebase-key.json')
-        firebase_admin.initialize_app(cred)
-        db = firestore.client()
+        # Load credentials from the TOML file
+        toml_config = toml.load(".streamlit/secrets.toml")
+        
+        # Extract Firebase credentials from the TOML file
+        firebase_config = toml_config.get("textkey")  # Assuming the TOML contains "textkey" with the JSON string
+        
+        if firebase_config:
+            # Convert the json string to dictionary
+            import json
+            firebase_credentials = json.loads(firebase_config)
+
+            # Use the credentials to initialize Firebase
+            cred = credentials.Certificate(firebase_credentials)
+            #cred = credentials.Certificate('firebase-key.json')
+            firebase_admin.initialize_app(cred)
+            db = firestore.client()
+        else:
+            print("No credentials found in TOML file.")
     elif db is None:
         db = firestore.client()
 

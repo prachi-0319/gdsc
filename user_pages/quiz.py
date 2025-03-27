@@ -741,6 +741,7 @@ if st.session_state.questions:
     with col1:
         if st.button("Submit Answer"):
             correct = selected_option.startswith(question_data["answer"])
+            #print(correct)
             if correct:
                 st.success("Correct! 🎉")
                 st.session_state.score += 1
