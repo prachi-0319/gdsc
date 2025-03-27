@@ -21,12 +21,12 @@ class NewsAPIConnection(BaseConnection[requests.session]):
 
         :return: A requests.Session object, with a mounted HTTPAdapter for connection retries
         """
-        self.key = kwargs.get('NEWS_API_KEY') or st.secrets['NEWS_API_KEY']
+        self.key = kwargs.get('NEWS_API_KEY') or st.secrets['NEWS']['NEWS_API_KEY']
         if not self.key:
             raise ValueError('Missing NEWS_API_KEY')
 
         self.base = kwargs.get(
-            'NEWSAPI_BASE_URL') or st.secrets['NEWSAPI_BASE_URL']
+            'NEWSAPI_BASE_URL') or st.secrets['NEWS']['NEWSAPI_BASE_URL']
         if not self.base:
             raise ValueError('Missing NEWSAPI_BASE_URL')
 
