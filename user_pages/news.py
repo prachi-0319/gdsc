@@ -202,8 +202,10 @@ from dotenv import load_dotenv
 from user_pages.news_api_connection import NewsAPIConnection
 
 # Load API Keys
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# load_dotenv()
+# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+GEMINI_API_KEY = st.secrets['GOOGLE']['GEMINI_API_KEY']
 
 # Configure Gemini AI
 if GEMINI_API_KEY:
