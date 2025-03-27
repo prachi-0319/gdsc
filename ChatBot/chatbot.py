@@ -221,7 +221,7 @@ from openai import OpenAI
 url = 'https://api.two.ai/v2';
 
 client = OpenAI(base_url=url,
-                api_key=os.environ.get("SUTRA_API_KEY"))
+                api_key=st.secrets['REST']['SUTRA_API_KEY']
 
 # %%
 language = 'english'
