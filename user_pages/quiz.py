@@ -573,9 +573,11 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
-# Load API key from .env
-load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+# # Load API key from .env
+# load_dotenv()
+# api_key = os.getenv("GEMINI_API_KEY")
+
+api_key = st.secrets['GOOGLE']['GEMINI_API_KEY']
 if api_key:
     genai.configure(api_key=api_key)
 else:
