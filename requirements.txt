@@ -121,6 +121,7 @@ nipype==1.10.0
 numexpr==2.10.1
 numpy==2.0.1
 orjson==3.10.15
+openai==1.68.2
 packaging==24.2
 pandas==2.2.3
 parso==0.8.4
