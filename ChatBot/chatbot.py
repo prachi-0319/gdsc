@@ -1,74 +1,79 @@
-# %%
-# %%
 import os
 import json
 import getpass
 import operator
+import base64
 from enum import Enum
 from dataclasses import dataclass, fields
-from typing import Any, Dict, List, Optional
-from typing_extensions import TypedDict, Literal
+from typing import Any, Dict, List, Optional, TypedDict, Annotated
+from typing_extensions import Literal
+from io import BytesIO
+import streamlit as st
+# Data modeling
 from pydantic import BaseModel, Field
+
+# Image processing
 from PIL import Image
 import requests
-from io import BytesIO
-import base64
-
-from langsmith import traceable
-# IPython for display (if needed)
 from IPython.display import Image, display, Markdown
 
-# Import LangChain and related tools
+# LangChain and related tools
+from langsmith import traceable
 from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
-from langchain_core.runnables import RunnableConfig
+from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage, AIMessage
+from langchain_core.runnables import (
+    RunnableConfig,
+    RunnableParallel,
+    RunnableLambda,
+    RunnableBranch
+)
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
-from langchain.schema.runnable import RunnableParallel, RunnableLambda, RunnableBranch
 from langchain_core.tools import tool, StructuredTool
-from langchain_core import tools  # if needed
-from langchain_core.runnables import RunnableConfig
+from langchain_core import tools
 
-# For financial data via yfinance
+# Financial data
 import yfinance as yf
+import pandas as pd
 
-# For web search and HTML parsing
+# Web search and HTML parsing
 import requests
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-
-# For environment variables
-from dotenv import load_dotenv
-
-# For YouTube video recommendations
-import googleapiclient.discovery
-import googleapiclient.errors
-
-# For state graph
-from langgraph.graph import StateGraph, START, END
 from tavily import TavilyClient
 
+# Visualization
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.colors as pc
-import yfinance as yf
-import pandas as pd
 import plotly.io as pio
-from typing import TypedDict, Annotated, Optional
-from langgraph.graph import StateGraph, END
-from langchain_core.messages import HumanMessage
-import streamlit as st
 
-# %%
-# load_dotenv()
+# YouTube API
+import googleapiclient.discovery
+import googleapiclient.errors
 
-# %%
-language = 'english'
+# State graph
+from langgraph.graph import StateGraph, START, END
 
-# %%
-llm = ChatGroq(model_name='Gemma2-9b-it', api_key=st.secrets['REST']['GROQ_API_KEY'])
+# Environment variables
+from dotenv import load_dotenv
 
-# %%
+# OpenAI
+from openai import OpenAI
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+load_dotenv()
+
+llm = ChatGroq(model_name='Gemma2-9b-it', api_key = st.secrets.REST.GROQ_API_KEY)
+'''
+llm = ChatNVIDIA(
+  model="meta/llama-3.3-70b-instruct",
+  api_key=st.secrets.REST.NVIDIA_API_KEY_LLAMA, 
+  temperature=0.2,
+  top_p=0.7,
+  max_tokens=1024,
+)
+'''
 query_writer_instruction_web = """Your goal is to generate a targeted web search query related to financial investments or any finance-related topic specified by the user.
 
 <TOPIC>
@@ -95,7 +100,7 @@ Provide your response in JSON format:
 """
 
 summarizer_instruction_web = """<GOAL>
-Generate a high-quality summary of the web search results, focusing on financial investments or the specific finance-related topic requested by the user. REMEMBER TO ANSWER IN {language} LANGUAGE.
+Generate a high-quality summary of the web search results, focusing on financial investments or the specific finance-related topic requested by the user.
 </GOAL>
 
 <REQUIREMENTS>
@@ -147,7 +152,6 @@ Example output:
 Provide your analysis in JSON format:
 """
 
-# %%
 class State(TypedDict):
     route: Literal['Web_query', 'Normal_query', 'Financial_Analysis', 'YouTube_Recommender', 'Plot_Graph'] = Field(None)
     research_topic: str
@@ -164,7 +168,7 @@ class State(TypedDict):
     ticker: Optional[str]
     plot_json: Optional[str]
 
-# %%
+
 def fetch_stock_data(ticker, period="1y"):
     stock = yf.Ticker(ticker)
     return stock.history(period=period)
@@ -334,12 +338,145 @@ def plot_assets(df, ticker="", currency=""):
     )
     return fig
 
-# %%
+import requests
+import logging
+from typing import Optional, Dict, Any
+
+class TickerRetrievalTool:
+    def __init__(self, logger: logging.Logger = None):
+        """
+        Initialize the Ticker Retrieval Tool
+        
+        :param logger: Optional logger for tracking tool operations
+        """
+        self.logger = logger or logging.getLogger(__name__)
+        self.yfinance_url = "https://query2.finance.yahoo.com/v1/finance/search"
+        self.user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+
+    def get_ticker(self, company_name: str, country: str) -> Optional[str]:
+        """
+        Retrieve stock ticker for a given company and country
+        
+        :param company_name: Name of the company to search
+        :param country: Country of the stock exchange
+        :return: Stock ticker symbol or None if not found
+        """
+        try:
+            params = {
+                "q": company_name, 
+                "quotes_count": 5, 
+                "country": country
+            }
+            
+            # Make the request
+            response = requests.get(
+                url=self.yfinance_url, 
+                params=params, 
+                headers={'User-Agent': self.user_agent},
+                timeout=10  # Add timeout to prevent hanging
+            )
+            
+            # Raise an exception for bad HTTP responses
+            response.raise_for_status()
+            
+            # Parse JSON response
+            data = response.json()
+            
+            # Handle different country-specific logic
+            if country.upper() == 'INDIA':
+                for quote in data.get('quotes', []):
+                    if quote.get('exchange') == 'NSI':
+                        return quote.get('symbol')
+            else:
+                # For other countries, return the first matching quote
+                return data['quotes'][0]['symbol']
+        
+        except requests.RequestException as e:
+            self.logger.error(f"Network error retrieving ticker: {e}")
+            return None
+        
+        except (KeyError, IndexError) as e:
+            self.logger.error(f"No ticker found for {company_name} in {country}: {e}")
+            return None
+        
+        except Exception as e:
+            self.logger.error(f"Unexpected error in ticker retrieval: {e}")
+            return None
+
+    def tool_description(self) -> Dict[str, Any]:
+        """
+        Provide a description of the tool for agent integration
+        
+        :return: Dictionary describing the tool's capabilities
+        """
+        return {
+            "name": "stock_ticker_retrieval",
+            "description": "Retrieves stock ticker symbols for companies across different countries",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company_name": {
+                        "type": "string",
+                        "description": "Full or partial name of the company"
+                    },
+                    "country": {
+                        "type": "string", 
+                        "description": "Country of the stock exchange (e.g., 'India', 'US')"
+                    }
+                },
+                "required": ["company_name", "country"]
+            }
+        }
+
+def get_company_country(query):
+    user_prompt = query
+    prompt_get_country_company = """You are an expert at extracting precise company and country information from user queries. Follow these guidelines carefully:
+
+                                    Extraction Rules:
+                                    1. Identify the specific company name mentioned in the query
+                                    2. Determine the country of origin for the identified company
+                                    3. For index-related queries, use these specific mappings:
+                                    - NIFTY50 → ['^NSEI', 'India']
+                                    - NIFTY100 → ['^CNX100', 'India']
+                                    - NIFTY MIDCAP 150 → ['NIFTYMIDCAP150.NS', 'India']
+
+                                    Output Format Requirements:
+                                    - Always respond in a strict JSON format
+                                    - Use double quotes for keys and string values
+                                    - Ensure no trailing commas
+                                    - Keys must be exactly: "company" and "country"
+
+                                    Example Outputs:
+                                    - For "Tell me about Apple": 
+                                    {"company": "Apple Inc.", "country": "United States"}
+                                    - For "NIFTY50 performance": 
+                                    {"company": "^NSEI", "country": "India"}
+
+                                    Your task: Extract the company and country from the following query: 
+                            """
+
+    final_prompt = prompt_get_country_company + user_prompt
+    #print(final_prompt)
+    response = llm.invoke(final_prompt)
+    #print(response.content)
+    data = json.loads(response.content)
+    company = data['company']
+    country = data['country']
+    #print(response.content)
+    return [company, country]
+
+
 def parse_query(state: State) -> State:
     """Parse the user query to determine plot type and ticker"""
     query = state["research_topic"].lower()
-    print('In parse_query: \t')
-    ticker = query.split()[-1].upper()
+    #print('In parse query: ',query)
+    data = get_company_country(query)
+    #print(query)
+    company = data[0]
+    country = data[1]
+    #print(company, country)
+    ticker_tool = TickerRetrievalTool()
+    ticker = ticker_tool.get_ticker(company, country)
     #print(ticker)
     if "candlestick" in query:
         return {"plot_type": "candlestick", "ticker": ticker}
@@ -348,7 +485,7 @@ def parse_query(state: State) -> State:
     elif "assets" in query:
         return {"plot_type": "assets", "ticker": ticker}
     else:
-        print('Returning NONE')
+    #    print('Returning NONE')
         return {"plot_type": None, "ticker": None}
     
 def generate_plot(state: State) -> State:
@@ -358,7 +495,7 @@ def generate_plot(state: State) -> State:
     
     ticker = state["ticker"]
     plot_type = state["plot_type"]
-    print('In generate_plot\t')
+    #print('In generate_plot\t')
     try:
         if plot_type == "candlestick":
             df = fetch_stock_data(ticker)
@@ -375,22 +512,21 @@ def generate_plot(state: State) -> State:
         return {"plot_json": plot_json}
     
     except Exception as e:
-        print('Returning error.', str(e))
+        #print('Returning error.', str(e))
         return {"response": f"Error generating plot: {str(e)}"}
     
 def format_response(state: State) -> State:
     """Format the final response"""
-    print('In format_response:\t')
+    #print('In format_response:\t')
     if state.get("plot_json"):
         description = f"Here is the {state['plot_type']} plot for {state['ticker']}"
         return {"running_summary": description, "plot_json": state["plot_json"]}
     elif state.get("response"):
         return {"running_summary": state["response"]}
     else:
-        print('Something went wrong...')
+        #print('Something went wrong...')
         return {"running_summary": "Something went wrong while processing your request"}
 
-# %%
 def create_initial_state(user_query: str, image: list[str] = []) -> State:
     return {
         "route": None,
@@ -409,7 +545,6 @@ def create_initial_state(user_query: str, image: list[str] = []) -> State:
         "plot_json": None
     }
 
-# %%
 class Route_First_Step(BaseModel):
     step: Literal['Web_query', 'Normal_query', 'Financial_Analysis', 'YouTube_Recommender', 'Plot_Graph'] = Field(
         None,
@@ -472,9 +607,7 @@ class Route_First_Step(BaseModel):
 
         User Query: {query}
         """
-    )
-
-# %%
+    )# %%
 class SearchAPI(Enum):
     PERPLEXITY = "perplexity"
     TAVILY = "tavily"
@@ -482,26 +615,16 @@ class SearchAPI(Enum):
 
 @dataclass(kw_only=True)
 class Configuration:
-    # max_web_research_loops: int = int(os.environ.get("MAX_WEB_RESEARCH_LOOPS", "3"))
-    max_web_research_loops: int = 3
-    # search_api: SearchAPI = SearchAPI(os.environ.get("SEARCH_API", "tavily"))
-    search_api: SearchAPI = SearchAPI.TAVILY
-    # fetch_full_page: bool = os.environ.get("FETCH_FULL_PAGE", "False").lower() in ("true", "1", "t")
-    fetch_full_page: bool = False
-    # ollama_base_url: str = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434/")
+    max_web_research_loops: int = int("3")
+    search_api: SearchAPI = SearchAPI("tavily")
+    fetch_full_page: bool = "False".lower() in ("true", "1", "t")
     ollama_base_url: str = "http://localhost:11434/"
-    #st.write("DEBUG: Configuration values loaded:")
-    #st.write(f"MAX_WEB_RESEARCH_LOOPS: {max_web_research_loops}")
-    #st.write(f"SEARCH_API: {search_api}")
-    #st.write(f"FETCH_FULL_PAGE: {fetch_full_page}")
-    #st.write(f"OLLAMA_BASE_URL: {ollama_base_url}")
-
 
     @classmethod
     def from_runnable_config(cls, config: Optional[RunnableConfig] = None) -> "Configuration":
         configurable = config["configurable"] if config and "configurable" in config else {}
         values: dict[str, Any] = {
-            f.name: os.environ.get(f.name.upper(), configurable.get(f.name))
+            f.name: configurable.get(f.name)
             for f in fields(cls)
             if f.init
         }
@@ -510,7 +633,8 @@ class Configuration:
 # %%
 @traceable
 def tavily_search(query, include_raw_content=True, max_results=3):
-    api_key = st.secrets['REST']['TAVILY_API_KEY']
+    #api_key = os.environ['TAVILY_API_KEY']
+    api_key = st.secrets.REST.TAVILY_API_KEY
     if not api_key:
         raise ValueError("TAVILY_API_KEY environment variable is not set")
     tavily_client = TavilyClient(api_key=api_key)
@@ -562,7 +686,7 @@ def generate_query(state: State, config: RunnableConfig):
         query_data = json.loads(output_text)
         return {"search_query": query_data['query']}
     except (json.JSONDecodeError, KeyError) as e:
-        print(f"Error parsing JSON: {e}")
+        #print(f"Error parsing JSON: {e}")
         return {"search_query": f"comprehensive analysis of {state['research_topic']}"}
 
 def web_research(state: State, config: RunnableConfig):
@@ -620,7 +744,7 @@ def reflect_on_summary(state: State, config: RunnableConfig):
 
 def finalize_summary(state: State):
     all_sources = "\n".join(source for source in state['sources_gathered'])
-    final_summary = f"## Web Research Summary\n\n{state['running_summary']}\n\n### Sources:\n{all_sources}"
+    final_summary = f"{state['running_summary']}\n\n### Sources:\n{all_sources}"
     final_message = HumanMessage(content=final_summary)
     return {
         "running_summary": final_summary,
@@ -733,21 +857,19 @@ finance_tool_map = {t.name: t for t in finance_tools}
 # %%
 llm_normal = llm
 normal_query_prompt = """
-You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. REMEMBER TO ANSWER IN {language} LANGUAGE.
+You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. JUST GIVE ME THE ANSWER AND NOTHING ELSE, NO REMARKS ON THE QUESTION OR ANYTHING, JUST THE ANSWER.
 """
 
-# %%
 def answer_normal_query(state: State):
     messages = state.get('messages', [])
     system_message = SystemMessage(content=normal_query_prompt + "\nFormat your response in Markdown.")
     response = llm_normal.invoke([system_message] + messages)
-    markdown_response = f"## Normal Query Response\n\n{response.content}"
+    markdown_response = f"{response.content}"
     return {
         "running_summary": markdown_response,
         "messages": [HumanMessage(content=markdown_response)],
         "original_messages": state["original_messages"]  # Preserve original messages
     }
-
 llm_financial_analysis = llm.bind_tools(finance_tools, tool_choice='auto')
 financial_analysis_prompt = """
 You are a financial analyst. You are given tools for accurate data.
@@ -776,7 +898,7 @@ def take_action(state: State):
         except Exception as e:
             result = f"Error executing tool: {str(e)}"
         tool_results.append(ToolMessage(tool_call_id=t['id'], name=t['name'], content=str(result)))
-    markdown_output = "## Financial Analysis Results\n\n"
+    markdown_output = "\n\n"
     for result in tool_results:
         markdown_output += f"### {result.name.replace('_', ' ').title()}\n\n{result.content}\n\n"
     return {'messages': tool_results, 'running_summary': markdown_output}
@@ -785,14 +907,14 @@ def format_financial_analysis(state: State):
     messages = state['messages']
     tool_results = [msg for msg in messages if isinstance(msg, ToolMessage)]
     if tool_results:
-        markdown_output = "## Financial Analysis Results\n\n"
+        markdown_output = "\n\n"
         for result in tool_results:
             markdown_output += f"### {result.name.replace('_', ' ').title()}\n\n{result.content}\n\n"
     else:
-        markdown_output = f"## Financial Analysis\n\n{messages[-1].content}"
+        markdown_output = f"\n\n{messages[-1].content}"
     return {"running_summary": markdown_output, "messages": [HumanMessage(content=markdown_output)]}
 
-# %%
+
 class YouTubeVideoRecommender:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -853,7 +975,7 @@ class YouTubeVideoRecommender:
         return all_videos
 
 def youtube_recommend(state: State, config: RunnableConfig):
-    api_key = st.secrets['REST']['YOUTUBE_API_KEY']
+    api_key = os.getenv("YOUTUBE_API_KEY")
     if not api_key:
         raise ValueError("YOUTUBE_API_KEY is not set")
     recommender = YouTubeVideoRecommender(api_key)
@@ -896,7 +1018,6 @@ def youtube_recommend(state: State, config: RunnableConfig):
             summary += f"- Published: {video['published_at']}\n\n"
     return {"running_summary": summary, "messages": [HumanMessage(content=summary)]}
 
-# %%
 def self_evaluate(input_text):
     parts = input_text.split("|||")
     query = parts[0]
@@ -942,7 +1063,6 @@ def evaluation_decision(state: State, config: RunnableConfig):
       - "call_llm" for additional financial analysis,
       - "web_research" for further web research,
       - "answer_normal_query" for more normal query insights,
-      #- "parallel_branches" to combine branches again.
     If no additional insights are needed, return "done".
     
     For example:
@@ -995,12 +1115,12 @@ def call_gemma3(state: State):
         try:
             invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
             headers = {
-                "Authorization": "Bearer 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",
+                "Authorization": "Bearer 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",
                 "Accept": "application/json"
             }
             
             payload = {
-                "model": "google/gemma-3-27b-it",
+                "model": "meta/llama-3.2-90b-vision-instruct",
                 "messages": [
                     {
                         "role": "user",
@@ -1021,9 +1141,9 @@ def call_gemma3(state: State):
             fallback_prompt = f"Describe what you see in this image. The image appears to be a financial chart or technical analysis pattern graph from Investopedia. Please describe the patterns, trends, and elements visible in the chart."
             full_response = llm.invoke(fallback_prompt).content
         
-        markdown_response = f"## Image Analysis Results\n\n{full_response}"
+        markdown_response = f"{full_response}"
         updated_messages = state["messages"] + [HumanMessage(content=markdown_response)]
-        
+        '''
         route_prompt = "Based on the image analysis of what appears to be a financial chart or technical analysis pattern, what should be the next step? Choose one: Web_query, Normal_query, Financial_Analysis, YouTube_Recommender"
         next_route = llm.invoke(route_prompt).content.strip()
         for route in ["Web_query", "Normal_query", "Financial_Analysis", "YouTube_Recommender"]:
@@ -1032,18 +1152,12 @@ def call_gemma3(state: State):
                 break
         else:
             next_route = "Normal_query"
-        
+        '''
         return {
             "running_summary": markdown_response,
             "messages": updated_messages,
             "image_processed": True,
-            "route": next_route,
-            "research_topic": state["research_topic"],
-            "search_query": state.get("search_query", ""),
-            "web_research_results": state.get("web_research_results", []),
-            "sources_gathered": state.get("sources_gathered", []),
-            "research_loop_count": state.get("research_loop_count", 0),
-            "image": state["image"],
+            "image": [],
             "original_messages": state["original_messages"]  # Preserve original messages
         }
     except Exception as e:
@@ -1061,14 +1175,13 @@ def call_gemma3(state: State):
             "original_messages": state["original_messages"]  # Preserve original messages
         }
 
-# %%
 def process_with_context(state: State):
     """Node for processing queries with conversation context"""
     messages = state.get("messages", [])
     original_messages = state.get("original_messages", [])
     
     if len(messages) <= 1: 
-        print(messages, original_messages) # Only the current message, no context
+        #print(messages, original_messages) # Only the current message, no context
         return {
             "messages": messages,
             "original_messages": original_messages,
@@ -1082,7 +1195,7 @@ def process_with_context(state: State):
     if not original_messages or original_messages[-1].content != current_query:
         original_messages.append(HumanMessage(content=current_query))
     
-    print(original_messages)
+    #print(original_messages)
     context_messages = messages[:-1]
     
     # Format the context for the prompt
@@ -1104,6 +1217,9 @@ def process_with_context(state: State):
                 - "Show me the balance sheet for TICKER"
                 - "Show me the assets for TICKER"
             - Ignore the previous conversation context for these queries and focus solely on preserving the plotting intent.
+            - If TICKER is not given but instead the company name, replace the company name with it's TICKER.
+            - If any specific Indian company is given, add .NS at the end of the ticker name.
+            - if NIFTY50 is asked, the TICKER IS '^NSEI', if NIFTY100 is asked the TICKER is '^CNX100', NIFTY MIDCAP 150 is asked the TICKER is 'NIFTYMIDCAP150.NS'.
 
             2. **YouTube video search queries**:
             - If the query contains 'youtube', 'video', 'videos' or 'watch' treat it as a YouTube search request.
@@ -1139,7 +1255,6 @@ def process_with_context(state: State):
             "research_topic": state["research_topic"]
         }
 
-# %%
 def update_router():
     final_router = StateGraph(State)
     
@@ -1182,7 +1297,7 @@ def update_router():
     # Add edge from image_analysis to subsequent routing
     final_router.add_edge("parse_query", "generate_plot")
     final_router.add_edge("generate_plot", "format_response")
-    final_router.add_edge("image_analysis", "route_first_step")
+    final_router.add_edge("image_analysis",END)
     
     final_router.add_edge("answer_normal_query", 'self_evaluate_final')
     final_router.add_edge("format_response", 'self_evaluate_final')
@@ -1213,109 +1328,12 @@ def update_router():
     
     return final_router.compile()
 
-
-# %%
-model = update_router()
-
-# %%
-model
-
-# %%
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.colors as pc
-import yfinance as yf
-import pandas as pd
-import plotly.io as pio
-from typing import TypedDict, Annotated, Optional
-from langgraph.graph import StateGraph, END
-from langchain_core.messages import HumanMessage
-
-
-# %%
 class FinancialChatBot:
-    def __init__(self):
+    def __init__(self, language = 'english'):
         self.conversation_history = []
         self.model = update_router()
-        
-    def _format_bot_message(self, content: str) -> str:
-        """Format the bot's message for display"""
-        return f"🤖 Assistant: {content}"
-    
-    def _format_user_message(self, content: str) -> str:
-        """Format the user's message for display"""
-        return f"👤 User: {content}"
-    
-    def chat(self, user_input: str, image_path: str = None) -> dict:
-        """
-        Process a single chat interaction with context awareness
-        
-        Args:
-            user_input (str): The user's message
-            image_path (str, optional): Path to an image if one is provided
-            
-        Returns:
-            dict: Dictionary with 'text' (response text) and 'plot' (plot JSON or None)
-        """
-    # Add user message to display history
-        self.conversation_history.append(self._format_user_message(user_input))
-        
-        # Skip contextualizing if this is the first message or providing an image
-        contextualized_input = user_input
-        if self.context_messages and not image_path:
-            contextualized_input = self._process_with_context(user_input)
-        
-        # Create initial state with image if provided
-        image_list = [image_path] if image_path else []
-        initial_state = create_initial_state(contextualized_input, image_list)
-        
-        # Add all previous messages to the state
-        if self.context_messages:
-            initial_state["messages"] = self.context_messages + [HumanMessage(content=contextualized_input)]
-        
-        try:
-            # Process through the model
-            response = self.model.invoke(initial_state)
-            
-            # Extract text response and plot data
-            text_response = response.get('running_summary', '')
-            plot_json = response.get('plot_json')
-            
-            if not text_response and response.get('messages'):
-                # Fallback to last message content if running_summary is empty
-                text_response = response['messages'][-1].content
-            
-            # Update context with this interaction
-            self._update_context(user_input, text_response)
-            
-            # Format and store bot's response for display
-            formatted_response = self._format_bot_message(text_response)
-            self.conversation_history.append(formatted_response)
-            
-            # Return response as a dictionary
-            return {"text": text_response, "plot": plot_json}
-        
-        except Exception as e:
-            error_message = f"I apologize, but I encountered an error: {str(e)}"
-            self.conversation_history.append(self._format_bot_message(error_message))
-            return {"text": error_message, "plot": None}
-        
-    def get_conversation_history(self) -> str:
-        """Return the full conversation history"""
-        return "\n\n".join(self.conversation_history)
-    
-    def clear_history(self):
-        """Clear the conversation history"""
-        self.conversation_history = []
-
-
-
-# %%
-class FinancialChatBot:
-    def __init__(self):
-        self.conversation_history = []
-        self.model = update_router()
-        self.context_messages = []  # Store actual message objects for context
+        self.context_messages = []
+        self.language = language  # Store actual message objects for context
         
     def _format_bot_message(self, content: str) -> str:
         """Format the bot's message for display"""
@@ -1327,8 +1345,7 @@ class FinancialChatBot:
     
     def _update_context(self, user_input: str, bot_response: str):
         """Update the context messages for the next interaction"""
-        from langchain_core.messages import HumanMessage, AIMessage
-        
+              
         # Add to context messages (for model processing)
         self.context_messages.append(HumanMessage(content=user_input))
         self.context_messages.append(AIMessage(content=bot_response))
@@ -1339,7 +1356,6 @@ class FinancialChatBot:
     
     def _process_with_context(self, user_input: str):
         """Generate a contextualized query based on conversation history"""
-        from langchain_core.messages import SystemMessage
         
         if not self.context_messages:
             return user_input
@@ -1370,7 +1386,7 @@ class FinancialChatBot:
             enhanced_query = llm.invoke(messages).content.strip()
             return enhanced_query
         except Exception as e:
-            print(f"Context processing error: {e}")
+            #print(f"Context processing error: {e}")
             return user_input  # Fallback to original query
     
     def chat(self, user_input: str, image_path: str = None) -> dict:
@@ -1403,28 +1419,34 @@ class FinancialChatBot:
         try:
             # Process through the model
             response = self.model.invoke(initial_state)
-            if initial_state['route'] == 'Plot_Graph':
-                if isinstance(response, str) and "{" in response:
-                    try:
-                        fig = pio.from_json(response)
-                        fig.show()
-                    except:
-                        print("")
-                        #print(f"Response: {response}")
-            # Extract the response from running_summary
-            bot_response = response.get('running_summary', '')
-            if not bot_response and response.get('messages'):
+            print(response)
+            # Extract text response and plot data
+            text_response = response.get('running_summary', '')
+            plot_json = response.get('plot_json')
+            
+            if not text_response and response.get('messages'):
                 # Fallback to last message content if running_summary is empty
                 text_response = response['messages'][-1].content
             
-            # Update context with this interaction
+            url = 'https://api.two.ai/v2';
+
+            client = OpenAI(base_url=url,
+                            api_key=st.secrets.REST.SUTRA_API_KEY)
             self._update_context(user_input, text_response)
-            
-            # Format and store bot's response for display
             formatted_response = self._format_bot_message(text_response)
             self.conversation_history.append(formatted_response)
+            print(self.language)
+            print(type(self.language), type(text_response))
+            if self.language != "english":
+                print('In translation part:')
+                stream = client.chat.completions.create(model='sutra-v2',
+                                                    messages = [{"role": "user", "content": "Translate this text in" + self.language + ": " + text_response}],
+                                                    max_tokens=1024,
+                                                    temperature=0,
+                                                    stream=False)  
+                print(stream.choices[0].message.content)
+                return {"text": stream.choices[0].message.content, "plot": plot_json}
             
-            # Return response as a dictionary
             return {"text": text_response, "plot": plot_json}
         
         except Exception as e:
@@ -1442,60 +1464,49 @@ class FinancialChatBot:
         self.context_messages = []
 
 # %%
-import os
-from openai import OpenAI
-
-url = 'https://api.two.ai/v2';
-
-client = OpenAI(base_url=url,
-                api_key=st.secrets['REST']['SUTRA_API_KEY'])
-
-# %%
-language = 'english'
-
-# # %%
-# def main():
-#     # Initialize the chatbot
-#     chatbot = FinancialChatBot()
-    
-#     print("Welcome to the Financial Assistant! (Type 'quit' to exit)")
-#     print("You can also share images by typing 'image: ' followed by the image path")
-    
-#     while True:
-#         user_input = input("\n👤 You: ").strip()
+def main():
+    # Initialize the chatbot
+    chatbot = FinancialChatBot()
         
-#         if user_input.lower() == 'quit':
-#             print("\nGoodbye! Thank you for using the Financial Assistant.")
-#             break
+    url = 'https://api.two.ai/v2';
+
+    client = OpenAI(base_url=url,
+                    api_key=os.environ.get("SUTRA_API_KEY"))
+    
+    #print("Welcome to the Financial Assistant! (Type 'quit' to exit)")
+    #print("You can also share images by typing 'image: ' followed by the image path")
+    
+    while True:
+        user_input = input("\n👤 You: ").strip()
+        
+        if user_input.lower() == 'quit':
+            print("\nGoodbye! Thank you for using the Financial Assistant.")
+            break
             
-#         # Check if user is sharing an image
-#         image_path = None
-#         if user_input.startswith('image:'):
-#             image_path = user_input[6:].strip()
-#             user_input = "What do you see in this image?"
+        # Check if user is sharing an image
+        image_path = None
+        if user_input.startswith('image:'):
+            image_path = user_input[6:].strip()
+            user_input = "What do you see in this image?"
         
-# Get bot's response
-# response = chatbot.chat(user_input, image_path)
-# if language == 'english':
-#     print(response)
+        # Get bot's response
+        response = chatbot.chat(user_input, image_path)
+        #print(response)
 
-# elif language != 'english':
-#     stream = client.chat.completions.create(model='sutra-v2',
-#                                             messages = [{"role": "user", "content": "Translate this text in" + language + ": " + response}],
-#                                             max_tokens=1024,
-#                                             temperature=0,
-#                                             stream=True)
+        if chatbot.language != 'english':
+            stream = client.chat.completions.create(model='sutra-v2',
+                                                    messages = [{"role": "user", "content": "Translate this text in" + chatbot.language + ": " + response}],
+                                                    max_tokens=1024,
+                                                    temperature=0,
+                                                    stream=False)
 
-#             print("\n🤖 Assistant:\n",)
-#             for chunk in stream:
-#                 if len(chunk.choices) > 0:
-#                     content = chunk.choices[0].delta.content
-#                     finish_reason = chunk.choices[0].finish_reason
-#                     if content and finish_reason is None:
-#                         print(content, end='', flush=True)
+            print("\n🤖 Assistant:\n",)
+            for chunk in stream:
+                if len(chunk.choices) > 0:
+                    content = chunk.choices[0].delta.content
+                    finish_reason = chunk.choices[0].finish_reason
+                    if content and finish_reason is None:
+                        print(content, end='', flush=True)
         
-#         # Print the response
-
-# # %%
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
