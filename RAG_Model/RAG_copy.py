@@ -15,12 +15,12 @@ from dotenv import load_dotenv
 import json
 
 def get_chapter_path(chapter_key):
-    chapter_list = ['faiss_indexes/faiss_index_chapter_1',
-                    'faiss_indexes/faiss_index_chapter_2',
-                    'faiss_indexes/faiss_index_chapter_3',
-                    'faiss_indexes/faiss_index_chapter_4',
-                    'faiss_indexes/faiss_index_chapter_5',
-                    'faiss_indexes/faiss_index_chapter_6']
+    chapter_list = [r'RAG_Model/faiss_indexes/faiss_index_chapter_1',
+                    r'RAG_Model/faiss_indexes/faiss_index_chapter_2',
+                    r'RAG_Model/faiss_indexes/faiss_index_chapter_3',
+                    r'RAG_Model/faiss_indexes/faiss_index_chapter_4',
+                    r'RAG_Model/faiss_indexes/faiss_index_chapter_5',
+                    r'RAG_Model/faiss_indexes/faiss_index_chapter_6']
     index = int(chapter_key[-1])
     return chapter_list[index-1]
 
@@ -35,7 +35,8 @@ def load_chapter_vectorstore(chapter):
     chapter_key = chapter.lower().replace(":", "").replace(" ", "_")
     cwd_path = os.getcwd()
     print(cwd_path)
-    index_path = cwd_path + '\\RAG_Model\\' +  get_chapter_path(chapter_key)
+    index_path = get_chapter_path(chapter_key)
+    
     #index_path = os.path.join(cwd_path,'RAG_Model',get_chapter_path(chapter_key))
     print(index_path)
     
