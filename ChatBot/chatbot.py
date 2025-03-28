@@ -975,7 +975,7 @@ class YouTubeVideoRecommender:
         return all_videos
 
 def youtube_recommend(state: State, config: RunnableConfig):
-    api_key = os.getenv("YOUTUBE_API_KEY")
+    api_key = st.secrets.REST.YOUTUBE_API_KEY
     if not api_key:
         raise ValueError("YOUTUBE_API_KEY is not set")
     recommender = YouTubeVideoRecommender(api_key)
