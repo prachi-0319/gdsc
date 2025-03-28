@@ -57,7 +57,7 @@ if 'user_info' in st.session_state:
                 st.Page("user_pages/dashboard.py", title="Dashboard", default=True),
                 # st.Page(sign_out, title="Sign Out"),  # Magic works
                 # st.Page("user_options/profile_entry.py", title="Set Profile"),
-                st.Page("user_pages/money_tracker.py", title="Finanace Tracker"),
+                st.Page("user_pages/money_tracker.py", title="Finance Tracker"),
                 st.Page("user_pages/lessons.py", title=" Finance Lessons"),
                 st.Page("user_pages/advisor.py", title="Finanace Advisor"),
                 st.Page("user_pages/fraud_detector.py", title="Fraud Alert"),
