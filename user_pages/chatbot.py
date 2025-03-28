@@ -205,6 +205,35 @@ def get_chat_history(chat_id):
     
     return [msg.to_dict() for msg in messages]
 
+def select_language():
+    """
+    Create a language selection dropdown
+    Returns the selected language
+    """
+    languages = {
+        "English": "english",  
+        "Hindi": "hindi", 
+        "Telugu": "telugu",
+        "Urdu": "urdu",
+        "Tamil":"tamil",
+        "Marathi": "marathi",
+        "Bengali": "bengali",
+        "Gujarati": "gujarati",
+        "Punjabi": "punjabi",
+        "Kannada": "kannada",
+        "Malayalam": "malayalam",
+        "Odia": "odia",
+        "Assamese": "assamese"
+    }
+    
+    st.sidebar.header("🌐 Language Settings")
+    selected_language = st.sidebar.selectbox(
+        "Choose Your Language",
+        list(languages.keys()),
+        index=0  # Default to English
+    )
+    
+    return languages[selected_language]
 
 # Custom CSS with reduced box sizes
 st.markdown("""
@@ -330,10 +359,12 @@ st.markdown("")
 # Create a directory for temporary images
 os.makedirs("temp_images", exist_ok=True)
 
+selected_language = select_language()
+print(selected_language)
 
 # Initialize chatbot and history in session state
 if "chatbot" not in st.session_state:
-    st.session_state.chatbot = FinancialChatBot()
+    st.session_state.chatbot = FinancialChatBot(language=selected_language)
 if "history" not in st.session_state:
     st.session_state.history = []
 
@@ -369,7 +400,7 @@ for i in range(0, len(st.session_state.history), 2):
 
         with cols[1]:
             if user_msg.get("image_path"):
-                st.image(user_msg["image_path"], caption="Uploaded Chart", use_column_width=True)
+                st.image(user_msg["image_path"], caption="Uploaded Chart", use_container_width=True)
 
             if assistant_msg.get("plot"):
                 try:
@@ -386,7 +417,7 @@ for i in range(0, len(st.session_state.history), 2):
                             hoverlabel=dict(bgcolor='var(--surface)', font_size=14, font_family="Montserrat"),
                             scene=dict(xaxis=dict(backgroundcolor="rgba(0,0,0,0)"), yaxis=dict(backgroundcolor="rgba(0,0,0,0)"), zaxis=dict(backgroundcolor="rgba(0,0,0,0)")) if fig.data[0].type == 'scatter3d' else {}
                         )
-                        st.plotly_chart(fig, use_column_width=True)
+                        st.plotly_chart(fig, use_container_width=True)
                         st.markdown('</div>', unsafe_allow_html=True)
                 except Exception as e:
                     st.error(f"Error rendering plot: {str(e)}")
@@ -408,7 +439,7 @@ with st.form(key="chat_form", clear_on_submit=True):
         st.markdown("")
         user_input = st.text_input(
             "Your message:",
-            placeholder="Ask about market trends, stock analysis, or upload a chart...",
+            placeholder=f"Ask about market trends, stock analysis, or upload a chart...",
             label_visibility="collapsed"
         )
 
@@ -438,8 +469,10 @@ if submit_button and (user_input or uploaded_file):
             with open(image_path, "wb") as f:
                 f.write(uploaded_file.read())
             if not user_input:
-                user_input = "What do you see in this image?"
+                user_input = f"Describe what you see in this image. Focus on any charts, financial data, or technical analysis elements if present."
 
+        # Pass language to the chat method
+        st.session_state.chatbot.language = selected_language
         bot_response = st.session_state.chatbot.chat(user_input, image_path)
 
         st.session_state.history.append({
