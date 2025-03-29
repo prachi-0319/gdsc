@@ -207,6 +207,7 @@ if 'user_info' in st.session_state:
                 st.Page("user_pages/govt_schemes.py", title="Govt Schemes"),
                 st.Page("user_pages/dictionary.py", title="Dictionary"),
                 st.Page("user_pages/chatbot.py", title="Chatbot"),
+                st.Page("user_pages/discussion_forum.py", title = "Discussion_Forum"),
                 # st.Page("account_settings/user_controls.py", title="Profile"),
                 st.Page("user_options/profile_entry.py", title="Profile"),
             ]
