@@ -470,23 +470,160 @@ from RAG_Model.RAG_copy import get_teaching_response_with_quiz
 # )
 
 # Dark Mode Professional Custom CSS
+# st.markdown("""
+#     <style>
+#         /* Header Styling */
+#         .header-text {
+#             color: #4ecdc4;
+#             text-align: center;
+#             font-weight: 700;
+#             margin-bottom: 20px;
+#         }
+
+#         .section-header {
+#             color: #4ecdc4;
+#             border-bottom: 2px solid #45b7d1;
+#             padding-bottom: 10px;
+#             margin-bottom: 20px;
+#         }
+
+#         /* Container Styling */
+#         .stContainer {
+#             background-color: #1e1e1e;
+#             border-radius: 12px;
+#             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+#             padding: 25px;
+#             margin-bottom: 20px;
+#             border: 1px solid #2c2c2c;
+#         }
+
+#         /* Learning Path Visualization */
+#         .path-container {
+#             background-color: #1e1e1e;
+#             border-radius: 12px;
+#             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+#             padding: 30px;
+#             margin-top: 20px;
+#             border: 1px solid #2c2c2c;
+#         }
+
+#         .chapter-node {
+#             text-align: center;
+#             transition: all 0.3s ease;
+#             color: #e0e0e0;
+#         }
+
+#         .chapter-node.active {
+#             transform: scale(1.05);
+#         }
+
+#         .node-circle {
+#             width: 50px;
+#             height: 50px;
+#             border-radius: 50%;
+#             background-color: #2c2c2c;
+#             display: flex;
+#             align-items: center;
+#             justify-content: center;
+#             margin: 0 auto 10px;
+#             font-weight: bold;
+#             color: #4ecdc4;
+#             transition: all 0.3s ease;
+#             border: 2px solid #45b7d1;
+#         }
+
+#         .chapter-node.active .node-circle {
+#             background-color: #45b7d1;
+#             color: #121212;
+#             box-shadow: 0 4px 6px rgba(69, 183, 209, 0.3);
+#         }
+
+#         .connector-line {
+#             height: 3px;
+#             background-color: #2c2c2c;
+#             flex-grow: 1;
+#             margin: 25px -10px;
+#         }
+
+#         .subtopic-list {
+#             margin-top: 30px;
+#             background-color: #1a1a1a;
+#             border-radius: 8px;
+#             padding: 20px;
+#             border: 1px solid #2c2c2c;
+#         }
+
+#         .subtopic-item {
+#             margin: 10px 0;
+#             padding: 8px 15px;
+#             border-radius: 6px;
+#             transition: all 0.3s ease;
+#             color: #b0b0b0;
+#         }
+
+#         .subtopic-item.active {
+#             background-color: #45b7d1;
+#             color: #121212;
+#             font-weight: 600;
+#         }
+
+#         /* Streamlit Widget Styling */
+#         .stTextInput>div>div>input,
+#         .stNumberInput>div>div>input,
+#         .stSelectbox>div>div>select {
+#             background-color: #1e1e1e !important;
+#             color: #e0e0e0 !important;
+#             border: 1px solid #2c2c2c !important;
+#         }
+
+#         /* Button Styling */
+#         .stButton>button {
+#             background-color: #45b7d1;
+#             color: #121212;
+#             border: none;
+#             border-radius: 8px;
+#             font-weight: 600;
+#             transition: all 0.3s ease;
+#         }
+
+#         .stButton>button:hover {
+#             background-color: #4ecdc4;
+#             transform: translateY(-2px);
+#             box-shadow: 0 4px 6px rgba(69, 183, 209, 0.3);
+#         }
+
+#         /* Result Box */
+#         .result-box {
+#             background-color: #1e1e1e;
+#             border-radius: 12px;
+#             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+#             padding: 25px;
+#             margin-top: 20px;
+#             border: 1px solid #2c2c2c;
+#             color: #e0e0e0;
+#         }
+
+#         /* Footer */
+#         .footer {
+#             color: #b0b0b0;
+#             text-align: center;
+#             padding: 20px;
+#             background-color: #1a1a1a;
+#             border-top: 1px solid #2c2c2c;
+#         }
+
+#         /* Markdown Styling */
+#         .stMarkdown {
+#             color: #e0e0e0;
+#         }
+#         .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+#             color: #4ecdc4;
+#         }
+#     </style>
+# """, unsafe_allow_html=True)
+
 st.markdown("""
     <style>
-        /* Header Styling */
-        .header-text {
-            color: #4ecdc4;
-            text-align: center;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .section-header {
-            color: #4ecdc4;
-            border-bottom: 2px solid #45b7d1;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
         /* Container Styling */
         .stContainer {
             background-color: #1e1e1e;
@@ -567,6 +704,7 @@ st.markdown("""
             font-weight: 600;
         }
 
+            
         /* Streamlit Widget Styling */
         .stTextInput>div>div>input,
         .stNumberInput>div>div>input,
@@ -574,22 +712,6 @@ st.markdown("""
             background-color: #1e1e1e !important;
             color: #e0e0e0 !important;
             border: 1px solid #2c2c2c !important;
-        }
-
-        /* Button Styling */
-        .stButton>button {
-            background-color: #45b7d1;
-            color: #121212;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .stButton>button:hover {
-            background-color: #4ecdc4;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(69, 183, 209, 0.3);
         }
 
         /* Result Box */
@@ -611,16 +733,10 @@ st.markdown("""
             background-color: #1a1a1a;
             border-top: 1px solid #2c2c2c;
         }
-
-        /* Markdown Styling */
-        .stMarkdown {
-            color: #e0e0e0;
-        }
-        .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
-            color: #4ecdc4;
-        }
+            
     </style>
 """, unsafe_allow_html=True)
+
 
 # Chapter data remains the same
 chapters = {
@@ -708,38 +824,43 @@ chapter_options = [
 ]  # (Keep the original chapter options here)
 
 
-# Main app content
-st.markdown('<h1 class="header-text">📚 Finance Learning Companion</h1>', unsafe_allow_html=True)
-st.markdown("---")
+st.markdown("""
+<div class="profile-header">
+    <h1 style="font-size:55px; color:white; text-align:center;">📚 Finance Learning Companion</h1>
+    <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
+    to create a balanced portfolio allocation tailored to your specific needs.</p>
+</div>
+""", unsafe_allow_html=True)
 
-# Selection section
-with st.container():
-    st.markdown('<h2 class="section-header">📖 Choose Your Learning Path</h2>', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns([1, 1], gap="medium")
-    with col1:
-        selected_chapter_full = st.selectbox(
-            "**Select Chapter**",
-            chapter_options,
-            index=0,
-            help="Choose which financial concept you want to explore"
-        )
-        chapter_key = selected_chapter_full.split(":")[0]
-    
-    with col2:
-        subtopics = chapters[chapter_key]
-        selected_subtopic = st.selectbox(
-            "**Select Subtopic**",
-            subtopics,
-            index=0,
-            help="Pick a specific aspect to focus on"
-        )
+st.markdown("")
+st.markdown("")
+st.markdown("")
 
-st.markdown("---")
 
-# Personalization section
-with st.container():
-    st.markdown('<h2 class="section-header">🎯 Personalize Your Experience</h2>', unsafe_allow_html=True)
+col1, col2 = st.columns([1, 1], gap="large")
+
+with col1:
+    st.markdown("### 📖 Choose Your Learning Path")
+
+    selected_chapter_full = st.selectbox(
+        "**Select Chapter**",
+        chapter_options,
+        index=0,
+        help="Choose which financial concept you want to explore"
+    )
+    chapter_key = selected_chapter_full.split(":")[0]
+
+    subtopics = chapters[chapter_key]
+    selected_subtopic = st.selectbox(
+        "**Select Subtopic**",
+        subtopics,
+        index=0,
+        help="Pick a specific aspect to focus on"
+    )
+
+with col2:
+    st.markdown("### 🎯 Personalize Your Experience")
+
     age = st.number_input(
         "**Your Age**",
         min_value=10,
@@ -748,17 +869,64 @@ with st.container():
         step=1,
         help="We'll adapt the content complexity based on your age"
     )
-
-st.markdown("---")
-
-# Generate button
-generate_col, _ = st.columns([0.3, 0.7])
-with generate_col:
+    st.markdown("")
+    
+    
     generate_btn = st.button(
         "🚀 Generate Learning Content",
-        use_container_width=True,
+        # use_container_width=True,
         type="primary"
     )
+
+
+# # Selection section
+# with st.container():
+#     st.markdown('<h2 class="section-header">📖 Choose Your Learning Path</h2>', unsafe_allow_html=True)
+    
+#     col1, col2 = st.columns([1, 1], gap="medium")
+#     with col1:
+#         selected_chapter_full = st.selectbox(
+#             "**Select Chapter**",
+#             chapter_options,
+#             index=0,
+#             help="Choose which financial concept you want to explore"
+#         )
+#         chapter_key = selected_chapter_full.split(":")[0]
+    
+#     with col2:
+#         subtopics = chapters[chapter_key]
+#         selected_subtopic = st.selectbox(
+#             "**Select Subtopic**",
+#             subtopics,
+#             index=0,
+#             help="Pick a specific aspect to focus on"
+#         )
+
+# st.markdown("---")
+
+# Personalization section
+# with st.container():
+#     st.markdown('<h2 class="section-header">🎯 Personalize Your Experience</h2>', unsafe_allow_html=True)
+#     age = st.number_input(
+#         "**Your Age**",
+#         min_value=10,
+#         max_value=100,
+#         value=20,
+#         step=1,
+#         help="We'll adapt the content complexity based on your age"
+#     )
+
+# st.markdown("---")
+
+# # Generate button
+# generate_col, _ = st.columns([0.3, 0.7])
+# with generate_col:
+#     generate_btn = st.button(
+#         "🚀 Generate Learning Content",
+#         use_container_width=True,
+#         type="primary"
+#     )
+
 
 # Result display
 if generate_btn:
@@ -781,7 +949,6 @@ if generate_btn:
                 st.markdown(teaching_content)
                 
                 if quiz_content:
-                    st.markdown("---")
                     st.markdown("### 📝 Teaching Content")
                     st.markdown(quiz_content)
                 
@@ -798,15 +965,13 @@ else:
 
 
 
-# Footer
-st.markdown("---")
-st.markdown("""
-    <div style='text-align: center; color: #7f8c8d; margin-top: 30px;'>
-        Made with ❤️ using Streamlit | Finance Master v1.0
-    </div>
-""", unsafe_allow_html=True)
 
-st.markdown("---")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+
 st.markdown('<h2 class="section-header">🗺️ Your Learning Path</h2>', unsafe_allow_html=True)
 
 # Create the learning path visualization

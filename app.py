@@ -210,6 +210,7 @@ if 'user_info' in st.session_state:
                 st.Page("user_pages/discussion_forum.py", title = "Discussion_Forum"),
                 # st.Page("account_settings/user_controls.py", title="Profile"),
                 st.Page("user_options/profile_entry.py", title="Profile"),
+                st.Page("user_pages/contact.py", title="Contact Us"),
             ]
         )
 
