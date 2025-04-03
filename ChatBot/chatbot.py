@@ -1491,9 +1491,10 @@ def main():
     
     client = OpenAI(base_url=url,
                 api_key=st.secrets['REST']['SUTRA_API_KEY']
+    )
 
 # %%
-language = 'english'
+    language = 'english'
     
     #print("Welcome to the Financial Assistant! (Type 'quit' to exit)")
     #print("You can also share images by typing 'image: ' followed by the image path")
