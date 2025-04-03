@@ -1463,15 +1463,37 @@ class FinancialChatBot:
         self.conversation_history = []
         self.context_messages = []
 
-# %%
+# # %%
+
+# import os
+# from openai import OpenAI
+
+# url = 'https://api.two.ai/v2';
+
+# client = OpenAI(base_url=url,
+#                 api_key=st.secrets['REST']['SUTRA_API_KEY']
+
+# # %%
+# language = 'english'
+
+# # %%
+
 def main():
     # Initialize the chatbot
     chatbot = FinancialChatBot()
         
-    url = 'https://api.two.ai/v2';
+#     url = 'https://api.two.ai/v2';
 
+#     client = OpenAI(base_url=url,
+#                     api_key=os.environ.get("SUTRA_API_KEY"))
+                
+    url = 'https://api.two.ai/v2';
+    
     client = OpenAI(base_url=url,
-                    api_key=os.environ.get("SUTRA_API_KEY"))
+                api_key=st.secrets['REST']['SUTRA_API_KEY']
+
+# %%
+language = 'english'
     
     #print("Welcome to the Financial Assistant! (Type 'quit' to exit)")
     #print("You can also share images by typing 'image: ' followed by the image path")
