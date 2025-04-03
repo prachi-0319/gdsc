@@ -371,7 +371,23 @@ with faq_col1:
     st.markdown("<h2>Frequently asked questions</h2>", unsafe_allow_html=True)
     st.markdown("Can't find what you're looking for? We are always happy to help you navigate your financial journey!")
 
-# ---- Footer Section ----
+# # ---- Footer Section ----
+# st.markdown("<hr>", unsafe_allow_html=True)
+# footer_col1, footer_col2 = st.columns(2)
+
+# with footer_col1:
+#     st.markdown("<h2>Join the FinFriend club today!</h2>", unsafe_allow_html=True)
+
+# with footer_col2:
+#     # st.markdown("<h4>Connect with us:</h4>", unsafe_allow_html=True)
+#     st.markdown("") # empty line
+#     st.markdown("") # empty line
+#     st.markdown("Discord | Gmail | Twitter", unsafe_allow_html=True)
+
+# In your dashboard footer section:
+from streamlit_modal import Modal
+from user_pages.contact import show_contact_form
+
 st.markdown("<hr>", unsafe_allow_html=True)
 footer_col1, footer_col2 = st.columns(2)
 
@@ -379,7 +395,26 @@ with footer_col1:
     st.markdown("<h2>Join the FinFriend club today!</h2>", unsafe_allow_html=True)
 
 with footer_col2:
-    # st.markdown("<h4>Connect with us:</h4>", unsafe_allow_html=True)
     st.markdown("") # empty line
     st.markdown("") # empty line
     st.markdown("Discord | Gmail | Twitter", unsafe_allow_html=True)
+    
+    # Contact Us button that opens the modal
+    if st.button("Contact Us", key="contact_button"):
+        st.session_state.open_modal = True
+
+# Modal handling
+if st.session_state.get("open_modal", False):
+    with contact_modal.container():
+        show_contact_form()
+        
+        # Close button - only show if form hasn't been successfully submitted
+        if not st.session_state.get("form_submitted", False):
+            if st.button("Close", key="modal_close_button"):
+                st.session_state.open_modal = False
+                st.rerun()
+        else:
+            # Auto-close after successful submission
+            st.session_state.open_modal = False
+            st.session_state.form_submitted = False
+            st.rerun()
