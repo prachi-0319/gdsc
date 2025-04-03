@@ -59,7 +59,7 @@ def generate_savings_options():
     # Generate 15 random denominations from the available values
     return sorted(random.choices([10, 20, 50, 100, 200, 500], k=15))
 
-st.set_page_config(page_title="Smart Saving Assistant", layout="wide")
+# st.set_page_config(page_title="Smart Saving Assistant", layout="wide")
 
 st.title("🎯 Goal-Based Investment Planner")
 

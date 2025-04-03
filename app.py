@@ -138,25 +138,26 @@ def rate_us_button():
     rate()
     return
 
-# st.markdown("""
-#     <style>
-#         /* Smaller Button */
-#         .stButton>button {
-#             background: var(--primary);
-#             color: white;
-#             border-radius: 8px;
-#             padding: 10px 20px; /* Reduced from 12px 24px */
-#             font-weight: 500;
-#             transition: opacity 0.2s ease;
-#         }
-
-#         .stButton>button:hover {
-#             opacity: 0.9;
-#         }
-#     </style>""", unsafe_allow_html=True)
-
 # Set up the page config
 st.set_page_config(page_title="Financial Agent", page_icon="💰", layout="wide")
+
+st.markdown("""
+    <style>
+        /* Button */
+        .stButton>button {
+            background-color: rgba(28, 90, 151, 0.5);
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .stButton>button:hover {
+            background-color: #1E5F8B;
+            transform: translateY(-2px);
+        }
+    </style>""", unsafe_allow_html=True)
+
 
 def entry_point():
     st.title("My main entry point :D")
@@ -211,6 +212,8 @@ if 'user_info' in st.session_state:
                 # st.Page("account_settings/user_controls.py", title="Profile"),
                 st.Page("user_options/profile_entry.py", title="Profile"),
                 st.Page("user_pages/contact.py", title="Contact Us"),
+                st.Page("user_pages/savings_tracker.py", title="Savings"),
+                st.Page("user_pages/budget_helper.py", title="Budget Tracker"),
             ]
         )
 

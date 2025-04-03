@@ -1,6 +1,5 @@
 import streamlit as st
-from streamlit.components.v1 import html
-import base64
+import re
 
 # Custom CSS for styling
 st.markdown("""
@@ -27,51 +26,53 @@ st.markdown("""
         border: 1px solid #D4E6F1;
         border-radius: 8px;
     }
-    .stButton>button {
-        background-color: #2E86C1;
-        color: white;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        width: 100%;
-        transition: all 0.3s;
-    }
-    .stButton>button:hover {
-        background-color: #1E5F8B;
-        transform: translateY(-2px);
-    }
-    .file-upload {
+            
+    /* Style the file uploader to look like a drag-and-drop zone */
+    .stFileUploader>div>div>div>div {
         border: 2px dashed #D4E6F1;
         border-radius: 8px;
-        padding: 1rem;
+        padding: 2rem 1rem;
         text-align: center;
-        margin-bottom: 1rem;
+        background-color: #fdfdfd;
+    }
+    .stFileUploader>div>div>div>div:hover {
+        border-color: #2E86C1;
+        background-color: #f5f9ff;
     }
 </style>
 """, unsafe_allow_html=True)
 
+
+
 # Contact Page Header
 st.markdown("""
-<div class="contact-header">
-    <h1>📨 Contact Us</h1>
-    <p>Have questions or feedback? We'd love to hear from you!</p>
+<div>
+    <h1 style="font-size:60px; color:white; text-align:center;">📨 Contact Us</h1>
+    <p style="text-align:center;">Have questions or feedback? We'd love to hear from you!</p>
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("")
+st.markdown("")
+st.markdown("")
+
 # Contact Form
 with st.form("contact_form", clear_on_submit=True):
-    st.markdown('<div class="contact-form">', unsafe_allow_html=True)
+    # st.markdown('<div class="contact-form">', unsafe_allow_html=True)
     
     # Form Columns
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns([0.9, 0.01, 0.9])
     
     with col1:
         name = st.text_input("Full Name*", placeholder="Enter your full name")
         
-    with col2:
+    with col3:
         email = st.text_input("Email Address*", placeholder="Enter your email")
     
+    st.markdown("")
     phone = st.text_input("Phone Number (Optional)", placeholder="+91 ")
     
+    st.markdown("")
     # Subject Dropdown with Custom option
     subject_options = [
         "Account Support",
@@ -81,42 +82,100 @@ with st.form("contact_form", clear_on_submit=True):
         "Feedback/Suggestions",
         "Other (Custom)"
     ]
+    
     subject = st.selectbox("Subject*", options=subject_options)
     
     if subject == "Other (Custom)":
         custom_subject = st.text_input("Please specify your subject", placeholder="Enter your custom subject")
         subject = custom_subject
     
+    st.markdown("")
+
     # Message Text Area
     message = st.text_area("Your Message*", 
                          placeholder="Please describe your inquiry in detail...",
                          height=150)
     
-    # File Upload
-    st.markdown("""
-    <div class="file-upload">
-        <p>📎 Attach File (Optional)</p>
-        <p style="font-size: 0.8rem; color: #666;">Max file size: 5MB</p>
-    </div>
-    """, unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("", type=["pdf", "docx", "jpg", "png"], 
-                                   label_visibility="collapsed")
-    
+    st.markdown("")
+    # Unified File Uploader with drag-and-drop styling
+    uploaded_file = st.file_uploader(
+        "📎 Attach File (Optional) - Max 5MB",
+        type=["pdf", "docx", "jpg", "png"],
+        help="Drag and drop files here or click to browse"
+    )
+
+    st.markdown("")
+
     # Form Submission
     submitted = st.form_submit_button("📤 Send Message", type="primary")
     
+    # if submitted:
+    #     errors = []
+
+    #     if not name or not email or not message:
+    #         st.error("Please fill in all required fields (*)")
+
+    #     else:
+    #         # Here you would typically process the form data
+    #         # For demo, we'll just show a success message
+    #         st.success("""
+    #         ✅ Thank you for your message!
+    #         We've received your inquiry and will get back to you within 24 hours.
+    #         """)
+            
+    #         # For demo purposes - show what would be submitted
+    #         with st.expander("Preview Submission"):
+    #             st.write("**Name:**", name)
+    #             st.write("**Email:**", email)
+    #             st.write("**Phone:**", phone if phone else "Not provided")
+    #             st.write("**Subject:**", subject)
+    #             st.write("**Message:**", message)
+    #             if uploaded_file:
+    #                 st.write("**Attachment:**", uploaded_file.name)
+
+
+
     if submitted:
-        if not name or not email or not message:
-            st.error("Please fill in all required fields (*)")
+        errors = []
+        errors_data = []
+        
+        # Name validation (not empty)
+        if not name:
+            errors.append("Please enter your name")
+            
+        # Email validation
+        if not email:
+            errors.append("Please enter your email")
+        elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            errors_data.append("Please enter a valid email address")
+            
+        # Phone validation (if provided)
+        if not phone:
+            errors.append("Please enter your phone number")
+        if phone and not phone.lstrip('+').isdigit():
+            errors_data.append("Please enter a valid phone number (digits only)")
+            
+        # Message validation (not empty)
+        if not message:
+            errors.append("Please enter your message")
+            
+        # File validation (if provided)
+        if uploaded_file and uploaded_file.size > 5 * 1024 * 1024:  # 5MB
+            errors_data.append("File size exceeds 5MB limit")
+            
+        if errors_data or errors:
+            if len(errors)>0:
+                st.error("Please fill all the required fields.")
+
+            for error in errors_data:
+                st.error(error)
         else:
-            # Here you would typically process the form data
-            # For demo, we'll just show a success message
+            # Process the form data
             st.success("""
             ✅ Thank you for your message!
             We've received your inquiry and will get back to you within 24 hours.
             """)
             
-            # For demo purposes - show what would be submitted
             with st.expander("Preview Submission"):
                 st.write("**Name:**", name)
                 st.write("**Email:**", email)
@@ -124,7 +183,8 @@ with st.form("contact_form", clear_on_submit=True):
                 st.write("**Subject:**", subject)
                 st.write("**Message:**", message)
                 if uploaded_file:
-                    st.write("**Attachment:**", uploaded_file.name)
+                    st.write("**Attachment:**", uploaded_file.name, f"({uploaded_file.size//1024} KB)")
+
     
     st.markdown('</div>', unsafe_allow_html=True)
 

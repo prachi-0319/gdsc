@@ -13,12 +13,12 @@ import matplotlib.pyplot as plt
 import altair as alt
 
 # Page config for a cleaner look
-st.set_page_config(
-    page_title="Financial Tools Suite",
-    page_icon="💰",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# st.set_page_config(
+#     page_title="Financial Tools Suite",
+#     page_icon="💰",
+#     layout="wide",
+#     initial_sidebar_state="expanded"
+# )
 
 # Custom CSS for better styling
 st.markdown("""
