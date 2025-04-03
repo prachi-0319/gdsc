@@ -89,12 +89,11 @@
 #         st.switch_page(f"user_pages/govt_schemes.py")
 
 
-
-
-
 import streamlit as st
 import plotly.express as px
-import auth_functions
+from auth_functions import *
+from ChatBot.chatbot import *
+
 
 # ---- User Authentication ----
 if 'user_info' not in st.session_state:
@@ -115,8 +114,35 @@ st.markdown("""
     <p>Explore personalized financial advice, track savings, detect fraud schemes, and much more.</p>
 </div>
 """, unsafe_allow_html=True)
-# st.markdown("<p style='text-align: center;'>Empowering Financial Awareness in India</p>", unsafe_allow_html=True)
-st.markdown(f"<h4 style='text-align: center;'>Welcome, {st.session_state.user_info.get('email', 'User')}! 🎉</h4>", unsafe_allow_html=True)
+
+
+def get_user_profile(user_id):
+    """Fetches the user's profile from Firestore using their user ID."""
+    if db is None:
+        st.error("Database not initialized.")
+        return None
+
+    doc_ref = db.collection("UserData").document(user_id)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        user_data = doc.to_dict()
+        return user_data  # Return the full profile dictionary
+    return None  # Return None if the user profile is not found
+
+if "user_info" in st.session_state and "user_id" in st.session_state:
+    user_id = st.session_state.user_id  # Get the user ID
+    user_profile = get_user_profile(user_id)  # Fetch profile data
+
+    if user_profile:
+        user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
+    else:
+        user_name = "User"
+else:
+    user_name = "User"
+
+# Display the name
+st.markdown(f"<h4 style='text-align: center;'>Welcome, {user_name}! 🎉</h4>", unsafe_allow_html=True)
 
 # st.markdown("""
 # <div style="text-align: center; padding: 20px; background-color: #2E86C1; color: white; border-radius: 10px;">
@@ -139,15 +165,41 @@ st.markdown(f"<h4 style='text-align: center;'>Welcome, {st.session_state.user_in
 # ---- Search Bar for AI Chatbot ----
 st.markdown("") # empty line
 st.markdown("") # empty line
-search_query = st.text_input("🔍 Ask us anything:", placeholder="What is the best long term investment...")
+
+user_input = st.text_input("🔍 Ask us anything:", placeholder="What is the best long term investment...")
+
+# if st.button("Search"):
+#     st.switch_page(f"user_pages/chatbot.py")
+
+# Store user input in session state
 if st.button("Search"):
-    st.switch_page(f"user_pages/chatbot.py")
+    if user_input:  # Ensure input is not empty
+        st.session_state.chatbot = FinancialChatBot()
+        st.session_state.history = []
+
+        bot_response = st.session_state.chatbot.chat(user_input, None)
+
+        st.session_state.history.append({
+            "role": "user",
+            "content": user_input,
+            "image_path": None
+        })
+        st.session_state.history.append({
+            "role": "assistant",
+            "text": bot_response["text"],
+            "plot": bot_response["plot"]
+        })
+
+        # st.session_state["user_query"] = user_input  # Store in session state
+        st.switch_page("user_pages/chatbot.py")  # Navigate to chatbot page
+
 
 # ---- Features Grid ----
 st.markdown("<h2 style='text-align: center;'>Explore Our Features</h2>", unsafe_allow_html=True)
 st.markdown("") # empty line
 st.markdown("") # empty line
 # st.markdown("## Explore Our Features")
+
 features = [
     ("📊", "Financial Advisor", "Get personalized financial advice.", "advisor"),
     ("📖", "Finance Dictionary", "Easily look up financial terms.", "dictionary"),
@@ -198,6 +250,7 @@ st.markdown("""
 cols = st.columns(4)
 for i, (icon, title, description, page) in enumerate(features):
     with cols[i % 4]:
+
         st.markdown(f"""
         <div style="text-align: center;">
             <div class="circle-icon">{icon}</div>
@@ -222,15 +275,42 @@ for i, (icon, title, description, page) in enumerate(features):
 st.markdown("") # empty line
 st.markdown("") # empty line
 st.markdown("") # empty line
+# st.markdown("""
+# <div class="floating-box">
+#     <div style="display: flex; align-items: center;">
+#         <div style="flex: 1;">
+#             <img src="assets/dashboard_dialog.png" alt="Placeholder Image" style="border-radius: 10px; size:80px align:center;">
+#         </div>
+#         <div style="flex: 1; padding-left: 20px;">
+#             <h3>Financial Freedom Starts Here!</h3>
+#             <p>Did you know 76% of Indians struggle with basic financial concepts? That's where we come in! 🚀 Our app makes money mastery easy and fun with:</p>
+#             <ul>
+#             <item>Bite-sized lessons that stick</item>
+#             <item>AI-powered tools tailored just for you</item>
+#             <item>Real-world skills to grow your wealth</item>
+#             </ul>
+#             <p>We're closing the financial literacy gap—one user at a time. Your journey to smart money habits starts now! 💡</p>
+#             <p>Join <span>50,000+<span> Indians already taking control of their finances!<p>
+#         </div>
+#     </div>
+# </div>
+# """, unsafe_allow_html=True)
 st.markdown("""
 <div class="floating-box">
     <div style="display: flex; align-items: center;">
-        <div style="flex: 1;">
-            <img src="assets/dashboard_dialog.png" alt="Placeholder Image" style="border-radius: 10px; size:80px align:center;">
+        <div style="flex: 1; text-align: center;">
+            <img src="assets/dashboard_dialog.png" alt="Financial Education" style="border-radius: 10px; max-width: 80%; height: auto;">
         </div>
         <div style="flex: 1; padding-left: 20px;">
-            <h3>Boost Your Financial Knowledge</h3>
-            <p>Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today! Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!Learn the secrets to smart investing and savings. Unlock financial freedom today!</p>
+            <h3 style="margin-top: 0;">Financial Freedom Starts Here!</h3>
+            <p style="font-size: 15px;">Did you know 76% of Indians struggle with basic financial concepts? That's where we come in! Our app makes money mastery easy and fun with:</p>
+            <ul style="padding-left: 20px; font-size: 15px;">
+                <li style="margin-bottom: 8px;">Bite-sized lessons that stick</li>
+                <li style="margin-bottom: 8px;">AI-powered tools tailored just for you</li>
+                <li style="margin-bottom: 8px;">Real-world skills to grow your wealth</li>
+            </ul>
+            <p style="font-size: 15px;">We're closing the financial literacy gap—one user at a time. Your journey to smart money habits starts now! 💡</p>
+            <p style="font-weight: bold; font-size: 15px;">Join <span style="color: #27AE60;">50,000+</span> Indians already taking control of their finances!</p>
         </div>
     </div>
 </div>
@@ -252,7 +332,6 @@ st.markdown("""
 #         <p>Learn the secrets to smart investing and savings. Unlock financial freedom today!</p>
 #     </div>
 #     """, unsafe_allow_html=True)
-
 
 # # ---- Interactive Tools Section ----
 # st.markdown("## 📈 Interactive Tools")
@@ -290,7 +369,7 @@ with faq_col2:
 
 with faq_col1:
     st.markdown("<h2>Frequently asked questions</h2>", unsafe_allow_html=True)
-    st.markdown("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.")
+    st.markdown("Can't find what you're looking for? We are always happy to help you navigate your financial journey!")
 
 # ---- Footer Section ----
 st.markdown("<hr>", unsafe_allow_html=True)

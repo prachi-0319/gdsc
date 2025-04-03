@@ -8,12 +8,10 @@ from typing import Any, Dict, Optional
 from requests.adapters import HTTPAdapter
 
 
+
 class NewsAPIConnection(BaseConnection[requests.session]):
     """
     Handles a connection with the NewsAPI and retrieves news articles.
-
-    See also: https://docs.streamlit.io/library/advanced-features/connecting-to-data#build-your-own-connection
-              https://newsapi.org/docs 
     """
 
     def _connect(self, **kwargs) -> requests.session:
@@ -21,16 +19,14 @@ class NewsAPIConnection(BaseConnection[requests.session]):
         Initializes the connection parameters and creates a persistent requests.Session for connecting with the NewsAPI.
         The Session object uses an HTTPAdapter to allow for maximum retries in case of network issues.
 
-        See also: https://docs.python-requests.org/en/latest/user/advanced/#session-objects
-
         :return: A requests.Session object, with a mounted HTTPAdapter for connection retries
         """
-        self.key = kwargs.get('NEWS_API_KEY') or st.secrets['NEWS_API_KEY']
+        self.key = kwargs.get('NEWS_API_KEY') or st.secrets['NEWS']['NEWS_API_KEY']
         if not self.key:
             raise ValueError('Missing NEWS_API_KEY')
 
         self.base = kwargs.get(
-            'NEWSAPI_BASE_URL') or st.secrets['NEWSAPI_BASE_URL']
+            'NEWSAPI_BASE_URL') or st.secrets['NEWS']['NEWSAPI_BASE_URL']
         if not self.base:
             raise ValueError('Missing NEWSAPI_BASE_URL')
 
@@ -74,6 +70,7 @@ class NewsAPIConnection(BaseConnection[requests.session]):
 
         return _everything(**kwargs)
 
+
     def top_headlines(self, ttl: int = 3600, **kwargs) -> Optional[Dict[str, Any]]:
         """
         Retrieves Top-Headlines Articles in a specific country ('US' by default) and category from the NewsAPI.
@@ -96,6 +93,7 @@ class NewsAPIConnection(BaseConnection[requests.session]):
 
         return _top_headlines(**kwargs)
 
+
     def _make_api_request(self, url: str, params: Dict[str, str]) -> Optional[Dict[str, Any]]:
         """
         Performs a GET request to the provided URL and returns the parsed JSON response.
@@ -107,9 +105,11 @@ class NewsAPIConnection(BaseConnection[requests.session]):
             response = self.cursor().get(url=url, params=params)
             response.raise_for_status()
             data = response.json()
-            if data.get('results') == 0 or data.get('status') != 'ok':
+
+            # if data.get('results') == 0 or data.get('status') != 'ok':
+            if data.get('totalResults', 0) == 0 or data.get('status') != 'ok':
                 return None
             return data
         except (requests.exceptions.RequestException, ValueError) as e:
-            st.error(f'NewsAPI Server Error. (Crossed daily 1000 requests limit maybe)')
+            st.error(f'NewsAPI Server Error. (Crossed daily 1000 requests limit)')
             return None

@@ -336,7 +336,7 @@ def plot_assets(df, ticker="", currency=""):
 # %%
 def parse_query(state: State) -> State:
     """Parse the user query to determine plot type and ticker"""
-    query = (state["original_messages"][-1].content).lower()
+    query = state["research_topic"].lower()
     #print(query)
     ticker = query.split()[-1].upper()
     #print(ticker)
@@ -363,10 +363,10 @@ def generate_plot(state: State) -> State:
             fig = plot_candles_stick(df, title=f"{ticker} Candlestick Chart")
         elif plot_type == "balance":
             df = fetch_balance(ticker)
-            fig = plot_balance(df, ticker=ticker, currency="USD")
+            fig = plot_balance(df, ticker=ticker, currency="INR")
         elif plot_type == "assets":
             df = fetch_balance(ticker)
-            fig = plot_assets(df, ticker=ticker, currency="USD")
+            fig = plot_assets(df, ticker=ticker, currency="INR")
         
         plot_json = fig.to_json()
         return {"plot_json": plot_json}
@@ -376,7 +376,7 @@ def generate_plot(state: State) -> State:
     
 def format_response(state: State) -> State:
     """Format the final response"""
-    #print(state.get('plot_json'))
+    print(state.get('plot_json'))
     if state.get("plot_json"):
         fig = pio.from_json(state.get("plot_json"))
         fig.show()
@@ -491,7 +491,7 @@ def generate_query(state: State, config: RunnableConfig):
         query_data = json.loads(output_text)
         return {"search_query": query_data['query']}
     except (json.JSONDecodeError, KeyError) as e:
-        #print(f"Error parsing JSON: {e}")
+        print(f"Error parsing JSON: {e}")
         return {"search_query": f"comprehensive analysis of {state['research_topic']}"}
 
 def web_research(state: State, config: RunnableConfig):
@@ -774,7 +774,7 @@ class YouTubeVideoRecommender:
             else:
                 channel_id = self.get_channel_id(channel)
                 if not channel_id:
-                    #print(f"Could not find channel: {channel}")
+                    print(f"Could not find channel: {channel}")
                     continue
             videos = self.search_videos_in_channel(channel_id, query, videos_per_channel)
             all_videos.extend(videos)
@@ -897,7 +897,7 @@ def call_route_first_step(state: State):
         return {"route": "Image_Analysis", "original_messages": state["original_messages"]}
     
     router_response = llm.with_structured_output(Route_First_Step).invoke(state["research_topic"])
-    #print(f"Routing result: {router_response.step}")
+    print(f"Routing result: {router_response.step}")
     return {"route": router_response.step, "original_messages": state["original_messages"]}
 
 def validate_state_transition(old_state: State, new_state: State):
@@ -1012,13 +1012,20 @@ def process_with_context(state: State):
                              for i, msg in enumerate(context_messages[-6:])])
     
     prompt = f"""
-    Based on the previous conversation context and the user's current query, 
-    generate an enhanced version of the query that incorporates relevant context.
-    If the query is about plotting any graph, don't make much changes, make sure ticker is at the very end of the sentence.
+    Based on the previous conversation context and the user's current query, generate an enhanced version of the query that incorporates relevant context. However, if the query is about plotting a graph, preserve its intent and format it into one of these exact structures with the company ticker as the last word:
+    - "Show me a candlestick chart for TICKER"
+    - "Show me the balance sheet for TICKER"
+    - "Show me the assets for TICKER"
+    
     Previous conversation:
     {context_str}
     
     Current query: {current_query}
+    
+    Instructions:
+    1. If the query mentions 'candlestick', 'balance sheet', or 'assets' (or similar terms like 'chart', 'visualize'), identify the ticker (e.g., AAPL, MSFT) and rephrase it into one of the above formats.
+    2. For non-plot queries, enhance the query with context as needed.
+    3. Ensure the ticker, if present, is always the last word in plot-related queries.
     
     Enhanced query:
     """
@@ -1029,7 +1036,7 @@ def process_with_context(state: State):
         updated_messages = messages[:-1] + [HumanMessage(content=enhanced_query)]
         return {
             "messages": updated_messages,
-            "original_messages": original_messages,  # Preserve original messages
+            "original_messages": original_messages,
             "research_topic": enhanced_query
         }
     except Exception as e:
@@ -1120,3 +1127,6 @@ def update_router():
 #Query: Show me the assets for GOOGL
 
 # %%
+
+
+
