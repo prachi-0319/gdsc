@@ -35,9 +35,9 @@ def load_chapter_vectorstore(chapter):
     chapter_key = chapter.lower().replace(":", "").replace(" ", "_")
     cwd_path = os.getcwd()
     print(cwd_path)
-    index_path = get_chapter_path(chapter_key)
+    #index_path = get_chapter_path(chapter_key)
     
-    #index_path = os.path.join(cwd_path,'RAG_Model',get_chapter_path(chapter_key))
+    index_path = os.path.join(cwd_path,get_chapter_path(chapter_key))
     print(index_path)
     
     try:
