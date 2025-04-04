@@ -388,6 +388,7 @@ with faq_col1:
 # In your dashboard footer section:
 from streamlit_modal import Modal
 from user_pages.contact import show_contact_form
+from user_pages.disclaimer import show_disclaimer
 
 st.markdown("<hr>", unsafe_allow_html=True)
 footer_col1, footer_col2 = st.columns(2)
@@ -415,11 +416,43 @@ with footer_col2:
     # st.markdown("Discord | Gmail | Twitter", unsafe_allow_html=True)
     
     # Contact Us button that opens the modal
-    if st.button("Contact Us", key="contact_button"):
-        st.session_state.open_modal = True
+    # col1, col2, col3 = st.columns([1,1,1])
+    # with col2:
+    #     if st.button("Contact Us", key="contact_button"):
+    #         st.session_state.open_modal = True
+
+footer_col3, footer_col4 = st.columns(2)
+with footer_col3:
+    col1, col2, col3 = st.columns([1,1,1])
+
+    with col1:
+        if st.button("Contact Us", key="contact_button"):
+            st.session_state.open_modal = True
+    
+    with col2:
+        if st.button("Disclaimer", key="disclaimer_button"):
+            st.session_state.open_disclaimer_modal = True
+            # st.session_state.open_modal = True
+
+contact_modal = Modal(
+    title="📨 Contact Us",
+    key="contact_modal",
+    # Optional - makes modal wider
+    max_width=800,
+    padding=50  
+    
+)
+
+disclaimer_modal = Modal(
+    title="⚠️ Disclaimer",
+    key="disclaimer_modal",
+    max_width=800,
+    padding=50
+)
 
 # Modal handling
 if st.session_state.get("open_modal", False):
+    # contact_modal.open()
     with contact_modal.container():
         show_contact_form()
         
@@ -433,3 +466,9 @@ if st.session_state.get("open_modal", False):
             st.session_state.open_modal = False
             st.session_state.form_submitted = False
             st.rerun()
+
+# Render Disclaimer Modal
+if st.session_state.get("open_disclaimer_modal", False):
+    # disclaimer_modal.open()
+    with disclaimer_modal.container():
+        show_disclaimer()

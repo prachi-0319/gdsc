@@ -33,7 +33,7 @@ st.markdown("""
         margin-bottom: 0.5rem;
     }
     .savings-card {
-        background: white;
+        background: rgb(46,80,145,0.4);
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -42,7 +42,7 @@ st.markdown("""
     .amount-display {
         font-size: 3rem;
         text-align: center;
-        color: #27AE60;
+        color: #2e5091;
         margin: 1rem 0;
         font-weight: bold;
     }
@@ -69,22 +69,31 @@ st.markdown("""
 
 # Header
 st.markdown("""
-<div class="header">
-    <h1>💰 Smart Savings Tracker</h1>
-    <p>Reach your financial goals one rupee at a time</p>
+<div>
+    <h1 style="font-size:60px; color:white; text-align:center;">💰 Smart Savings Tracker</h1>
+    <p style="text-align:center;">Reach your financial goals one rupee at a time</p>
 </div>
 """, unsafe_allow_html=True)
+
+# st.markdown("""
+# <div class="header">
+#     <h1>💰 Smart Savings Tracker</h1>
+#     <p>Reach your financial goals one rupee at a time</p>
+# </div>
+# """, unsafe_allow_html=True)
 
 # CENTERED SAVINGS DISPLAY (3-column layout)
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-    st.markdown("""
-    <div class="savings-card">
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <h3>Your Savings Progress</h3>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown("")
+    st.markdown("")
+    # st.markdown("""
+    # <div class="savings-card">
+    #     <div style="text-align: center; margin-bottom: 1rem;">
+    #         <h3>Your Savings Progress</h3>
+    #     </div>
+    # """, unsafe_allow_html=True)
     
     # Piggy Bank Animation
     if piggy_animation:
@@ -105,6 +114,9 @@ with col2:
     st.progress(int(progress))
     
     st.markdown("</div>", unsafe_allow_html=True)
+
+st.markdown("")
+st.markdown("")
 
 # MAIN CONTENT AREA (2-column layout)
 left_col, right_col = st.columns([1, 1])
@@ -161,12 +173,19 @@ with right_col:
     
     st.markdown("</div>", unsafe_allow_html=True)
 
+
+st.markdown("")
+st.markdown("")
 # Recent Transactions
 if st.session_state.transactions:
     st.markdown("""
-    <div class="savings-card">
+    <div>
         <h3>📝 Recent Transactions</h3>
     """, unsafe_allow_html=True)
+    # st.markdown("""
+    # <div class="savings-card">
+    #     <h3>📝 Recent Transactions</h3>
+    # """, unsafe_allow_html=True)
     
     for i, transaction in enumerate(st.session_state.transactions[-5:][::-1], 1):
         st.markdown(f"""

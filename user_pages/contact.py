@@ -203,13 +203,13 @@ import streamlit as st
 from streamlit_modal import Modal
 import re
 
-# Initialize the modal
-contact_modal = Modal(
-    title="📨 Contact Us",
-    key="contact_modal",
-    # Optional - makes modal wider
-    max_width=800  
-)
+# # Initialize the modal
+# contact_modal = Modal(
+#     title="📨 Contact Us",
+#     key="contact_modal",
+#     # Optional - makes modal wider
+#     max_width=800  
+# )
 
 # Custom CSS for the contact form
 st.markdown("""
@@ -243,8 +243,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
+
 def show_contact_form():
-    """Render the contact form inside the modal"""
     with st.form("contact_form", clear_on_submit=True):
         st.markdown("Have questions or feedback? We'd love to hear from you!")
         
