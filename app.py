@@ -141,6 +141,12 @@ def rate_us_button():
 # Set up the page config
 st.set_page_config(page_title="Financial Agent", page_icon="💰", layout="wide")
 
+st.logo(
+    image = "assets/logo_finfriend.png",
+    size = "large",
+    icon_image = "assets/logo_finfriend.png",
+)
+
 st.markdown("""
     <style>
         /* Button */
@@ -213,7 +219,7 @@ if 'user_info' in st.session_state:
                 st.Page("user_options/profile_entry.py", title="Profile"),
                 st.Page("user_pages/contact.py", title="Contact Us"),
                 st.Page("user_pages/savings_tracker.py", title="Savings"),
-                st.Page("user_pages/budget_helper.py", title="Budget Tracker"),
+                # st.Page("user_pages/budget_helper.py", title="Budget Tracker"),
             ]
         )
 

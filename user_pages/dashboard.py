@@ -93,6 +93,7 @@ import streamlit as st
 import plotly.express as px
 from auth_functions import *
 from ChatBot.chatbot import *
+import streamlit_antd_components as sac
 
 
 # ---- User Authentication ----
@@ -397,7 +398,21 @@ with footer_col1:
 with footer_col2:
     st.markdown("") # empty line
     st.markdown("") # empty line
-    st.markdown("Discord | Gmail | Twitter", unsafe_allow_html=True)
+
+    sac.segmented(
+        items=[
+            sac.SegmentedItem(label='discord', icon='discord'),
+            sac.SegmentedItem(label='mail', icon='google'),
+            sac.SegmentedItem(label='github', icon='github'),
+            # sac.SegmentedItem(label='link', icon='share-fill', href='https://mantine.dev/core/segmented-control/'),
+            # sac.SegmentedItem(label='disabled', disabled=True),
+        ], align='right'
+    )
+
+    # sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='discord', size=20))], align='center', variant='text', index=None)
+    # sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='facebook', size=20))], align='center', variant='text', index=None)
+    # sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='youtube', size=20))], align='center', variant='text', index=None)
+    # st.markdown("Discord | Gmail | Twitter", unsafe_allow_html=True)
     
     # Contact Us button that opens the modal
     if st.button("Contact Us", key="contact_button"):
