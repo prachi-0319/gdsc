@@ -13,6 +13,9 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 import os
 from dotenv import load_dotenv
 import json
+import torch
+torch.classes.__path__ = []
+import streamlit as st
 
 def get_chapter_path(chapter_key):
     chapter_list = [r'RAG_Model/faiss_indexes/faiss_index_chapter_1',
@@ -33,11 +36,12 @@ def load_chapter_vectorstore(chapter):
     )
     # Convert chapter to a safe filename (e.g., "CHAPTER 4" -> "chapter_4")
     chapter_key = chapter.lower().replace(":", "").replace(" ", "_")
-    cwd_path = os.getcwd()
-    print(cwd_path)
-    #index_path = get_chapter_path(chapter_key)
+    #cwd_path = os.getcwd()
+    #print(cwd_path)
+    index_path = get_chapter_path(chapter_key)
     
-    index_path = os.path.join(cwd_path,get_chapter_path(chapter_key))
+    #index_path = os.path.join(cwd_path,'RAG_Model',get_chapter_path(chapter_key))
+    #index_path = os.path.abspath()
     print(index_path)
     
     try:
@@ -53,13 +57,13 @@ def load_chapter_vectorstore(chapter):
 # Function to retrieve relevant sections based on chapter and topic
 def retrieve_chapter_topic(chapter, topic):
     retriever = load_chapter_vectorstore(chapter)
-    
+    #st.write(retriever)
     if isinstance(retriever, str):  # Check if an error occurred
         return [retriever]  # Return error message as a list for consistency
     
     query = f"Find information in {chapter} about {topic}."
     results = retriever.get_relevant_documents(query)
-    
+    #print(type(results))
     # If results are insufficient, we'll stick to chapter-specific search only
     # since we have separate indexes per chapter
     return results
@@ -67,10 +71,11 @@ def retrieve_chapter_topic(chapter, topic):
 # %%
 
 def teach_topic_with_quiz(chapter, topic, year):
-    llm = ChatGroq(model="llama3-8b-8192", api_key = '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')
+    llm = ChatGroq(model="llama3-8b-8192", api_key = st.secrets.REST.GROQ_API_KEY)
+    #st.write('In teach_topic_with_quiz')
     docs = retrieve_chapter_topic(chapter, topic)
-    print(type(docs[0]))
-    print(docs)
+    #st.write(type(docs[0]))
+    #st.write(docs)
     source_text = "\n".join([doc.page_content for doc in docs])
 
     teaching_prompt = f"""
