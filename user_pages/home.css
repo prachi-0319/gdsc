@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+}
+
+.hero-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 2rem 1.5rem;
+    text-align: center;
+}
+
+.hero-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.hero-subtext {
+    font-size: 1.25rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #1d4ed8;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.feature-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.feature-description {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.footer {
+    margin-top: 5rem;
+    padding: 2rem;
+    font-size: 0.85rem;
+    text-align: center;
+    color: #9ca3af;
+    border-top: 1px solid #e5e7eb;
+}
+/* 
+.cta-button-wrapper button {
+  background-color: #2563eb !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  margin: 0 auto;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button-wrapper button:hover {
+  background-color: #1d4ed8 !important;
+} */
+
+button[kind="primary"] {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button[kind="primary"]:hover {
+  background-color: #1d4ed8;
+}
+
+.custom-page-link-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.custom-page-link-wrapper a[data-testid="stPageLink"] {
+    display: inline-block;
+    background-color: #2563eb;
+    color: white !important;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.custom-page-link-wrapper a[data-testid="stPageLink"]:hover {
+    background-color: #1e40af;
+}

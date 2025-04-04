@@ -324,6 +324,7 @@ def create_account(email: str, password: str) -> bool:
         if error_message == "EMAIL_EXISTS":
             st.session_state.auth_warning = 'Error: Email belongs to existing account'
         elif error_message in {"INVALID_EMAIL","INVALID_PASSWORD","MISSING_PASSWORD","MISSING_EMAIL","WEAK_PASSWORD"}:
+            st.error(error_message)
             st.session_state.auth_warning = 'Error: Use a valid email and password'
         else:
             st.session_state.auth_warning = 'Error: Please try again later'
