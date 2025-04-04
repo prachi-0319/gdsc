@@ -37,6 +37,7 @@ distro==1.9.0
 dotenv==0.9.9
 etelemetry==0.3.1
 exceptiongroup==1.2.2
+faiss-cpu
 executing==2.2.0
 filelock==3.18.0
 firebase-admin==6.7.0
@@ -82,7 +83,6 @@ ipython==8.32.0
 isodate==0.6.1
 jedi==0.19.2
 Jinja2==3.1.5
-jiter==0.9.0
 joblib==1.4.2
 jsonpatch==1.33
 jsonpointer==3.0.0
