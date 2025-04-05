@@ -671,13 +671,33 @@ def get_quiz_questions(history_json, mode="general", difficulty="easy"):
 # st.markdown("Each quiz helps you spot knowledge gaps while making finance fun!")
 
 
+
+
 st.markdown("""
-<div>
-    <h1 style="font-size:60px; color:white; text-align:center;">📊 Finance Quiz App</h1>
-    <p style="text-align:center;">Test and expand your money knowledge with interactive quizzes! Choose between general financial concepts or personalized quizzes based on your profile.</p>
-    <p style="text-align:center;">Adjust the difficulty to match your expertise level - perfect for beginners and experts alike. Each quiz helps you spot knowledge gaps while making finance fun!</p>
+    <style>
+    .profile-header h1 {
+        color: rgba(131, 158, 101, 0.8);
+        font-size: 60px;
+    }
+    </style>        
+""", unsafe_allow_html = True)
+
+
+st.markdown("""
+<div class="profile-header">
+    <h1 style="text-align:center;">📊 Finance Quiz App</h1>
+    <p style="text-align:center;">Test and expand your money knowledge with interactive quizzes! Choose between general financial concepts or personalized quizzes based on your profile. 
+            Adjust the difficulty to match your expertise level - perfect for beginners and experts alike. Each quiz helps you spot knowledge gaps while making finance fun!</p>
 </div>
 """, unsafe_allow_html=True)
+
+# st.markdown("""
+# <div>
+#     <h1 style="font-size:60px; color:white; text-align:center;">📊 Finance Quiz App</h1>
+#     <p style="text-align:center;">Test and expand your money knowledge with interactive quizzes! Choose between general financial concepts or personalized quizzes based on your profile.</p>
+#     <p style="text-align:center;">Adjust the difficulty to match your expertise level - perfect for beginners and experts alike. Each quiz helps you spot knowledge gaps while making finance fun!</p>
+# </div>
+# """, unsafe_allow_html=True)
 
 
 st.markdown("")

@@ -23,17 +23,12 @@ piggy_animation = load_lottie_url(PIGGY_BANK_URL)
 # Custom CSS
 st.markdown("""
 <style>
-    .header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .header h1 {
-        color: #27AE60;
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-    }
+    .profile-header h1 {
+            color: rgba(131, 158, 101, 0.8);
+            font-size: 60px;
+        }
     .savings-card {
-        background: rgb(46,80,145,0.4);
+        background: rgba(131, 158, 101, 0.8);
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -42,7 +37,7 @@ st.markdown("""
     .amount-display {
         font-size: 3rem;
         text-align: center;
-        color: #2e5091;
+        color: rgba(131, 158, 101, 0.8);
         margin: 1rem 0;
         font-weight: bold;
     }
@@ -70,7 +65,7 @@ st.markdown("""
 # Header
 st.markdown("""
 <div>
-    <h1 style="font-size:60px; color:white; text-align:center;">💰 Smart Savings Tracker</h1>
+    <h1 style="text-align:center;">💰 Smart Savings Tracker</h1>
     <p style="text-align:center;">Reach your financial goals one rupee at a time</p>
 </div>
 """, unsafe_allow_html=True)

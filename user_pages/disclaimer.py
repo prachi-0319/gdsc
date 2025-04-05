@@ -64,16 +64,6 @@ def show_disclaimer():
 
     ---
 
-    #### **Contact Us**
-
-    If you have any questions or concerns about this disclaimer or the platform's content, please contact us at:
-
-    - **Email**: [support@yourappdomain.com]
-    - **Phone**: [Your support phone number]
-    - **Address**: [Your company address]
-
-    ---
-
     By using our platform, you agree to the terms and conditions outlined in this disclaimer. If you do not agree with any part of this disclaimer, we kindly ask that you refrain from using the platform.
     This disclaimer helps ensure transparency and protects both the platform and the users. Make sure to adjust any specific contact details or legal obligations according to your actual setup!
 

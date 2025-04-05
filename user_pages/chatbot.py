@@ -1,155 +1,3 @@
-# import streamlit as st
-# import firebase_admin
-# from firebase_admin import credentials, firestore
-# import uuid
-# from datetime import datetime
-# # import auth_functions
-# from auth_functions import *
-
-
-# def create_new_chat(user_email):
-#     """Create a new chat document in Firestore"""
-#     chat_id = str(uuid.uuid4())
-#     chat_ref = db.collection('chats').document(chat_id)
-    
-#     chat_ref.set({
-#         'metadata': {
-#             'userId': st.session_state.get('user_id', 'anonymous'),
-#             'userEmail': user_email,
-#             'createdAt': firestore.SERVER_TIMESTAMP,
-#             'lastUpdated': firestore.SERVER_TIMESTAMP
-#         }
-#     })
-#     return chat_id
-
-# def save_message(chat_id, message, sender):
-#     """Save a message to the specific chat document"""
-#     chat_ref = db.collection('Chats').document(chat_id)
-    
-#     # Add message to messages subcollection
-#     chat_ref.collection('messages').add({
-#         'content': message,
-#         'role': sender,
-#         'sentAt': firestore.SERVER_TIMESTAMP
-#     })
-    
-#     # Update last updated timestamp
-#     chat_ref.update({
-#         'metadata.lastUpdated': firestore.SERVER_TIMESTAMP
-#     })
-
-# def get_chat_history(chat_id):
-#     """Retrieve chat history for a specific chat"""
-#     messages_ref = db.collection('Chats').document(chat_id).collection('messages')
-#     messages = messages_ref.order_by('timestamp').stream()
-    
-#     return [msg.to_dict() for msg in messages]
-
-# def finance_bot_response(user_message):
-#     """
-#     Simulated finance bot response 
-#     Replace this with your actual finance logic/AI model
-#     """
-#     # Example simple responses
-#     if 'balance' in user_message.lower():
-#         return "Your current account balance is $5,000."
-#     elif 'invest' in user_message.lower():
-#         return "I recommend diversifying your portfolio across different asset classes."
-#     else:
-#         return "I can help you with financial queries. Ask about your balance, investments, or expenses."
-
-
-# st.title("💰 Finance Chatbot")
-
-# # Initialize session state
-# if 'chat_id' not in st.session_state:
-#     user_email = st.session_state.user_info.get('email', None)
-#     st.session_state.chat_id = create_new_chat(st.session_state.get('user_email', 'user@example.com'))
-
-# # Display chat history
-# chat_history = get_chat_history(st.session_state.chat_id)
-# for msg in chat_history:
-#     with st.chat_message(msg['sender']):
-#         st.write(msg['text'])
-
-# # User input
-# if prompt := st.chat_input("What financial question can I help you with?"):
-#     # Display user message
-#     with st.chat_message("user"):
-#         st.write(prompt)
-    
-#     # Save user message
-#     save_message(st.session_state.chat_id, prompt, 'user')
-    
-#     # Get bot response
-#     bot_response = finance_bot_response(prompt)
-    
-#     # Display bot message
-#     with st.chat_message("assistant"):
-#         st.write(bot_response)
-    
-#     # Save bot message
-#     save_message(st.session_state.chat_id, bot_response, 'bot')
-
-# import streamlit as st
-# # from Chatbot import FinancialChatBot
-# import os
-# from openai import OpenAI
-# from Chatbot.chatbot import FinancialChatBot
-
-# url = 'https://api.two.ai/v2';
-
-# client = OpenAI(base_url=url,
-#                 api_key=os.environ.get("SUTRA_API_KEY"))
-
-# # %%
-# language = 'english'
-
-# # Initialize the chatbot
-# chatbot = FinancialChatBot()
-
-# # print("Welcome to the Financial Assistant! (Type 'quit' to exit)")
-# st.write("Welcome to the Financial Assistant! (Type 'quit' to exit)")
-# st.write("You can also share images by typing 'image: ' followed by the image path")
-
-# while True:
-#     user_input = input("\n👤 You: ").strip()
-    
-#     if user_input.lower() == 'quit':
-#         print("\nGoodbye! Thank you for using the Financial Assistant.")
-#         break
-        
-#     # Check if user is sharing an image
-#     image_path = None
-#     if user_input.startswith('image:'):
-#         image_path = user_input[6:].strip()
-#         user_input = "What do you see in this image?"
-    
-#     # Get bot's response
-#     response = chatbot.chat(user_input, image_path)
-#     print(response)
-
-#     if language != 'english':
-#         stream = client.chat.completions.create(model='sutra-v2',
-#                                                 messages = [{"role": "user", "content": "Translate this text in" + language + ": " + response}],
-#                                                 max_tokens=1024,
-#                                                 temperature=0,
-#                                                 stream=True)
-
-#         print("\n🤖 Assistant:\n",)
-#         for chunk in stream:
-#             if len(chunk.choices) > 0:
-#                 content = chunk.choices[0].delta.content
-#                 finish_reason = chunk.choices[0].finish_reason
-#                 if content and finish_reason is None:
-#                     print(content, end='', flush=True)
-    
-
-
-# # Page configuration - MUST be the first Streamlit command
-# import streamlit as st
-# st.set_page_config(page_title="Financial Chatbot", layout="wide", page_icon="💰")
-
 import os
 import time
 import re
@@ -157,7 +5,6 @@ import json
 import plotly.graph_objs as go
 import streamlit as st
 from plotly.io import to_json, from_json
-# from chatbot_streamlit import *  # Replace with actual module name
 from ChatBot.chatbot import *
 
 import firebase_admin
@@ -238,6 +85,10 @@ def select_language():
 # Custom CSS with reduced box sizes
 st.markdown("""
     <style>
+    .profile-header h1 {
+        color: rgba(131, 158, 101, 0.8);
+        font-size: 60px;
+    }
     /* Clean Title */
     .title {
         color: var(--primary);
@@ -313,9 +164,9 @@ st.markdown("""
         width: 40px;
         height: 40px;
         border-radius: 8px;
-        background: var(--surface);
+        background: rgba(131, 158, 101, 0.8);
         border: 1px solid #30363D;
-        color: var(--text-secondary);
+        color: rgba(131, 158, 101, 0.8);
         cursor: pointer;
         transition: all 0.2s ease;
         margin-right: 8px;
@@ -347,7 +198,7 @@ st.markdown("""
 
 st.markdown("""
 <div class="profile-header">
-    <h1 style="font-size:55px; color:white; text-align:center;">📈 Financial Insights</h1>
+    <h1 style="text-align:center;">📈 Financial Insights</h1>
     <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
     to create a balanced portfolio allocation tailored to your specific needs.</p>
 </div>

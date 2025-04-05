@@ -99,24 +99,9 @@ else:
 # Custom CSS for styling
 st.markdown("""
 <style>
-    .header-container {
-        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
-        padding: 2.5rem;
-        border-radius: 12px;
-        margin-bottom: 2rem;
-        color: white;
-    }
-    .header-title {
-        font-size: 2.8rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-    .header-subtitle {
-        text-align: center;
-        font-size: 1.2rem;
-        opacity: 0.9;
-        margin-bottom: 0.5rem;
+    .profile-header h1 {
+        color: rgba(131, 158, 101, 0.8);
+        font-size: 60px;
     }
     .tool-container {
         background-color: #f8f9fa;
@@ -140,7 +125,7 @@ st.markdown("""
         padding: 1.5rem;
         margin-bottom: 1rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-left: 4px solid #4b6cb7;
+        border-left: 4px solid #556b3b;
     }
     .warning-card {
         background-color: white;
@@ -149,20 +134,6 @@ st.markdown("""
         margin-bottom: 1rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         border-left: 4px solid #e74c3c;
-    }
-    .stButton>button {
-        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        transition: all 0.3s;
-        width: 100%;
-    }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .danger-button {
         background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
@@ -203,8 +174,8 @@ if 'active_tab' not in st.session_state:
 
 
 st.markdown("""
-<div>
-    <h1 style="font-size:60px; color:white; text-align:center;">🔍 Financial Safety Toolkit</h1>
+<div class="profile-header">
+    <h1 style="text-align:center;">🔍 Financial Safety Toolkit</h1>
     <p style="text-align:center;">Discover government benefits and protect yourself from scams - all in one place</p>
 </div>
 """, unsafe_allow_html=True)
@@ -257,7 +228,8 @@ active_tab = sac.tabs(
     position='top',
     align='center',
     size='lg',
-    use_container_width=True
+    use_container_width=True,
+    color='rgba(131, 158, 101, 0.8)'
 )
 
 # Content for each tab
@@ -286,13 +258,20 @@ if st.session_state.active_tab == 'schemes':
     with st.container():
         st.markdown("")
         st.markdown("")
-        st.markdown("Never miss out on benefits - find schemes made for your situation!")
+        st.markdown("""
+        <div>
+            <p style="text-align:center;">"Never miss out on benefits - find schemes made for your situation!"</p>
+        </div>
+        """, unsafe_allow_html=True)
+        # st.markdown("Never miss out on benefits - find schemes made for your situation!")
         # st.markdown("""
         # <div>
         #     <div class="tool-title">🏛️ Find Government Schemes</div>
         #     <p>Never miss out on benefits - find schemes made for your situation!</p>
         # """, unsafe_allow_html=True)
         
+        st.markdown("")
+        st.markdown("")
         col1, col2 = st.columns(2)
         with col1:
             age = st.number_input("Your Age", min_value=18, max_value=100, step=1)
@@ -327,18 +306,20 @@ if st.session_state.active_tab == 'schemes':
 
                 st.markdown("")
                 st.markdown("")
-                st.subheader("✅ Recommended Schemes", divider="blue")
+                st.subheader("✅ Recommended Schemes")
+                st.markdown("")
                 
                 scheme_list = schemes.split("\n\n")
                 
                 for scheme in scheme_list:
                     if scheme.strip():
-                        with st.container():
-                            st.markdown(f"""
-                            <div class="scheme-card">
-                                {scheme.replace("**", "<span style='font-weight:600;color:#2c3e50;'>").replace("**", "</span>")}
-                            </div>
-                            """, unsafe_allow_html=True)
+                        st.markdown(f"{scheme}")
+                        # with st.container():
+                        #     st.markdown(f"""
+                        #     <div class="scheme-card">
+                        #         {scheme.replace("**", "<span style='font-weight:600;color:#2c3e50;'>").replace("**", "</span>")}
+                        #     </div>
+                        #     """, unsafe_allow_html=True)
                 
                 st.info("ℹ️ Always verify details on official government websites before applying.")
 
@@ -386,10 +367,8 @@ else:
 
                 if "scam" in result.lower() or "high risk" in result.lower():
                     st.error(f"""
-                    <div class="warning-card">
-                        <h3>⚠️ Warning: Potential Scam Detected!</h3>
-                        <p>{result}</p>
-                    </div>
+                    Warning: Potential Scam Detected!
+                    {result}
                     """)
                 else:
                     st.success(f"""
