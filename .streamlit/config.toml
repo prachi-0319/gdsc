@@ -3,9 +3,9 @@ showErrorDetails = "none"
 
 [theme]
 primaryColor = "#54AFBF"
-backgroundColor = "#09031d"
-base = "dark"
-textColor = "#E2E4E4"
+backgroundColor = "#e3e1da"
+base = "light"
+textColor = "#556b3b"
 
 [server]
 runOnSave = true
