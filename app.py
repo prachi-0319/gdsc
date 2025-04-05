@@ -87,7 +87,7 @@ def get_user_profile(user_id):
 
 
 if 'user_info' in st.session_state:
-    initialize_firebase()
+    # initialize_firebase()
     user_info = st.session_state.user_info
     user_id = user_info['localId']  # Get the user ID from session state
     st.session_state.user_id = user_id
@@ -97,16 +97,24 @@ if 'user_info' in st.session_state:
     st.markdown("")
     st.markdown("")
 
-    if "user_info" in st.session_state and "user_id" in st.session_state:
-        user_id = st.session_state.user_id  # Get the user ID
-        user_profile = get_user_profile(user_id)  # Fetch profile data
+    user_id = st.session_state.user_id  # Get the user ID
+    user_profile = get_user_profile(user_id)  # Fetch profile data
 
-        if user_profile:
-            user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
-        else:
-            user_name = "User"
+    if user_profile:
+        user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
     else:
         user_name = "User"
+
+    # if "user_info" in st.session_state and "user_id" in st.session_state:
+    #     user_id = st.session_state.user_id  # Get the user ID
+    #     user_profile = get_user_profile(user_id)  # Fetch profile data
+
+    #     if user_profile:
+    #         user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
+    #     else:
+    #         user_name = "User"
+    # else:
+    #     user_name = "User"
 
     
 

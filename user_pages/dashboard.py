@@ -14,19 +14,19 @@ from user_pages.disclaimer import show_disclaimer
 #     st.warning("Please log in to access the dashboard.")
 #     st.stop()  # Stops execution if not logged in
 
-def get_user_profile(user_id):
-    """Fetches the user's profile from Firestore using their user ID."""
-    if db is None:
-        st.error("Database not initialized.")
-        return None
+# def get_user_profile(user_id):
+#     """Fetches the user's profile from Firestore using their user ID."""
+#     if db is None:
+#         st.error("Database not initialized.")
+#         return None
 
-    doc_ref = db.collection("UserData").document(user_id)
-    doc = doc_ref.get()
+#     doc_ref = db.collection("UserData").document(user_id)
+#     doc = doc_ref.get()
 
-    if doc.exists:
-        user_data = doc.to_dict()
-        return user_data  # Return the full profile dictionary
-    return None  # Return None if the user profile is not found
+#     if doc.exists:
+#         user_data = doc.to_dict()
+#         return user_data  # Return the full profile dictionary
+#     return None  # Return None if the user profile is not found
 
 css_styles="""
     button {
@@ -283,7 +283,7 @@ st.markdown("")
 cols = st.columns([2,1])
 
 with cols[0]:
-    st.image("assets/homepage_image.png", use_container_width=True, caption="Homepage Image")
+    st.image("assets/homepage_image.png", use_container_width=True)
 
 with cols[1]:
     st.markdown("")

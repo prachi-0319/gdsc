@@ -4,7 +4,7 @@ from streamlit_modal import Modal
 def show_disclaimer():
     st.markdown("""
                         
-    **Last Updated: [Date]**
+    **Last Updated: April 5, 2025**
     Thank you for using our GenAI-Powered Financial Assistant. While we strive to provide valuable information and resources, we want to ensure that all users fully understand the limitations and scope of the advice and services provided by our platform. Please read this disclaimer carefully before using the features of our application.
 
     ---

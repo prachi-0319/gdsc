@@ -80,12 +80,26 @@ st.markdown("""
 
 
 # --- Firebase Initialization ---
-if not firebase_admin._apps:
-    cred = credentials.Certificate(st.secrets["GOOGLE_FIREBASE_DISCUSSION"])
-    firebase_admin.initialize_app(cred)
+# if not firebase_admin._apps:
+#     cred = credentials.Certificate(st.secrets["GOOGLE_FIREBASE_DISCUSSION"])
+#     firebase_admin.initialize_app(cred)
 
-db = firestore.client()
-posts_ref = db.collection('forum_posts')
+
+# db = firestore.client()
+# posts_ref = db.collection('forum_posts')
+
+# Get Firestore client only if initialization succeeded
+if st.session_state.get("firebase_initialized", False):
+    try:
+        db = firestore.client()
+        posts_ref = db.collection('forum_posts') # Use a specific collection name
+    except Exception as e:
+        st.error(f"Failed to connect to Firestore: {e}")
+        st.stop()
+else:
+    st.error("Firebase not initialized. Cannot connect to Firestore.")
+    st.stop()
+    
 
 # --- Session State Management ---
 if 'show_new_post' not in st.session_state:
@@ -142,7 +156,7 @@ def show_new_post_form():
         
         content = st.text_area("Content", height=200, key="post_content")
         
-        col1, col2, col3 = st.columns([0.5, 0.5, 6])
+        col1, col2, col3 = st.columns([3, 3, 6])
         with col1:
             if st.form_submit_button("Submit"):
                 if title and content:
@@ -233,76 +247,6 @@ def render_post_card(post_id, post):
                 else:
                     st.info("Log in to reply to this post")
 
-
-# def render_post_card(post_id, post):
-#     timestamp = post.get('timestamp')
-#     if isinstance(timestamp, datetime.datetime):
-#         timestamp_str = timestamp.strftime('%b %d, %Y')
-#     else:
-#         timestamp_str = "Recently"
-    
-#     content = post.get('content', '')
-#     truncated = content[:150] + ('...' if len(content) > 150 else '')
-    
-#     with st.container():
-#         st.markdown(f"""
-#         <div class="post-card">
-#             <div class="post-meta">
-#                 <span class="category-tag">{post.get('category', 'General')}</span>
-#                 {post.get('author', 'Unknown')} • {timestamp_str}
-#             </div>
-#             <div class="post-title">{post.get('title', 'No Title')}</div>
-#             <div class="post-content">{truncated}</div>
-#             <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
-#                 <span style="font-size: 0.85rem; color: #888;">
-#                     💬 {len(post.get('replies', []))} replies
-#                 </span>
-#             </div>
-#         </div>
-#         """, unsafe_allow_html=True)
-        
-#         # Add reply functionality in an expander
-#         with st.expander("💬 Reply to this post"):
-#             if can_interact:
-#                 with st.form(key=f"reply_form_{post_id}"):
-#                     reply_content = st.text_area("Your reply", key=f"reply_{post_id}")
-#                     if st.form_submit_button("Submit Reply"):
-#                         if reply_content:
-#                             try:
-#                                 posts_ref.document(post_id).update({
-#                                     'replies': firestore.ArrayUnion([{
-#                                         'author': current_user,
-#                                         'content': reply_content,
-#                                         'timestamp': datetime.datetime.now(datetime.timezone.utc)
-#                                     }])
-#                                 })
-#                                 st.success("Reply added!")
-#                                 st.cache_data.clear()
-#                                 time.sleep(1)
-#                                 st.rerun()
-#                             except Exception as e:
-#                                 st.error(f"Error adding reply: {e}")
-#                         else:
-#                             st.warning("Reply cannot be empty")
-#             else:
-#                 st.info("Please log in to reply")
-            
-#             # Display existing replies
-#             st.markdown("**Replies:**")
-#             for reply in post.get('replies', []):
-#                 reply_time = reply.get('timestamp', datetime.datetime.now())
-#                 if isinstance(reply_time, datetime.datetime):
-#                     reply_time_str = reply_time.strftime('%b %d %H:%M')
-#                 else:
-#                     reply_time_str = "Recently"
-                
-#                 st.markdown(f"""
-#                 <div style="margin: 0.5rem 0; padding: 0.5rem; background: #2a2a2a; border-radius: 5px;">
-#                     <div style="font-weight: bold; color: #4e8cff;">{reply.get('author', 'Anonymous')}</div>
-#                     <div style="font-size: 0.8rem; color: #888;">{reply_time_str}</div>
-#                     <div style="margin-top: 0.3rem;">{reply.get('content', '')}</div>
-#                 </div>
-#                 """, unsafe_allow_html=True)
 
 # --- Main App ---
 # Forum Header
