@@ -201,11 +201,7 @@ if 'user_info' in st.session_state:
     with st.sidebar:
         nav_login = st.navigation(
             [
-                # st.Page('account_settings/user_controls.py', title="Profile"),  # Magic works
                 st.Page("user_pages/dashboard.py", title="Dashboard", default=True),
-                # st.Page(sign_out, title="Sign Out"),  # Magic works
-                # st.Page("user_options/profile_entry.py", title="Set Profile"),
-                # st.Page("user_pages/money_tracker.py", title="Finanace Tracker"),
                 st.Page("user_pages/lessons.py", title=" Finance Lessons"),
                 st.Page("user_pages/advisor.py", title="Finanace Advisor"),
                 st.Page("user_pages/fraud_detector.py", title="Fraud Alert"),
@@ -214,13 +210,11 @@ if 'user_info' in st.session_state:
                 st.Page("user_pages/govt_schemes.py", title="Govt Schemes"),
                 st.Page("user_pages/dictionary.py", title="Dictionary"),
                 st.Page("user_pages/chatbot.py", title="Chatbot"),
-                # st.Page("account_settings/user_controls.py", title="Profile"),
-                st.Page("user_pages/discussion_forum.py", title = "Discussion_Forum"),
+                st.Page("user_pages/discussion_forum.py", title = "Discussion Forum"),
                 st.Page("user_options/profile_entry.py", title="Profile"),
                 st.Page("user_pages/contact.py", title="Contact Us"),
                 st.Page("user_pages/savings_tracker.py", title="Savings"),
                 st.Page("user_pages/stock_analysis.py", title="Stock Analysis"),
-                # st.Page("user_pages/budget_helper.py", title="Budget Tracker"),
             ]
         )
 

@@ -213,6 +213,9 @@ if search_clicked:
         
         st.info("ℹ️ Always verify details on official government websites before applying.")
         
+
+
+
 # import streamlit as st
 # import google.generativeai as genai
 # from dotenv import load_dotenv
