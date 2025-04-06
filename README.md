@@ -17,8 +17,7 @@ FinFriend is an AI-powered financial assistant designed to enhance financial lit
    - [Prerequisites](#-prerequisites)
    - [Installation](#-installation)
 8. [Contributing](#-contributing)
-9. [License](#-license)
-10. [Contact](#-contact)
+9. [Contact](#-contact)
 
 ## 🚀 Problem Resolution
 FinFriend addresses key challenges in financial literacy and investing:
@@ -93,9 +92,6 @@ Ensure you have the following installed:
 
 ## 📜 Contributing
 We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
-
-## 📜 License
-This project is licensed under the MIT License.
 
 ## 📬 Contact
 For any inquiries, reach out via [your.email@example.com] or visit our [GitHub Issues](https://github.com/your-username/FinFriend/issues).
