@@ -24,7 +24,7 @@ piggy_animation = load_lottie_url(PIGGY_BANK_URL)
 st.markdown("""
 <style>
     .profile-header h1 {
-            color: rgba(131, 158, 101, 0.8);
+            color: #556b3b;
             font-size: 60px;
         }
     .savings-card {

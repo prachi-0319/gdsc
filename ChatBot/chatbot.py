@@ -856,8 +856,11 @@ finance_tool_map = {t.name: t for t in finance_tools}
 
 # %%
 llm_normal = llm
+# normal_query_prompt = """
+# You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. JUST GIVE ME THE ANSWER AND NOTHING ELSE, NO REMARKS ON THE QUESTION OR ANYTHING, JUST THE ANSWER.
+# """
 normal_query_prompt = """
-You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. JUST GIVE ME THE ANSWER AND NOTHING ELSE, NO REMARKS ON THE QUESTION OR ANYTHING, JUST THE ANSWER.
+You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. Make sure you elaborate it in such manner that it is easily understandable by anyone.
 """
 
 def answer_normal_query(state: State):

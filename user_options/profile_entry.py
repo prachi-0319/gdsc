@@ -8,11 +8,11 @@ from firebase_admin import credentials, firestore
 st.markdown("""
 <style>
     .profile-header h1 {
-        color: rgba(131, 158, 101, 0.8);
+        color: #556b3b;
         font-size: 60px;
     }
     .profile-card {
-        background-color: rgba(131, 158, 101, 0.4);
+        background-color: rgba(165, 199, 127, 0.4);
         border-radius: 10px;
         border: 0.7px solid #76b5c5;
         padding: 1.5rem;

@@ -86,7 +86,7 @@ def select_language():
 st.markdown("""
     <style>
     .profile-header h1 {
-        color: rgba(131, 158, 101, 0.8);
+        color: #556b3b;
         font-size: 60px;
     }
     /* Clean Title */
@@ -196,13 +196,25 @@ st.markdown("""
 
 # Update title to be simpler
 
+# st.markdown("""
+# <div class="profile-header">
+#     <h1 style="text-align:center;">📈 Financial Insights</h1>
+#     <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
+#     to create a balanced portfolio allocation tailored to your specific needs.</p>
+# </div>
+# """, unsafe_allow_html=True)
+
 st.markdown("""
 <div class="profile-header">
-    <h1 style="text-align:center;">📈 Financial Insights</h1>
-    <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
-    to create a balanced portfolio allocation tailored to your specific needs.</p>
+    <h1 style="text-align:center;">📈 Finance ChatBot</h1>
+    <p style="text-align:center;">
+        Meet your <span class="highlight">FinFriend</span> — your friendly financial companion!<br>
+        It brings together insights from across the web, answers your questions (big or small), suggests helpful YouTube videos, and even creates and explains plots to make finance feel simple and fun.
+    </p>
 </div>
 """, unsafe_allow_html=True)
+
+
 st.markdown("")
 st.markdown("")
 st.markdown("")

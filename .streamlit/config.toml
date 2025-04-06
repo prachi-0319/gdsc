@@ -2,7 +2,7 @@
 showErrorDetails = "none"
 
 [theme]
-primaryColor = "#54AFBF"
+primaryColor = "#88947b"
 backgroundColor = "#e3e1da"
 base = "light"
 textColor = "#556b3b"

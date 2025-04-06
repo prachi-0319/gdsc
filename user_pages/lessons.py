@@ -361,15 +361,9 @@ from RAG_Model.RAG_copy import get_teaching_response_with_quiz
 st.markdown("""
 <style>
     .profile-header h1 {
-        color: rgba(131, 158, 101, 0.8);
+        color: #556b3b;
         font-size: 60px;
         margin-bottom: 0.5rem;
-    }
-    
-    .profile-header p {
-        color: #b0b0b0;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
     }
     
     .section-header {
@@ -467,15 +461,16 @@ st.markdown("""
         font-weight: 600;
     }
     
+            
     /* Content formatting */
     .teaching-content {
         line-height: 1.6;
-        color: #e0e0e0;
+        color: rgb(100,117,80);
     }
     
     .teaching-content h3 {
-        color: #4ecdc4;
         margin-top: 1.5rem;
+        font-weight: bold;
     }
     
     .teaching-content ul, 
@@ -507,7 +502,58 @@ st.markdown("""
         margin-left: 1rem;
         margin-bottom: 0.25rem;
     }
-    
+            
+    .chapter-node {
+        text-align: center;
+        padding: 10px;
+    }
+    .node-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #a8ba95;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 5px auto;
+        font-weight: bold;
+        color: #edf5e4;
+        border: 2px solid #edf5e4;
+    }
+    .node-circle.active {
+        background-color: #727d66;
+        color: #edf5e4;
+        box-shadow: 0 4px 6px rgba(141, 156, 124, 0.3);
+    }
+    .chapter-title {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #88947b;
+        margin-top: 5px;
+    }
+    .chapter-node.active .chapter-title {
+        font-weight: bold;
+        color: #58614e;
+    }
+    .subtopic-list {
+        margin-top: 20px;
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    .subtopic-item {
+        padding: 8px 12px;
+        margin: 5px 0;
+        border-radius: 4px;
+        color: #88947b;
+        background-color: #f5f5f5;
+    }
+    .subtopic-item.active {
+        background-color: rgba(141, 156, 124, 0.3);
+        color: #58614e;
+        font-weight: 600;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -595,23 +641,31 @@ chapter_options = [
     "Chapter 5: The Art and Science of Valuation"
 ]
 
-# Main app content
+
+
 st.markdown("""
 <div class="profile-header">
-    <h1>📚 Finance Learning Companion</h1>
-    <p>Our hybrid recommendation system combines traditional finance rules with machine learning 
-    to create a balanced portfolio allocation tailored to your specific needs.</p>
+    <h1 style="text-align:center;">📚 Personalized Study Companion</h1>
+    <p style="text-align:center;">
+        Say hello to your smart learning buddy!<br>
+        This AI uses Retrieval-Augmented Generation (RAG) to tailor chapters just for you — based on your profile!<br>
+        Whether you're brushing up or diving deep, your personalized content is only a click away.
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
 
+
+st.markdown("")
+st.markdown("")
+st.markdown("")
 
 # Selection section
 with st.container():    
     col1, col2 = st.columns([1, 1], gap="large")
 
     with col1:
-        st.markdown('### 📖 Choose Your Learning Path')
+        st.markdown('### 📖 Choose Your Concept')
         selected_chapter_full = st.selectbox(
             "**Select Chapter**",
             chapter_options,
@@ -680,97 +734,43 @@ else:
         </div>
     """, unsafe_allow_html=True)
 
-# Learning Path Visualization
-st.markdown("---")
-# Learning Path Visualization - Improved Version
-st.markdown("---")
-st.markdown('### 🗺️ Your Learning Path')
 
+
+# Learning Path Visualization - Improved Version
+st.markdown("")
+st.markdown("")
+st.markdown("---")
+st.markdown("")
+st.markdown("")
+st.markdown('## 🗺️ Your Learning Path')
+
+st.markdown("")
 with st.container():
-    st.markdown('<div class="path-container">', unsafe_allow_html=True)
-    
-    # Create a responsive grid for chapter nodes
-    # st.markdown("""
-    # <style>
-    #     .learning-path-grid {
-    #         display: grid;
-    #         grid-template-columns: repeat(5, 1fr);
-    #         gap: 10px;
-    #         margin-bottom: 20px;
-    #     }
-    #     .chapter-node {
-    #         text-align: center;
-    #         padding: 10px;
-    #     }
-    #     .node-circle {
-    #         width: 40px;
-    #         height: 40px;
-    #         border-radius: 50%;
-    #         background-color: #2c2c2c;
-    #         display: flex;
-    #         align-items: center;
-    #         justify-content: center;
-    #         margin: 0 auto 8px;
-    #         font-weight: bold;
-    #         color: #4ecdc4;
-    #         border: 2px solid #45b7d1;
-    #     }
-    #     .chapter-node.active .node-circle {
-    #         background-color: #45b7d1;
-    #         color: #121212;
-    #         box-shadow: 0 4px 6px rgba(69, 183, 209, 0.3);
-    #     }
-    #     .chapter-title {
-    #         font-size: 0.9rem;
-    #         color: #e0e0e0;
-    #     }
-    #     .chapter-node.active .chapter-title {
-    #         font-weight: bold;
-    #         color: #45b7d1;
-    #     }
-    #     .subtopic-list {
-    #         margin-top: 20px;
-    #         background-color: #1a1a1a;
-    #         border-radius: 8px;
-    #         padding: 15px;
-    #     }
-    #     .subtopic-item {
-    #         padding: 8px 12px;
-    #         margin: 5px 0;
-    #         border-radius: 4px;
-    #         color: #b0b0b0;
-    #     }
-    #     .subtopic-item.active {
-    #         background-color: #45b7d1;
-    #         color: #121212;
-    #         font-weight: 600;
-    #     }
-    # </style>
-    # """, unsafe_allow_html=True)
-    
-    # Chapter nodes grid
-    st.markdown('<div class="learning-path-grid">', unsafe_allow_html=True)
-    for i, chapter in enumerate(chapter_options):
+    # Create columns for chapter nodes
+    cols = st.columns(5)
+    for i, (col, chapter) in enumerate(zip(cols, chapter_options)):
         is_active = (chapter.split(":")[0] == chapter_key)
         chapter_num = chapter.split(":")[0]
         
-        st.markdown(f"""
-        <div class="chapter-node {'active' if is_active else ''}">
-            <div class="node-circle">{i+1}</div>
-            <div class="chapter-title">{chapter_num}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)  # Close grid
-    
-    # Subtopic progression
-    st.markdown('<div class="subtopic-list">', unsafe_allow_html=True)
+        col.markdown(
+            f"""
+            <div class="chapter-node">
+                <div class="node-circle {'active' if is_active else ''}">{i+1}</div>
+                <div class="chapter-title">{chapter_num}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
     for subtopic in chapters[chapter_key]:
         is_active_sub = (subtopic == selected_subtopic)
-        st.markdown(f"""
-        <div class="subtopic-item {'active' if is_active_sub else ''}">
-            {subtopic}
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="subtopic-item {'active' if is_active_sub else ''}">
+                {subtopic}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
     
-    st.markdown('</div>', unsafe_allow_html=True)  # Close path-container
+    st.markdown("</div>", unsafe_allow_html=True)
