@@ -12,13 +12,6 @@ import google.generativeai as genai
 import matplotlib.pyplot as plt
 import altair as alt
 
-# Load API key for Gemini from the .env file
-# load_dotenv()
-# api_key = os.getenv("GEMINI_API_KEY")
-# if api_key:
-#     genai.configure(api_key=api_key)
-# else:
-#     st.error("API key not found. Please set GEMINI_API_KEY in your .env file.")
 
 api_key = st.secrets['GOOGLE']['GEMINI_API_KEY']
 if api_key:
@@ -290,19 +283,19 @@ with col2:
     # Metrics row
     cols = st.columns(3)
     with cols[0]:
-        # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+        
         st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['equity']), unsafe_allow_html=True)
         st.markdown('<div class="metric-label">Equity</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     
     with cols[1]:
-        # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+        
         st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['bonds']), unsafe_allow_html=True)
         st.markdown('<div class="metric-label">Bonds</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     
     with cols[2]:
-        # st.markdown('<div class="allocation-card">', unsafe_allow_html=True)
+        
         st.markdown('<div class="metric-value">{:.1f}%</div>'.format(rec['cash']), unsafe_allow_html=True)
         st.markdown('<div class="metric-label">Cash</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)

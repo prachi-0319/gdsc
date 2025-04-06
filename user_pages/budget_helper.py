@@ -3,8 +3,6 @@ import streamlit as st
 def calculate_savings(price, months):
     return price / months
 
-# Main page content
-# st.set_page_config(page_title="Budget Helper", layout="wide")
 
 # Page title and description
 st.title("Budget Helper for Your Goals")

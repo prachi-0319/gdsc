@@ -3,6 +3,8 @@ from auth_functions import *
 
 initialize_firebase_once()
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def rate_us_button():
     @st.dialog("How do you rate our app?")
     def rate():
@@ -10,12 +12,28 @@ def rate_us_button():
         selected = st.feedback("stars")
         if selected is not None:
             st.session_state.rate = {"item": sentiment_mapping[selected]}
-            # st.markdown(f"You selected {sentiment_mapping[selected]} star(s).")
             st.rerun()
     rate()
     return
 
-# Set up the page config
+
+def get_user_profile(user_id):
+    """Fetches the user's profile from Firestore using their user ID."""
+    if db is None:
+        st.error("Database not initialized.")
+        return None
+
+    doc_ref = db.collection("UserData").document(user_id)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        user_data = doc.to_dict()
+        return user_data  # Return the full profile dictionary
+    return None  # Return None if the user profile is not found
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN APP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 st.set_page_config(
     page_title="Financial Agent", 
     page_icon="💰", 
@@ -49,21 +67,6 @@ st.markdown("""
 
 
 
-def get_user_profile(user_id):
-    """Fetches the user's profile from Firestore using their user ID."""
-    if db is None:
-        st.error("Database not initialized.")
-        return None
-
-    doc_ref = db.collection("UserData").document(user_id)
-    doc = doc_ref.get()
-
-    if doc.exists:
-        user_data = doc.to_dict()
-        return user_data  # Return the full profile dictionary
-    return None  # Return None if the user profile is not found
-
-
 if 'user_info' in st.session_state:
     # initialize_firebase()
     user_info = st.session_state.user_info
@@ -82,19 +85,6 @@ if 'user_info' in st.session_state:
         user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
     else:
         user_name = "User"
-
-    # if "user_info" in st.session_state and "user_id" in st.session_state:
-    #     user_id = st.session_state.user_id  # Get the user ID
-    #     user_profile = get_user_profile(user_id)  # Fetch profile data
-
-    #     if user_profile:
-    #         user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
-    #     else:
-    #         user_name = "User"
-    # else:
-    #     user_name = "User"
-
-    
 
     with st.sidebar:
         st.markdown(f"<h4 style='text-align: center;'>Welcome, {user_name}! 🎉</h4>", unsafe_allow_html=True)
@@ -116,15 +106,9 @@ if 'user_info' in st.session_state:
             ]
         )
 
-        # # Add empty space to push buttons to the bottom
-        # for _ in range(23):  # Adjust the number of empty lines as needed
-        #     st.write("")
-
         # Add buttons at the bottom
         col1, col2 = st.columns([1, 1])
-        # with col1:
-        #     if st.button("Profile", key="profile_button"):
-        #         main_profile()  # Trigger the profile function when the button is pressed
+
         with col1:
             if st.button("Sign Out", key="sign_out_button"):
                 sign_out()  # Trigger the sign_out function when the button is pressed
@@ -135,14 +119,6 @@ if 'user_info' in st.session_state:
                     rate_us_button()  # Trigger the sign_out function when the button is pressed
                 else:
                     f"You gave us {st.session_state.rate['item']} stars!"
-
-
-        
-        # if st.button("Sign Out", key="sign_out_button"):
-        #     sign_out()  # Trigger the sign_out function when the button is pressed
-
-        # if st.button("Profile", key="profile_button"):
-        #     main_profile()  # Trigger the sign_out function when the button is pressed
 
     nav_login.run()
 
@@ -163,7 +139,6 @@ else:
         st.markdown("")
         st.markdown("")
         st.markdown("")
-        # st.markdown("<h1 style='text-align: right; font-size: 80px; font-weight: bold;'>Welcome to FinFriend</h1>", unsafe_allow_html=True)
         st.markdown("<h1 style='text-align: right; font-size: 70px; font-weight: bold;'>WELCOME TO FINFRIEND</h1>", unsafe_allow_html=True)
         st.markdown("""
         <div style="text-align: right; margin-top: 20px;">
@@ -172,19 +147,14 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-    initialize_firebase()
-    # Sidebar with buttons for account selection
-
+    # initialize_firebase()
+    
     nav = st.navigation(
         [
             st.Page("user_pages/dashboard.py",title="Introduction", default=True),  # Magic works
             st.Page("user_options/login_pg.py", title="Log In"),  # Magic does not work
             st.Page("user_options/signup_pg.py", title="Sign Up"),  # Magic works
             st.Page("user_options/forgot_password_pg.py", title="Reset Password"),  # Magic works
-            # st.Page("user_options/forgot_password_pg.py", title="Reset Password"),  # Magic works
         ]
     )
     nav.run()
-
-
-# --------------------------------------------------------------------------------------------------------------------------

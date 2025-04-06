@@ -194,16 +194,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
+
 # Update title to be simpler
-
-# st.markdown("""
-# <div class="profile-header">
-#     <h1 style="text-align:center;">📈 Financial Insights</h1>
-#     <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
-#     to create a balanced portfolio allocation tailored to your specific needs.</p>
-# </div>
-# """, unsafe_allow_html=True)
-
 st.markdown("""
 <div class="profile-header">
     <h1 style="text-align:center;">📈 Finance ChatBot</h1>

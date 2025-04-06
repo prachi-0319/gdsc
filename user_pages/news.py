@@ -154,13 +154,7 @@ def stock_news():
 
     st.markdown("")
     st.markdown("")
-    # st.markdown('''
-    # <div class="header">
-    #     <h1>📈 Market Pulse</h1>
-    #     <p>Real-time financial updates & market intelligence</p>
-    # </div>
-    # ''', unsafe_allow_html=True)
-    
+
     try:
         with st.spinner('Fetching latest market updates...'):
             resp = requests.get(

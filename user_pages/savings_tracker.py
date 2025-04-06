@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 from streamlit_lottie import st_lottie
 
+
+
 # Initialize session state
 if 'total_saved' not in st.session_state:
     st.session_state.total_saved = 0
@@ -20,7 +22,11 @@ def load_lottie_url(url):
 
 piggy_animation = load_lottie_url(PIGGY_BANK_URL)
 
-# Custom CSS
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN APP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 st.markdown("""
 <style>
     .profile-header h1 {
@@ -70,25 +76,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# st.markdown("""
-# <div class="header">
-#     <h1>💰 Smart Savings Tracker</h1>
-#     <p>Reach your financial goals one rupee at a time</p>
-# </div>
-# """, unsafe_allow_html=True)
 
-# CENTERED SAVINGS DISPLAY (3-column layout)
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
     st.markdown("")
     st.markdown("")
-    # st.markdown("""
-    # <div class="savings-card">
-    #     <div style="text-align: center; margin-bottom: 1rem;">
-    #         <h3>Your Savings Progress</h3>
-    #     </div>
-    # """, unsafe_allow_html=True)
     
     # Piggy Bank Animation
     if piggy_animation:
@@ -177,11 +170,7 @@ if st.session_state.transactions:
     <div>
         <h3>📝 Recent Transactions</h3>
     """, unsafe_allow_html=True)
-    # st.markdown("""
-    # <div class="savings-card">
-    #     <h3>📝 Recent Transactions</h3>
-    # """, unsafe_allow_html=True)
-    
+
     for i, transaction in enumerate(st.session_state.transactions[-5:][::-1], 1):
         st.markdown(f"""
         <div class="transaction-item">

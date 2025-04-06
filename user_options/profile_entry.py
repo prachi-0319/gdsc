@@ -239,9 +239,6 @@ if "user_info" in st.session_state:
         st.markdown("### ❌ Account Actions")
         with st.expander("Delete Account", expanded=False):
             st.warning("This action cannot be undone. All your data will be permanently deleted.")
-            # if st.button("Delete My Account", type="primary"):
-            #     if st.checkbox("I understand this will permanently delete all my data"):
-                    # Add your account deletion logic here
             password = st.text_input(label='Confirm your password',type='password')
             st.button(label='Delete Account',on_click=auth_functions.delete_account,args=[password],type='primary')
     else:

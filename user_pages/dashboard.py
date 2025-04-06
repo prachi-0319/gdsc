@@ -4,7 +4,6 @@ from auth_functions import *
 from ChatBot.chatbot import *
 import streamlit_antd_components as sac
 from streamlit_extras.stylable_container import stylable_container
-# from streamlit_modal import Modal
 from user_pages.contact import show_contact_form
 from user_pages.disclaimer import show_disclaimer
 
@@ -156,16 +155,6 @@ css_styles="""
     }
 """
 
-# features = [
-#     ("📊", "Financial Advisor", "Get personalized financial advice."),
-#     ("📖", "Finance Dictionary", "Easily look up financial terms."),
-#     ("📰", "Finance News", "Stay updated on financial news."),
-#     ("🤖", "AI Chatbot", "Chat with our AI financial assistant."),
-#     ("🛡️", "Fraud Detector", "Check if an investment is fraudulent."),
-#     ("🏛️", "Govt. Schemes Finder", "Find government schemes for you."),
-#     ("📝", "Finance Quiz", "Test your financial knowledge."),
-#     ("📚", "Lessons", "Enhance your financial knowledge."),
-# ]
 
 features = [
     ("📊", "Financial Advisor", "Get personalized financial advice."),
@@ -243,7 +232,6 @@ with cols[1]:
     st.markdown("")
     st.markdown("")
     st.markdown("")
-    # st.markdown("<h1 style='text-align: right; font-size: 80px; font-weight: bold;'>Welcome to FinFriend</h1>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: right; font-size: 70px; font-weight: bold;'>WELCOME TO FINFRIEND</h1>", unsafe_allow_html=True)
     st.markdown("""
     <div style="text-align: right; margin-top: 20px;">
@@ -252,31 +240,7 @@ with cols[1]:
     """, unsafe_allow_html=True)
 
 
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Fetching User Name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-# st.markdown("")
-# st.markdown("")
-
-# if "user_info" in st.session_state and "user_id" in st.session_state:
-#     user_id = st.session_state.user_id  # Get the user ID
-#     user_profile = get_user_profile(user_id)  # Fetch profile data
-
-#     if user_profile:
-#         user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
-#     else:
-#         user_name = "User"
-# else:
-#     user_name = "User"
-
-# st.markdown(f"<h4 style='text-align: center;'>Welcome, {user_name}! 🎉</h4>", unsafe_allow_html=True)
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Bar for AI Chatbot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Bar for AI Chatbot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 st.markdown("") 
 st.markdown("") 
@@ -418,10 +382,6 @@ with faq_col2:
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FOOTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# st.markdown("") 
-# st.markdown("") 
-# st.markdown("") 
-# st.markdown("") 
 
 st.markdown("<hr>", unsafe_allow_html=True)
 footer_col1, footer_col2 = st.columns(2)

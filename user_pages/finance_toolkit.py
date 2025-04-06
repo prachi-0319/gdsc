@@ -99,41 +99,6 @@ st.markdown("")
 st.markdown("")
 st.markdown("")
 
-# # Header Section
-# st.markdown("""
-# <div class="header-container">
-#     <div class="header-title">🔍 Financial Safety Toolkit</div>
-#     <div class="header-subtitle">Discover government benefits and protect yourself from scams - all in one place</div>
-# </div>
-# """, unsafe_allow_html=True)
-
-# def tabs(
-#         items: List[Union[str, dict, TabsItem]],
-#         index: int = 0,
-#         format_func: Union[Formatter, Callable] = None,
-#         align: Align = 'start',
-#         position: Position = 'top',
-#         size: Union[MantineSize, int] = 'md',
-#         variant: Literal['default', 'outline'] = 'default',
-#         color: Union[MantineColor, str] = None,
-#         height: int = None,
-#         use_container_width: bool = False,
-#         return_index: bool = False,
-#         on_change: Callable = None,
-#         args: Tuple[Any, ...] = None,
-#         kwargs: Dict[str, Any] = None,
-#         key=None
-# ) -> Union[str, int]:
-    
-
-# sac.tabs([
-#     sac.TabsItem(label='🏛️ Find Government Schemes', key="schemes_tab", use_container_width=True),
-#     sac.TabsItem(label='🚨 Fraud Detection', key="fraud_tab", use_container_width=True)
-#     # sac.TabsItem(icon='google'),
-#     # sac.TabsItem(label='github', icon='github'),
-#     # sac.TabsItem(label='disabled', disabled=True),
-# ], align='center', variant='outline')
-
 # Define tabs
 active_tab = sac.tabs(
     items=["🏛️ Government Schemes", "🚨 Fraud Detection"],
@@ -154,19 +119,6 @@ elif active_tab == "🚨 Fraud Detection":
     st.session_state.active_tab = 'fraud'
 
 
-# # Tab Navigation
-# col1, col2 = st.columns(2)
-# with col1:
-#     if st.button("🏛️ Find Government Schemes", key="schemes_tab", 
-#                 use_container_width=True, 
-#                 type="primary" if st.session_state.active_tab == 'schemes' else "secondary"):
-#         st.session_state.active_tab = 'schemes'
-# with col2:
-#     if st.button("🚨 Fraud Detection", key="fraud_tab", 
-#                 use_container_width=True, 
-#                 type="primary" if st.session_state.active_tab == 'fraud' else "secondary"):
-#         st.session_state.active_tab = 'fraud'
-
 # Government Schemes Finder
 if st.session_state.active_tab == 'schemes':
     with st.container():
@@ -177,12 +129,6 @@ if st.session_state.active_tab == 'schemes':
             <p style="text-align:center;">"Never miss out on benefits - find schemes made for your situation!"</p>
         </div>
         """, unsafe_allow_html=True)
-        # st.markdown("Never miss out on benefits - find schemes made for your situation!")
-        # st.markdown("""
-        # <div>
-        #     <div class="tool-title">🏛️ Find Government Schemes</div>
-        #     <p>Never miss out on benefits - find schemes made for your situation!</p>
-        # """, unsafe_allow_html=True)
         
         st.markdown("")
         st.markdown("")
@@ -228,22 +174,9 @@ if st.session_state.active_tab == 'schemes':
                 for scheme in scheme_list:
                     if scheme.strip():
                         st.markdown(f"{scheme}")
-                        # with st.container():
-                        #     st.markdown(f"""
-                        #     <div class="scheme-card">
-                        #         {scheme.replace("**", "<span style='font-weight:600;color:#2c3e50;'>").replace("**", "</span>")}
-                        #     </div>
-                        #     """, unsafe_allow_html=True)
                 
                 st.info("ℹ️ Always verify details on official government websites before applying.")
 
-
-# st.markdown("""
-# <div>
-#     <p style="text-align:center;">Verify before you invest—protect your hard-earned money! Enter details of any investment offer to check for red flags. Our system cross-references known scam patterns, unrealistic returns, and regulatory warnings to assess legitimacy.</p>
-#     <p style="text-align:center;">Note: <span class="highlight">Always consult a certified financial advisor</span> for high-risk investments.</p>
-# </div>
-# """, unsafe_allow_html=True)
 
 # Fraud Detector
 else:
@@ -258,12 +191,6 @@ else:
         """, unsafe_allow_html=True)
         st.markdown("")
         st.markdown("")
-        # st.markdown("""
-        # <div class="tool-container">
-        #     <div class="tool-title">🚨 Fraud & Scam Detection</div>
-        #     <p>Verify before you invest—protect your hard-earned money!</p>
-        #     <p>Note: <span class="highlight">Always consult a certified financial advisor</span> for high-risk investments.</p>
-        # """, unsafe_allow_html=True)
         
         scheme_name = st.text_input("Scheme Name", placeholder="e.g., Golden Future Investment Plan")
         promised_returns = st.text_input("Promised Returns", placeholder="e.g., 20% monthly")

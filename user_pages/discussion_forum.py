@@ -4,8 +4,6 @@ import time
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# --- Page Configuration ---
-# st.set_page_config(layout="wide")
 
 # Custom CSS
 st.markdown("""
@@ -78,15 +76,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
-# --- Firebase Initialization ---
-# if not firebase_admin._apps:
-#     cred = credentials.Certificate(st.secrets["GOOGLE_FIREBASE_DISCUSSION"])
-#     firebase_admin.initialize_app(cred)
-
-
-# db = firestore.client()
-# posts_ref = db.collection('forum_posts')
 
 # Get Firestore client only if initialization succeeded
 if st.session_state.get("firebase_initialized", False):
@@ -295,7 +284,6 @@ else:
     with st.expander("🔍 Filter Posts", expanded=True):
         filter_cols = st.columns([1, 1, 2])
         with filter_cols[0]:
-            # category_filter = st.selectbox("Category", ["All"] + sorted(list(set(p.to_dict().get('category', 'General') for _, p in posts)))
             category_filter = st.selectbox(
                 "Category", 
                 ["All"] + sorted(list(set(p[1].get('category', 'General') for p in posts)))
@@ -328,5 +316,3 @@ else:
         with cols[i % 3]:
             render_post_card(post_id, post)
 
-    # Detailed view when clicking "View Discussion" would go here
-    # (Would need JavaScript integration for full functionality)

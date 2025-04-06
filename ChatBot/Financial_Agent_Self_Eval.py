@@ -1121,12 +1121,3 @@ def update_router():
     
     return final_router.compile()
 
-# %%
-#Query: Show me a candlestick chart for AAPL
-#Query: Show me the balance sheet for MSFT
-#Query: Show me the assets for GOOGL
-
-# %%
-
-
-

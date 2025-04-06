@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 body {
     font-family: 'Inter', sans-serif;
@@ -84,22 +84,6 @@ body {
     color: #9ca3af;
     border-top: 1px solid #e5e7eb;
 }
-/* 
-.cta-button-wrapper button {
-  background-color: #2563eb !important;
-  color: white !important;
-  font-weight: 600;
-  padding: 0.75rem 2rem;
-  border-radius: 9999px;
-  font-size: 1rem;
-  margin: 0 auto;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-
-.cta-button-wrapper button:hover {
-  background-color: #1d4ed8 !important;
-} */
 
 button[kind="primary"] {
   background-color: #2563eb;
@@ -135,4 +119,4 @@ button[kind="primary"]:hover {
 
 .custom-page-link-wrapper a[data-testid="stPageLink"]:hover {
     background-color: #1e40af;
-}
+} */

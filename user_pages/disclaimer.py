@@ -69,12 +69,12 @@ def show_disclaimer():
 
     """)
 
-    st.markdown("") # empty line
-    st.markdown("") # empty line
+    st.markdown("") 
+    st.markdown("") 
     
     if st.button("I Understand", key="disclaimer_close"):
         st.session_state.open_disclaimer_modal = False
         st.rerun()
-    st.markdown("") # empty line
-    st.markdown("") # empty line
-    st.markdown("") # empty line
+    st.markdown("") 
+    st.markdown("") 
+    st.markdown("") 
