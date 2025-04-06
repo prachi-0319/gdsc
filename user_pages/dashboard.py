@@ -4,29 +4,9 @@ from auth_functions import *
 from ChatBot.chatbot import *
 import streamlit_antd_components as sac
 from streamlit_extras.stylable_container import stylable_container
-from streamlit_modal import Modal
+# from streamlit_modal import Modal
 from user_pages.contact import show_contact_form
 from user_pages.disclaimer import show_disclaimer
-
-
-# ---- User Authentication ----
-# if 'user_info' not in st.session_state:
-#     st.warning("Please log in to access the dashboard.")
-#     st.stop()  # Stops execution if not logged in
-
-# def get_user_profile(user_id):
-#     """Fetches the user's profile from Firestore using their user ID."""
-#     if db is None:
-#         st.error("Database not initialized.")
-#         return None
-
-#     doc_ref = db.collection("UserData").document(user_id)
-#     doc = doc_ref.get()
-
-#     if doc.exists:
-#         user_data = doc.to_dict()
-#         return user_data  # Return the full profile dictionary
-#     return None  # Return None if the user profile is not found
 
 css_styles="""
     button {
@@ -203,32 +183,6 @@ features = [
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOGIN DASHBOARD ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if 'user_info' not in st.session_state:
-
-    # # Main icon and title
-    # st.markdown("")
-    # st.markdown("")
-    # st.markdown("")
-
-    # cols = st.columns([2,1])
-
-    # with cols[0]:
-    #     st.image("assets/homepage_image.png", use_container_width=True)
-
-    # with cols[1]:
-    #     st.markdown("")
-    #     st.markdown("")
-    #     st.markdown("")
-    #     st.markdown("")
-    #     st.markdown("")
-    #     st.markdown("")
-    #     # st.markdown("<h1 style='text-align: right; font-size: 80px; font-weight: bold;'>Welcome to FinFriend</h1>", unsafe_allow_html=True)
-    #     st.markdown("<h1 style='text-align: right; font-size: 70px; font-weight: bold;'>WELCOME TO FINFRIEND</h1>", unsafe_allow_html=True)
-    #     st.markdown("""
-    #     <div style="text-align: right; margin-top: 20px;">
-    #         <p>Discover tools, resources, and advice to make informed financial decisions. Explore personalized financial advice, track savings, detect fraud schemes, and much more.</p>
-    #     </div>
-    #     """, unsafe_allow_html=True)
-        
     
     # Feature Widgets
     columns = st.columns((1,1,1))
@@ -267,9 +221,6 @@ if 'user_info' not in st.session_state:
     st.markdown("")    
     st.warning("Please log in to access the dashboard.")
     st.stop()  
-
-
-
 
 
 
@@ -358,38 +309,6 @@ with cols[0]:
             st.switch_page("user_pages/chatbot.py") 
 
 
-# user_input = st.text_input("🔍 Ask us anything:", placeholder="What is the best long term investment...")
-
-
-# cols = st.columns([12,1])
-# # Store user input in session state
-# with cols[0]:
-#     user_input = st.text_input("🔍 Ask us anything:", placeholder="What is the best long term investment...")
-
-# with cols[1]:
-#     st.markdown("")
-#     if st.button("Search"):
-#         if user_input:  # Ensure input is not empty
-#             st.session_state.chatbot = FinancialChatBot()
-#             st.session_state.history = []
-
-#             bot_response = st.session_state.chatbot.chat(user_input, None)
-
-#             st.session_state.history.append({
-#                 "role": "user",
-#                 "content": user_input,
-#                 "image_path": None
-#             })
-#             st.session_state.history.append({
-#                 "role": "assistant",
-#                 "text": bot_response["text"],
-#                 "plot": bot_response["plot"]
-#             })
-
-#             st.switch_page("user_pages/chatbot.py") 
-
-
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Features Grid ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -421,9 +340,14 @@ with stylable_container("card_container", css_styles):
                 <div class="card-icon">{icon}</div>
                 <div class="card-title">{title}</div>
                 <div class="card-description">{description}</div>
-                <button onclick="window.location.href='/user_pages/{page}.py'">Open</button>
             </div>
             """, unsafe_allow_html=True)
+            st.markdown("")
+
+            if st.button(f"Open", key=f"button_{i}"):
+                st.switch_page(f"user_pages/{page}.py")
+                st.rerun()
+            # Use page switch functionality for navigation
     
             st.markdown("") 
             st.markdown("") 
@@ -516,77 +440,6 @@ with footer_col2:
         ], align='right', color='rgba(131, 158, 101, 0.8)'
     )
 
-
-# footer_col3, footer_col4 = st.columns(2)
-# with footer_col3:
-#     col1, col2, col3 = st.columns([1,1,1])
-
-#     with col1:
-#         if st.button("Contact Us", key="contact_button"):
-#             st.session_state.open_modal = True
-    
-#     with col2:
-#         if st.button("Disclaimer", key="disclaimer_button"):
-#             st.session_state.open_disclaimer_modal = True
-            
-# # ~~~~~~~~~ Contact Us Modal ~~~~~~~~~~~~~
-
-# contact_modal = Modal(
-#     title="📨 Contact Us",
-#     key="contact_modal",
-#     # Optional - makes modal wider
-#     max_width=800,
-#     padding=50  
-    
-# )
-
-# if st.session_state.get("open_modal", False):
-#     with contact_modal.container():
-#         show_contact_form()
-        
-#         if not st.session_state.get("form_submitted", False):
-#             if st.button("Close", key="modal_close_button"):
-#                 st.session_state.open_modal = False
-#                 st.rerun()
-#         else:
-#             st.session_state.open_modal = False
-#             st.session_state.form_submitted = False
-#             st.rerun()
-
-
-# # ~~~~~~~~~ Disclaimer Modal ~~~~~~~~~~~~~
-
-# disclaimer_modal = Modal(
-#     title="⚠️ Disclaimer",
-#     key="disclaimer_modal",
-#     max_width=800,
-#     padding=50
-# )
-
-# if st.session_state.get("open_disclaimer_modal", False):
-#     with disclaimer_modal.container():
-#         show_disclaimer()
-
-
-# st.markdown("<hr>", unsafe_allow_html=True)
-# footer_col1, footer_col2 = st.columns(2)
-
-# with footer_col1:
-#     st.markdown("<h2>Join the FinFriend club today!</h2>", unsafe_allow_html=True)
-
-# with footer_col2:
-#     st.markdown("") # empty line
-#     st.markdown("") # empty line
-
-#     sac.segmented(
-#         items=[
-#             sac.SegmentedItem(label='discord', icon='discord'),
-#             sac.SegmentedItem(label='mail', icon='google'),
-#             sac.SegmentedItem(label='github', icon='github'),
-#             # sac.SegmentedItem(label='link', icon='share-fill', href='https://mantine.dev/core/segmented-control/'),
-#             # sac.SegmentedItem(label='disabled', disabled=True),
-#         ], align='right', color='rgba(131, 158, 101, 0.8)'
-#     )
 
 
 @st.dialog("📨 Contact Us",width="large")
