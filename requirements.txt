@@ -40,6 +40,7 @@ entrypoints==0.4
 etelemetry==0.3.1
 exceptiongroup==1.2.2
 executing==2.2.0
+faiss-cpu==1.10.0
 Faker==37.1.0
 favicon==0.7.0
 filelock==3.18.0

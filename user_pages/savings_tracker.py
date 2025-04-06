@@ -64,7 +64,7 @@ st.markdown("""
 
 # Header
 st.markdown("""
-<div>
+<div class="profile-header">
     <h1 style="text-align:center;">💰 Smart Savings Tracker</h1>
     <p style="text-align:center;">Reach your financial goals one rupee at a time</p>
 </div>

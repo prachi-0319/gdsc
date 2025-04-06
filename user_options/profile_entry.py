@@ -2,6 +2,7 @@ import streamlit as st
 import auth_functions
 from auth_functions import *
 from datetime import datetime
+from firebase_admin import credentials, firestore
 
 # Custom CSS for styling
 st.markdown("""
@@ -46,6 +47,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def get_user_profile(user_id):
+    db = firestore.client()
     doc_ref = db.collection("UserData").document(user_id)
     doc = doc_ref.get()
     if doc.exists:
