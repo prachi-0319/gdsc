@@ -34,36 +34,48 @@ st.markdown("""
         padding: 2rem;
     }
     .profile-header h1 {
-        color: #2E86C1;
-        font-size: 2.5rem;
+        color: #556b3b;
+        font-size: 60px;
     }
     .header {
         text-align: center;
         margin-bottom: 2rem;
     }
     .header h2 {
-        color: #2E86C1;
+        color: #6c757d;
         font-size: 2rem;
     }
     .card {
-        background-color: rgba(21, 76, 121, 0.15);
+        background-color: rgba(131, 158, 101, 0.8);
         border-radius: 15px;
-        border: 0.7px solid #76b5c5;
+        border: 0.7px solid #556b3b;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card h4 {
+        color: #e3e1da;
+    }
+    .card p {
+        color: #e3e1da;
+    }
+    .card ul {
+        color: #e3e1da;
+    }
+    .card li {
+        color: #e3e1da;
     }
     .slider-container {
         margin-bottom: 1.5rem;
     }
     .highlight {
-        background-color: #2980B9;
+        background-color: rgba(131, 158, 101, 0.2);
         padding: 0.2rem 0.4rem;
         border-radius: 4px;
         font-weight: 500;
     }
     .allocation-card {
-        background-color: blue;
+        background-color: rgba(131, 158, 101, 0.8);
         border-radius: 10px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
@@ -72,7 +84,7 @@ st.markdown("""
     .metric-value {
         font-size: 1.5rem;
         font-weight: bold;
-        color: #2E86C1;
+        color: rgba(131, 158, 101, 0.8);
     }
     .metric-label {
         font-size: 0.9rem;
@@ -81,8 +93,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
+
+
 # -----------------------------------------------------------
-# Investment Recommendation Code (unchanged)
+# Investment Recommendation Code 
 # -----------------------------------------------------------
 def train_ml_model():
     np.random.seed(42)
@@ -198,6 +213,9 @@ def create_allocation_pie(allocation):
     
     return pie
 
+
+
+
 # -----------------------------------------------------------
 # Streamlit UI
 # -----------------------------------------------------------
@@ -205,12 +223,13 @@ def create_allocation_pie(allocation):
 
 st.markdown("""
 <div class="profile-header">
-    <h1 style="font-size:55px; color:white; text-align:center;">💰 Investment Portfolio Recommender</h1>
+    <h1 style="font-size:55px; text-align:center;">💰 Investment Portfolio Recommender</h1>
     <p style="text-align:center;">Our <span class="highlight">hybrid recommendation system</span> combines traditional finance rules with machine learning 
     to create a balanced portfolio allocation tailored to your specific needs.</p>
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("")
 st.markdown("")
 st.markdown("")
 st.markdown("")

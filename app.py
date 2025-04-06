@@ -1,157 +1,10 @@
 import streamlit as st
 from auth_functions import *
-# Import your page functions or ensure they are discoverable
-# from user_pages.dashboard import show_dashboard # Example import
-# from user_options.profile_entry import main_profile # Example import
 
-# --- Initialization ---
-initialize_firebase_once() # Ensure Firebase is initialized only once
+initialize_firebase_once()
 
-# --- Page Configuration ---
-st.set_page_config(
-    page_title="FinFriend - Your Financial Companion",
-    page_icon="💰", # Consider using a custom emoji or favicon link
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# --- Custom CSS ---
-# Apply styles inspired by streamlit.io's landing page
-st.markdown("""
-    <style>
-        /* --- General --- */
-        html, body, [class*="st-"], button, input, textarea {
-            font-family: 'Source Sans Pro', sans-serif; /* Clean sans-serif font */
-        }
-
-        /* --- Main Content Area --- */
-         .main .block-container {
-            padding-top: 3rem; /* More space at the top */
-            padding-bottom: 3rem;
-            padding-left: 3rem;
-            padding-right: 3rem;
-            max-width: 1100px; /* Limit max width like many websites */
-            margin: auto; /* Center the block container */
-        }
-
-        /* --- Hero Section (Introduction Page) --- */
-        .hero-section {
-            text-align: center;
-            padding: 3rem 0; /* Vertical padding */
-            margin-bottom: 3rem; /* Space below hero */
-        }
-        .hero-title {
-            font-size: 3.8rem; /* Larger, bolder title */
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            color: #0e1117; /* Streamlit's dark text color */
-        }
-        .hero-subtitle {
-            font-size: 1.4rem; /* Slightly larger subtitle */
-            color: #555; /* Muted color */
-            margin-bottom: 2.5rem; /* More space before CTA */
-            max-width: 650px; /* Limit width */
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .hero-cta-text {
-            font-size: 1.1rem;
-            color: #333;
-        }
-         /* Style links within CTA text if needed */
-        .hero-cta-text a {
-            color: var(--primary-color); /* Use Streamlit's primary color */
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .hero-cta-text a:hover {
-            text-decoration: underline;
-        }
-
-
-        /* --- Feature Highlight Styling (Optional Refinement) --- */
-        .feature-section {
-            padding: 2rem 0;
-        }
-        .feature-box {
-            background-color: #ffffff; /* White background */
-            padding: 25px;
-            border-radius: 10px; /* Slightly more rounded */
-            text-align: center;
-            border: 1px solid #e0e0e0; /* Lighter border */
-            height: 100%;
-            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
-            display: flex; /* Use flexbox for alignment */
-            flex-direction: column;
-            justify-content: center; /* Center content vertically */
-        }
-        .feature-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08); /* Slightly stronger shadow */
-        }
-        .feature-icon {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-            color: var(--primary-color); /* Use primary color for icons */
-        }
-        .feature-title {
-            font-size: 1.2rem; /* Larger feature title */
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #0e1117;
-        }
-        .feature-desc {
-            font-size: 0.95rem;
-            color: #333;
-            line-height: 1.5;
-        }
-
-        /* --- Sidebar Styling --- */
-        [data-testid="stSidebar"] {
-            /* background-color: #f8f9fa; /* Optional: Light background for sidebar */
-            padding-bottom: 2rem; /* Ensure space at bottom */
-        }
-        .stButton>button[key*='_button'] {
-            width: 100%;
-            margin-bottom: 8px;
-            border-radius: 6px; /* Slightly less rounded buttons */
-        }
-        .sidebar-footer {
-            margin-top: 40px; /* More space above footer */
-            border-top: 1px solid #e0e0e0;
-            padding-top: 20px;
-        }
-        [data-testid="stSidebarNav"] ul {
-             padding-top: 1rem; /* Add some padding above nav items */
-             padding-bottom: 1rem; /* Add some padding below nav items */
-        }
-         [data-testid="stSidebarNav"] ul li > div[role="button"] {
-             padding-top: 0.6rem; /* Adjust vertical padding of nav items */
-             padding-bottom: 0.6rem;
-             border-radius: 6px; /* Match button radius */
-         }
-
-         /* Make Rate Us / Sign Out buttons less prominent */
-         .stButton>button[key*='_sidebar'][type='secondary'] {
-             background-color: transparent;
-             color: #555;
-             border: 1px solid #ddd;
-         }
-         .stButton>button[key*='_sidebar'][type='secondary']:hover {
-             color: #000;
-             border-color: #bbb;
-             background-color: #f0f0f0;
-         }
-
-    </style>
-""", unsafe_allow_html=True)
-
-# --- Helper Functions ---
-
-def rate_us_dialog():
-    """Shows the rating dialog."""
-    @st.dialog("How do you rate FinFriend?")
+def rate_us_button():
+    @st.dialog("How do you rate our app?")
     def rate():
         sentiment_mapping = ["one", "two", "three", "four", "five"]
         selected = st.feedback("stars", key="rating_feedback_stars") # Use a unique key
@@ -163,92 +16,134 @@ def rate_us_dialog():
             st.write("Please select a star rating.")
 
     rate()
+    return
 
-def show_introduction_page():
-    """Displays the content for the logged-out introduction page, styled like streamlit.io."""
+# Set up the page config
+st.set_page_config(
+    page_title="Financial Agent", 
+    page_icon="💰", 
+    layout="wide", 
+    initial_sidebar_state=st.session_state.get('sidebar_state', 'collapsed')
+)
 
-    # --- Hero Section ---
-    st.markdown("""
-    <div class='hero-section'>
-        <div class='hero-title'>Take Control of Your Financial Future</div>
-        <p class='hero-subtitle'>FinFriend provides the tools, insights, and guidance you need to manage your money confidently and achieve your financial goals.</p>
-        <p class='hero-cta-text'>
-            Ready to get started? Use the sidebar menu to <strong>Sign Up</strong> or <strong>Log In</strong>.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+st.logo(
+    image = "assets/logo_finfriend.png",
+    size = "large",
+    icon_image = "assets/logo_finfriend.png",
+)
 
-    st.divider() # Visual separator
+# st.markdown("""
+#     <style>
+#         /* Button */
+#         .stButton>button {
+#             background-color: rgba(28, 90, 151, 0.5);
+#             color: white;
+#             border-radius: 8px;
+#             padding: 0.5rem 1rem;
+#             width: 100%;
+#             transition: all 0.3s;
+#         }
+#         .stButton>button:hover {
+#             background-color: #1E5F8B;
+#             transform: translateY(-2px);
+#         }
+#     </style>""", unsafe_allow_html=True)
 
-    # --- Features Section ---
-    st.markdown("<div class='feature-section'>", unsafe_allow_html=True)
-    st.subheader("Key Features", anchor=False, help="Explore what FinFriend offers") # Add help tooltip
-    st.write("") # Spacer
-
-    col1, col2, col3 = st.columns(3, gap="large") # Increase gap between columns
-
-    with col1:
-        st.markdown("""
-        <div class='feature-box'>
-            <div class='feature-icon'>💡</div>
-            <div class='feature-title'>Personalized Insights</div>
-            <p class='feature-desc'>Receive tailored financial advice and track progress towards your unique goals.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div class='feature-box'>
-            <div class='feature-icon'>🛡️</div>
-            <div class='feature-title'>Stay Secure</div>
-            <p class='feature-desc'>Learn to identify potential scams and protect your finances with our fraud detection tips.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col3:
-         st.markdown("""
-        <div class='feature-box'>
-            <div class='feature-icon'>📚</div>
-            <div class='feature-title'>Boost Your Knowledge</div>
-            <p class='feature-desc'>Engage with lessons, quizzes, news, and resources to enhance your financial literacy.</p>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("""
+    <style>
+        /* Button */
+        .stButton>button {
+            background-color: rgba(131, 158, 101, 0.8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .stButton>button:hover {
+            background-color: #839E65;
+            transform: translateY(-2px);
+        }
+    </style>""", unsafe_allow_html=True)
 
 
-# --- Main App Logic ---
+def entry_point():
+    st.title("My main entry point :D")
 
-auth, db = initialize_firebase() # Get auth and db objects
+    "This is a string written with :violet[***magic***]"
+
+
+def get_user_profile(user_id):
+    """Fetches the user's profile from Firestore using their user ID."""
+    if db is None:
+        st.error("Database not initialized.")
+        return None
+
+    doc_ref = db.collection("UserData").document(user_id)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        user_data = doc.to_dict()
+        return user_data  # Return the full profile dictionary
+    return None  # Return None if the user profile is not found
+
 
 if 'user_info' in st.session_state:
-    # --- LOGGED-IN VIEW ---
+    # initialize_firebase()
     user_info = st.session_state.user_info
     user_id = user_info['localId']
     st.session_state.user_id = user_id
+    # print("USER ID: ",user_id)
+    nav_login = []
 
-    user_email = user_info.get('email', 'User')
+    st.markdown("")
+    st.markdown("")
+
+    user_id = st.session_state.user_id  # Get the user ID
+    user_profile = get_user_profile(user_id)  # Fetch profile data
+
+    if user_profile:
+        user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
+    else:
+        user_name = "User"
+
+    # if "user_info" in st.session_state and "user_id" in st.session_state:
+    #     user_id = st.session_state.user_id  # Get the user ID
+    #     user_profile = get_user_profile(user_id)  # Fetch profile data
+
+    #     if user_profile:
+    #         user_name = user_profile.get("Name", "User")  # Default to "User" if name is missing
+    #     else:
+    #         user_name = "User"
+    # else:
+    #     user_name = "User"
+
+    
 
     with st.sidebar:
-        # Simple welcome, could fetch profile name later
-        st.subheader(f"Welcome!")
-        st.caption(user_email) # Display email smaller
-        st.divider()
+        st.markdown(f"<h4 style='text-align: center;'>Welcome, {user_name}! 🎉</h4>", unsafe_allow_html=True)
+        nav_login = st.navigation(
+            [
+                st.Page("user_pages/dashboard.py", title="Dashboard", default=True),
+                st.Page("user_pages/advisor.py", title="Finanace Advisor"),
+                st.Page("user_pages/lessons.py", title=" Finance Lessons"),
+                st.Page("user_pages/finance_toolkit.py", title="Financial Tools"),
+                st.Page("user_pages/quiz.py", title="Quiz"),
+                st.Page("user_pages/news.py", title="News"),
+                st.Page("user_pages/dictionary.py", title="Dictionary"),
+                st.Page("user_pages/chatbot.py", title="Chatbot"),
+                st.Page("user_pages/savings_tracker.py", title="Savings"),
+                st.Page("user_pages/stock_analysis.py", title="Stock Analysis"),
+                st.Page("user_pages/discussion_forum.py", title = "Discussion Forum"),
+                st.Page("user_options/profile_entry.py", title="Profile"),
+                # st.Page("user_pages/contact.py", title="Contact Us"),
+            ]
+        )
 
-        pages_logged_in = [
-            st.Page("user_pages/dashboard.py", title="Dashboard", icon="📊", default=True),
-            st.Page("user_pages/money_tracker.py", title="Finance Tracker", icon="💸"),
-            st.Page("user_pages/lessons.py", title="Finance Lessons", icon="🎓"),
-            st.Page("user_pages/advisor.py", title="Finance Advisor", icon="🤖"),
-            st.Page("user_pages/fraud_detector.py", title="Fraud Alert", icon="🛡️"),
-            st.Page("user_pages/quiz.py", title="Quiz", icon="❓"),
-            st.Page("user_pages/news.py", title="News", icon="📰"),
-            st.Page("user_pages/govt_schemes.py", title="Govt Schemes", icon="🏦"),
-            st.Page("user_pages/dictionary.py", title="Dictionary", icon="📖"),
-            st.Page("user_pages/chatbot.py", title="Chatbot", icon="💬"),
-            st.Page("user_pages/discussion_forum.py", title="Discussion Forum", icon="🗣️"),
-            st.Page("user_options/profile_entry.py", title="My Profile", icon="👤"),
-        ]
-        nav_selection_logged_in = st.navigation(pages_logged_in)
+        # # Add empty space to push buttons to the bottom
+        # for _ in range(23):  # Adjust the number of empty lines as needed
+        #     st.write("")
 
         # Sidebar Footer Buttons
         st.markdown("<div class='sidebar-footer'>", unsafe_allow_html=True)
@@ -279,20 +174,195 @@ if 'user_info' in st.session_state:
     nav_selection_logged_in.run()
 
 else:
-    # --- LOGGED-OUT VIEW ---
-    with st.sidebar:
-        # Use an emoji or potentially load a small logo image
-        st.markdown("### 💰 FinFriend")
-        # st.sidebar.title("FinFriend") # Alternative styling
-        st.sidebar.divider()
+    st.markdown("")
+    st.markdown("")
+    st.markdown("")
 
-        pages_logged_out = [
-            st.Page(show_introduction_page, title="Introduction", icon="👋", default=True),
-            st.Page("user_options/login_pg.py", title="Log In", icon="🔑"),
-            st.Page("user_options/signup_pg.py", title="Sign Up", icon="📝"),
-            # st.Page("user_options/forgot_password_pg.py", title="Reset Password", icon="❓"), # Optional
+    cols = st.columns([2,1])
+
+    with cols[0]:
+        st.image("assets/homepage_image.png", use_container_width=True)
+
+    with cols[1]:
+        st.markdown("")
+        st.markdown("")
+        st.markdown("")
+        st.markdown("")
+        st.markdown("")
+        st.markdown("")
+        # st.markdown("<h1 style='text-align: right; font-size: 80px; font-weight: bold;'>Welcome to FinFriend</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: right; font-size: 70px; font-weight: bold;'>WELCOME TO FINFRIEND</h1>", unsafe_allow_html=True)
+        st.markdown("""
+        <div style="text-align: right; margin-top: 20px;">
+            <p>Discover tools, resources, and advice to make informed financial decisions. Explore personalized financial advice, track savings, detect fraud schemes, and much more.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    initialize_firebase()
+    # Sidebar with buttons for account selection
+
+    nav = st.navigation(
+        [
+            st.Page("user_pages/dashboard.py",title="Introduction", default=True),  # Magic works
+            st.Page("user_options/login_pg.py", title="Log In"),  # Magic does not work
+            st.Page("user_options/signup_pg.py", title="Sign Up"),  # Magic works
+            # st.Page("user_options/forgot_password_pg.py", title="Reset Password"),  # Magic works
         ]
-        nav_selection_logged_out = st.navigation(pages_logged_out)
+    )
+    nav.run()
 
-    # Run the selected page function (which will be show_introduction_page by default)
-    nav_selection_logged_out.run()
+
+# --------------------------------------------------------------------------------------------------------------------------
+
+
+# import os
+# import streamlit as st
+# from auth_functions import *
+# from streamlit_navigation_bar import st_navbar
+
+# # Initialize Firebase
+# initialize_firebase_once()
+
+# # Define the 'Rate Us' button functionality
+# def rate_us_button():
+#     @st.dialog("How do you rate our app?")
+#     def rate():
+#         sentiment_mapping = ["one", "two", "three", "four", "five"]
+#         selected = st.feedback("stars")
+#         if selected is not None:
+#             st.session_state.rate = {"item": sentiment_mapping[selected]}
+#             st.rerun()
+#     rate()
+#     return
+
+# # Set up the page config
+# st.set_page_config(page_title="Financial Agent", page_icon="💰", layout="wide")
+
+# # Add a logo
+# st.logo(
+#     image="assets/logo_finfriend.png",
+#     size="large",
+#     icon_image="assets/logo_finfriend.png",
+# )
+
+# # Define page functions
+# def show_dashboard():
+#     st.title("Dashboard")
+#     st.write("Welcome to the Dashboard!")
+
+# def show_lessons():
+#     st.title("Finance Lessons")
+#     st.write("Learn about financial topics here.")
+
+# def show_advisor():
+#     st.title("Finance Advisor")
+#     st.write("Get personalized financial advice.")
+
+# def show_finance_toolkit():
+#     st.title("Financial Tools")
+#     st.write("Detect fraud and manage your finances.")
+
+# def show_quiz():
+#     st.title("Quiz")
+#     st.write("Test your financial knowledge!")
+
+# def show_news():
+#     st.title("News")
+#     st.write("Stay updated with financial news.")
+
+# def show_dictionary():
+#     st.title("Dictionary")
+#     st.write("Look up financial terms.")
+
+# def show_chatbot():
+#     st.title("Chatbot")
+#     st.write("Ask our AI chatbot financial questions.")
+
+# def show_discussion_forum():
+#     st.title("Discussion Forum")
+#     st.write("Engage in financial discussions.")
+
+# def show_profile():
+#     st.title("Profile")
+#     st.write("Manage your user profile.")
+
+# def show_contact():
+#     st.title("Contact Us")
+#     st.write("Reach out to us for support.")
+
+# def show_savings():
+#     st.title("Savings Tracker")
+#     st.write("Track and optimize your savings.")
+
+# def show_stock_analysis():
+#     st.title("Stock Analysis")
+#     st.write("Analyze stock market trends.")
+
+# # Define pages for top navigation
+# pages = ["Dashboard", "Finance Lessons", "Finance Advisor", "Financial Tools", 
+#          "Quiz", "News", "Dictionary", "Chatbot", "Discussion Forum", "Profile",
+#          "Contact Us", "Savings", "Stock Analysis"]
+
+# # Define page functions mapping
+# functions = {
+#     "Dashboard": show_dashboard,
+#     "Finance Lessons": show_lessons,
+#     "Finance Advisor": show_advisor,
+#     "Financial Tools": show_finance_toolkit,
+#     "Quiz": show_quiz,
+#     "News": show_news,
+#     "Dictionary": show_dictionary,
+#     "Chatbot": show_chatbot,
+#     "Discussion Forum": show_discussion_forum,
+#     "Profile": show_profile,
+#     "Contact Us": show_contact,
+#     "Savings": show_savings,
+#     "Stock Analysis": show_stock_analysis,
+# }
+
+# # Navigation bar
+# logo_path = "assets/logo_finfriend.svg"
+# urls = {}  # Add external links if needed
+# styles = {
+#     "nav": {"background-color": "royalblue", "justify-content": "left"},
+#     "span": {"color": "white", "padding": "14px"},
+#     "active": {"background-color": "white", "color": "black", "padding": "14px"}
+# }
+# options = {"show_menu": False, "show_sidebar": False}
+
+# # Get the selected page
+# page = st_navbar(pages, logo_path=logo_path, urls=urls, styles=styles, options=options)
+
+# # Run the selected page function
+# if page in functions:
+#     functions[page]()
+
+# # If user is logged in, add buttons
+# if 'user_info' in st.session_state:
+#     initialize_firebase()
+#     user_info = st.session_state.user_info
+#     user_id = user_info['localId']
+#     st.session_state.user_id = user_id
+
+#     # Sign Out & Rate Us Buttons
+#     col1, col2 = st.columns([1, 1])
+#     with col1:
+#         if st.button("Sign Out", key="sign_out_button"):
+#             sign_out()
+
+#     with col2:
+#         if st.button("Rate Us", key="rate_us_button"):
+#             if "rate" not in st.session_state:
+#                 rate_us_button()
+#             else:
+#                 f"You gave us {st.session_state.rate['item']} stars!"
+
+# # If user is not logged in, show the welcome page
+# else:
+#     st.markdown("<h1 style='text-align: center; font-size: 60px; font-weight: bold;'>Welcome to FinFriend</h1>", unsafe_allow_html=True)
+#     st.markdown("""
+#     <div style="text-align: center; margin-top: 20px;">
+#         <p>Discover tools, resources, and advice to make informed financial decisions.</p>
+#         <p>Explore personalized financial advice, track savings, detect fraud schemes, and much more.</p>
+#     </div>
+#     """, unsafe_allow_html=True)

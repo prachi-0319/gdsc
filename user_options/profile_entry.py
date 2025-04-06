@@ -1,105 +1,18 @@
-# import streamlit as st
-# # from google.cloud import firestore
-# # import firebase_admin
-# # from firebase_admin import credentials, firestore
-# # from models import Schema
-# import json
-# from datetime import datetime
-
-
-# def initialize_firebase():
-#     cred = credentials.Certificate('firebase-key.json')
-#     firebase_admin.initialize_app(cred)
-
-# # initialize_firebase()
-
-# # Get Firestore client
-# def get_db():
-#     db = firestore.client()
-#     return db
-
-# def update_user_profile(user_id, input_name, input_age, input_amt):
-#     db = get_db()
-#     # Store the profile data under the user ID document
-#     user_ref = db.collection("UserProfiles").document(user_id)
-    
-#     # If the user exists, update their profile. If not, create a new one.
-#     user_ref.set({
-#         "name": input_name,
-#         "age": input_age,
-#         "amount": input_amt,
-#         "date": datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-#     }, merge=True)  # merge=True allows for partial updates
-
-
-# def main_profile():
-#      if 'user_info' not in st.session_state:
-#         st.warning('You need to be signed in to view your profile!')
-#         return
-    
-#      user_id = st.session_state.user_info["localId"]  # Using the user's Firebase ID as the document ID
-    
-#      db = get_db()
-#      # with st.expander("Get all messages"):
-#      #      ref = db.collection("UserProfiles")
-#      #      for doc in ref.stream():
-#      #           st.write("the id is: ", doc.id)
-#      #           st.write("the contents are: ",doc.to_dict())
-     
-#      with st.form(key="form"):
-#         input_age = st.text_input("Your age (optional)", help="Can be anonymous")
-#         input_amt = st.text_area("Your amt")
-#         input_name = st.text_area("Your Name")
-
-#         if st.form_submit_button("Submit form", type="primary"):
-#             if not input_amt:
-#                 st.error("Please provide a message :balloon:")
-                        
-#             else:
-#                 update_user_profile(user_id, input_name, input_age, input_amt)
-#                 st.success("Your message was posted!")
-#                 st.balloons()
-
-# main()
-
-# import firebase_admin
-# from firebase_admin import credentials
-# from firebase_admin import firestore
-
-# @st.cache_resource
-# def get_db():
-#       db = firestore.Client.from_service_account_json('firebase-key.json')
-#       return db
-
-# def post_message(db, input_age, input_amt, input_name):
-#     payload = {
-#         Schema.age.value: input_age,
-#         Schema.amount.value: input_amt,
-#         Schema.name.value: input_name,
-#         Schema.date.value: datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-#     }
-#     doc_ref = db.collection("messages").document()
-#     doc_ref.set(payload)
-#     return
-
 import streamlit as st
 import auth_functions
 from auth_functions import *
 from datetime import datetime
+from firebase_admin import credentials, firestore
 
 # Custom CSS for styling
 st.markdown("""
 <style>
-    .profile-header {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
     .profile-header h1 {
-        color: #2E86C1;
-        font-size: 2.5rem;
+        color: #556b3b;
+        font-size: 60px;
     }
     .profile-card {
-        background-color: rgba(21, 76, 121, 0.15);
+        background-color: rgba(165, 199, 127, 0.4);
         border-radius: 10px;
         border: 0.7px solid #76b5c5;
         padding: 1.5rem;
@@ -107,12 +20,12 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .metric-card {
-        background-color: rgba(21, 76, 121, 0.15);
+        background-color: #f5f3eb;
         border-radius: 10px;
         padding: 1rem;
         margin-bottom: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid #2E86C1;
+        border-left: 4px solid rgba(131, 158, 101, 0.8);
     }
     .risk-high {
         color: #E74C3C;
@@ -134,6 +47,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def get_user_profile(user_id):
+    db = firestore.client()
     doc_ref = db.collection("UserData").document(user_id)
     doc = doc_ref.get()
     if doc.exists:
@@ -189,8 +103,8 @@ def calculate_risk_profile(income, investing_experience, savings, investment_pre
 # st.write("Manage your personal and financial information")
 st.markdown("""
 <div class="profile-header">
-    <h1 style="font-size:60px; color:white;">👤 Your Profile</h1>
-    <p>Manage your personal and financial information</p>
+    <h1 style="text-align:center;">👤 Your Profile</h1>
+    <p style="text-align:center;">Manage your personal and financial information</p>
 </div>
 """, unsafe_allow_html=True)
 st.markdown("")
@@ -297,10 +211,10 @@ if "user_info" in st.session_state:
                 investment_types = st.multiselect("Your Investment Preferences", 
                                                      ["Stocks", "Bonds", "Real Estate", "Cryptocurrency"])
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    submitted = st.form_submit_button("Save Changes", type="primary")
-                with col2:
+                cols = st.columns([1.5,1,10])
+                with cols[0]:
+                    submitted = st.form_submit_button("Save Changes")
+                with cols[1]:
                     if st.form_submit_button("Cancel"):
                         pass
 

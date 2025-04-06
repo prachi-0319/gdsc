@@ -856,8 +856,11 @@ finance_tool_map = {t.name: t for t in finance_tools}
 
 # %%
 llm_normal = llm
+# normal_query_prompt = """
+# You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. JUST GIVE ME THE ANSWER AND NOTHING ELSE, NO REMARKS ON THE QUESTION OR ANYTHING, JUST THE ANSWER.
+# """
 normal_query_prompt = """
-You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. JUST GIVE ME THE ANSWER AND NOTHING ELSE, NO REMARKS ON THE QUESTION OR ANYTHING, JUST THE ANSWER.
+You are a financial analyst. Please answer the user's question based on what you know, don't make up anything. Make sure you elaborate it in such manner that it is easily understandable by anyone.
 """
 
 def answer_normal_query(state: State):
@@ -1463,38 +1466,15 @@ class FinancialChatBot:
         self.conversation_history = []
         self.context_messages = []
 
-# # %%
-
-# import os
-# from openai import OpenAI
-
-# url = 'https://api.two.ai/v2';
-
-# client = OpenAI(base_url=url,
-#                 api_key=st.secrets['REST']['SUTRA_API_KEY']
-
-# # %%
-# language = 'english'
-
-# # %%
-
+# %%
 def main():
     # Initialize the chatbot
     chatbot = FinancialChatBot()
         
-#     url = 'https://api.two.ai/v2';
-
-#     client = OpenAI(base_url=url,
-#                     api_key=os.environ.get("SUTRA_API_KEY"))
-                
     url = 'https://api.two.ai/v2';
-    
-    client = OpenAI(base_url=url,
-                api_key=st.secrets['REST']['SUTRA_API_KEY']
-    )
 
-# %%
-    language = 'english'
+    client = OpenAI(base_url=url,
+                    api_key=os.environ.get("SUTRA_API_KEY"))
     
     #print("Welcome to the Financial Assistant! (Type 'quit' to exit)")
     #print("You can also share images by typing 'image: ' followed by the image path")
