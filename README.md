@@ -12,13 +12,11 @@ FinFriend is an AI-powered financial assistant designed to enhance financial lit
    - [Real-Time Information](#-real-time-information)
 4. [Unique Value Propositions (UVP)](#-unique-value-propositions-uvp)
 5. [Tech Stack](#-tech-stack)
-6. [Project Structure](#-project-structure)
-7. [Getting Started](#-getting-started)
+6. [Getting Started](#-getting-started)
    - [Prerequisites](#-prerequisites)
    - [Installation](#-installation)
-   - [Deployed Web App](#find-the-deployed-app-at)
-8. [Contributing](#-contributing)
-9. [Contact](#-contact)
+7. [Demo Video](#demo-video)
+8. [Contact](#-contact)
 
 ## 🚀 Problem Resolution
 FinFriend addresses key challenges in financial literacy and investing:
@@ -38,6 +36,7 @@ Offers **tailored investment and financial product suggestions** based on user p
 ### 🔹 Real-Time Information
 Provides **up-to-date financial news, stock movements, and market trends**, helping users make informed investment decisions.
 
+
 ## ✨ Unique Value Propositions (UVP)
 - **AI-powered financial assistant** providing real-time and intuitive guidance.
 - **Instant insights** tailored to individual user needs.
@@ -45,35 +44,34 @@ Provides **up-to-date financial news, stock movements, and market trends**, help
 - **Secure & data-driven** with advanced market analysis.
 
 ## ⚙️ Tech Stack
-- **Backend:** Python, Flask/FastAPI
-- **AI/ML:** TensorFlow, OpenAI API, scikit-learn
-- **Database:** Firebase / PostgreSQL
-- **Frontend:** React / Flutter
-- **APIs & Integrations:** Google Cloud, Alpha Vantage API (for stock data)
+- Python – Primary programming language
+- Streamlit – for fast prototyping and interactive UI and to handle app deployment
+- Scikit-learn for ML-based stock analysis
+- Prophet for time series forecasting and price prediction
+- Integrated with Gemini, Groq, Tavily, LangChain
+- Uses LLaMA 3.3, Gemma for advanced reasoning
+- YouTube API for content suggestions
+- Yahoo Finance API for stock data extraction
+- GitHub – For version control and collaboration
+- Firebase Authentication for secure user login
+- Firebase Firestore to store:User profiles, Forum discussions, Auth metadata
+- Gemini – Integrated for AI-powered insights
+- NVIDIA NIM - for image analysis models
 
-## 📂 Project Structure
-```
-FinFriend/
-│── backend/       # AI models and API services
-│── frontend/      # User interface (web/app)
-│── docs/          # Documentation and resources
-│── data/          # Sample datasets for analysis
-│── tests/         # Unit tests
-│── README.md      # Project overview
-```
+
 
 ## 📖 Getting Started
 ### Prerequisites
 Ensure you have the following installed:
-- Python 3.8+
-- Node.js & npm (if using React for frontend)
+- Python 3.12+
+- Streamlit
 - Firebase CLI (if using Firebase for authentication & database)
 
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/FinFriend.git
-   cd FinFriend
+   git clone https://github.com/your-username/gdsc.git
+   cd gdsc
    ```
 2. Install dependencies:
    ```bash
@@ -84,13 +82,13 @@ Ensure you have the following installed:
    streamlit run app.py
    ```
 
-### Find the deployed app at: 
-https://finfriend.streamlit.app
-
-
-## 📜 Contributing
-We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
+## Demo Video
+https://youtu.be/wYLyWq4Gubc
 
 ## 📬 Contact
-For any inquiries, reach out via [your.email@example.com] or visit our [GitHub Issues](https://github.com/your-username/FinFriend/issues).
+For any inquiries, reach out via:
+- harshdeepvj111@gmail.com
+- sharmakuhu8042@gmail.com
+- prachikansal03@gmail.com
+
 
