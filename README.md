@@ -16,6 +16,7 @@ FinFriend is an AI-powered financial assistant designed to enhance financial lit
 7. [Getting Started](#-getting-started)
    - [Prerequisites](#-prerequisites)
    - [Installation](#-installation)
+   - [Deployed Web App](#find-the-deployed-app-at)
 8. [Contributing](#-contributing)
 9. [Contact](#-contact)
 
@@ -76,19 +77,16 @@ Ensure you have the following installed:
    ```
 2. Install dependencies:
    ```bash
-   pip install -r backend/requirements.txt  # Install backend dependencies
-   cd frontend && npm install  # Install frontend dependencies
+   pip install -r requirements.txt  # Install all the dependencies
    ```
-3. Run the backend:
+3. Run the app:
    ```bash
-   cd backend
-   python app.py
+   streamlit run app.py
    ```
-4. Run the frontend:
-   ```bash
-   cd frontend
-   npm start
-   ```
+
+### Find the deployed app at: 
+https://finfriend.streamlit.app
+
 
 ## 📜 Contributing
 We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
