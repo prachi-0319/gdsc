@@ -11,8 +11,8 @@ from langchain_groq import ChatGroq
 from langchain.agents import initialize_agent, Tool, AgentType
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.memory import ConversationBufferMemory
-# from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
 
 
 import os
